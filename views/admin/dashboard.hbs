@@ -1,0 +1,232 @@
+<section>
+    <!-- main content start-->
+    <div class="main-content">
+
+        <!-- content -->
+        <div class="container-fluid content-top-gap">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb my-breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+            <div class="welcome-msg pt-3 pb-4">
+                <h1>Hi <span class="text-primary">{{admin.name}}</span>, Welcome back</h1>
+                <p>Very detailed & featured admin.</p>
+            </div>
+
+            <!-- statistics data -->
+            <div class="statistics">
+                <div class="row">
+                    <div class="col-xl-6 pr-xl-2">
+                        <div class="row">
+                            <div class="col-sm-6 pr-sm-2 statistics-grid">
+                                <div class="card card_border border-primary-top p-4">
+                                    <i class="lnr text-primary">Active Users</i>
+                                    <h3 class="text-primary number">60</h3>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 pl-sm-2 statistics-grid">
+                                <div class="card card_border border-primary-top p-4">
+                                    <i class="lnr text-secondary">Theaters</i>
+                                    <h3 class="text-secondary number">60</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 pl-xl-2">
+                        <div class="row">
+                            <div class="col-sm-6 pr-sm-2 statistics-grid">
+                                <div class="card card_border border-primary-top p-4">
+                                    <i class="lnr text-success">Active Theatre</i>
+                                    <h3 class="text-success number">43</h3>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 pl-sm-2 statistics-grid">
+                                <div class="card card_border border-primary-top p-4">
+                                    <i class="lnr text-danger">On Hold</i>
+                                    <h3 class="text-danger number">17</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //statistics data -->
+
+            <!-- accordions -->
+            <div class="accordions">
+                <div class="row">
+                    <!-- accordion style 1 -->
+                    <div class="col-lg-12 mb-4">
+                        <div class="card card_border">
+                            <div class="card-header chart-grid__header">
+                                Admin Details
+                            </div>
+                            <div class="card-body">
+                                <div class="accordion" id="accordionExample">
+                                    <div class="card">
+                                        <div class="card-header bg-white p-0" id="headingOne">
+                                            <a href="#" class="card__title text-secondary p-3" data-toggle="collapse"
+                                                data-target="#collapseOne" aria-expanded="true"
+                                                aria-controls="collapseOne">Edit Details</a>
+                                        </div>
+
+                                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                            data-parent="#accordionExample">
+                                            <div class="card-body para__style">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-md-2">
+                                                        <img src="{{#if admin.profilePic}}/images/admin/{{admin._id}}.jpg{{else}}/images/admin/admin-logo.png{{/if}}"
+                                                            class="rounded-circle border border-primary img-fluid p-2"
+                                                            alt="" style="border-width: 5px !important;" />
+                                                        <div class="text-center pt-2">
+                                                            <button class="btn btn-primary btn-sm rounded-pill"
+                                                                data-toggle="modal"
+                                                                data-target="#profile-picture-modal">Change</button>
+                                                        </div>
+                                                        <div class="modal fade" id="profile-picture-modal"
+                                                            data-backdrop="static" data-keyboard="false" tabindex="-1"
+                                                            aria-labelledby="profile-picture-modalLabel"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title text-primary"
+                                                                            id="profile-picture-modalLabel">
+                                                                            ADMIN
+                                                                        </h5>
+                                                                        <button type="button" class="close"
+                                                                            data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div
+                                                                        class="modal-body text-center border-bottom mb-3">
+                                                                        <img src="{{#if admin.profilePic}}/images/admin/{{admin._id}}.jpg{{else}}/images/admin/admin-logo.png{{/if}}"
+                                                                            alt="" id="viewImage" class="img-fluid" width="50%">
+
+                                                                        <form
+                                                                            action="/admin/update-profile-picture/{{admin._id}}"
+                                                                            method="POST" enctype="multipart/form-data">
+                                                                            <div class="form-group text-center">
+                                                                                <label for="">Upload new image</label>
+                                                                                <br>
+                                                                                <label
+                                                                                    class="btn btn-light border border-secondary"
+                                                                                    for="my-file-selector">
+                                                                                    <input id="my-file-selector"
+                                                                                        required type="file"
+                                                                                        name="profilePicture"
+                                                                                        style="display:none"
+                                                                                        onchange="loadImage(event);">
+                                                                                    Choose Image
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                {{#if admin.profilePic}}
+                                                                                <a href="/admin/remove-profile-picture/{{admin._id}}"
+                                                                                    type="button"
+                                                                                    class="btn btn-danger mx-4"
+                                                                                    onclick="return confirm('Are you sure you want to remove this profile picture?')">Remove</a>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary mr-4 ml-auto">Upload</button>
+                                                                                {{else}}
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary mr-4 ml-auto">Upload</button>
+                                                                                {{/if}}
+                                                                            </div>
+                                                                    </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button
+                                                            class="btn btn-link text-decoration-none font-weight-bold float-right"
+                                                            id="edit" onclick="editAdminDetails(event);">Edit</button>
+                                                        <button
+                                                            class="btn btn-link text-decoration-none font-weight-bold float-right"
+                                                            id="cancel" onclick="cancelEditAdminDetails(event);"
+                                                            hidden>Cancel</button>
+                                                        <form action="/admin/update-admin-details" method="POST">
+                                                            <div class="form-group">
+                                                                <label for="name">Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Name" readonly value="{{admin.name}}"
+                                                                    name="name" id="name">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="email">Email address</label>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Email" readonly value="{{admin.email}}"
+                                                                    name="email" id="email">
+                                                            </div>
+                                                            <div class="text-right">
+                                                                <button type="submit"
+                                                                    class="btn btn-primary rounded-pill btn-sm px-5"
+                                                                    id="save" hidden>Save</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header bg-white p-0" id="headingTwo">
+                                            <a href="#" class="card__title text-secondary p-3" data-toggle="collapse"
+                                                data-target="#collapseTwo" aria-expanded="false"
+                                                aria-controls="collapseTwo">Change Password</a>
+                                        </div>
+                                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                            data-parent="#accordionExample">
+                                            <div class="card-body para__style">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-md-6">
+                                                        <form action="/admin/change-password" method="POST">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputPassword">Current
+                                                                    Password</label>
+                                                                <input type="password" class="form-control"
+                                                                    name="password" id="exampleInputPassword">
+                                                                <div class="form-group">
+                                                                    <label for="exampleInputPassword1">New
+                                                                        Password</label>
+                                                                    <input type="password" class="form-control"
+                                                                        name="newPassword" id="exampleInputPassword1">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="exampleInputPassword2">Confirm
+                                                                        Password</label>
+                                                                    <input type="password" class="form-control"
+                                                                        name="confirmPassword"
+                                                                        id="exampleInputPassword2">
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary btn-sm rounded-pill px-5">Change
+                                                                        Password</button>
+                                                                </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- //accordion style 1 -->
+                </div>
+            </div>
+            <!-- //accordions -->
+
+        </div>
+        <!-- //content -->
+    </div>
+    <!-- main content end-->
+</section>
