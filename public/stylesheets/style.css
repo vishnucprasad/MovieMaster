@@ -6,3 +6,16 @@
 #adminProfile {
   border: 3px solid !important;
 }
+
+.btn {
+  box-shadow: none !important;
+}
+
+input {
+  box-shadow: none !important;
+}
+
+.serialNumber::before {
+  counter-increment: Serial !important;
+  content: counter(Serial) !important;
+}

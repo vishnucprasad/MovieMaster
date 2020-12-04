@@ -34,42 +34,36 @@
   {{>admin-sidebar}}
   {{/if}}
   {{#if errMessage}}
-  <div class="row justify-content-center">
-    <div class="col-md-4">
-      <div class="alert alert-primary alert-dismissible fade show mt-5" id="errAlert" role="alert">
-        <strong>!</strong> {{errMessage}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <script>
-    setTimeout(() => {
-      $('#errAlert').slideUp();
-    }, 5000);
-  </script>
+  {{>error-alert}}
   {{/if}}
   {{#if alertMessage}}
-  <div class="row justify-content-center">
-    <div class="col-md-4">
-      <div class="alert alert-primary alert-dismissible fade show mt-5" id="alert" role="alert">
-        {{alertMessage}}
+  {{>success-alert}}
+  {{/if}}
+  <div class="row justify-content-center m-0">
+    <div class="col-md-4 m-0">
+      <div class="alert alert-success alert-dismissible fade show m-0 mt-5" id="successAlert" role="alert" hidden>
+        <div id="successAlertBody"></div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
     </div>
   </div>
-  <script>
-    setTimeout(() => {
-      $('#alert').slideUp();
-    }, 5000);
-  </script>
-  {{/if}}
+  <div class="row justify-content-center m-0">
+    <div class="col-md-4 m-0">
+      <div class="alert alert-danger alert-dismissible fade show m-0 mt-5" id="errorAlert" role="alert" hidden>
+        <div id="errorAlertBody"></div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
   {{{body}}}
-
-
+  
+  <!-- Sweet Alert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <!-- /Sweet Alert -->
   <script>
     // When the user scrolls down 20px from the top of the document, show the button
     window.onscroll = function () {
@@ -95,17 +89,6 @@
 
   <script src="/assets/js/jquery-3.3.1.min.js"></script>
   <script src="/assets/js/jquery-1.10.2.min.js"></script>
-
-  <!-- chart js -->
-  <script src="/assets/js/Chart.min.js"></script>
-  <script src="/assets/js/utils.js"></script>
-  <!-- //chart js -->
-
-  <!-- Different scripts of charts.  Ex.Barchart, Linechart -->
-  <script src="/assets/js/bar.js"></script>
-  <script src="/assets/js/linechart.js"></script>
-  <!-- //Different scripts of charts.  Ex.Barchart, Linechart -->
-
 
   <script src="/assets/js/jquery.nicescroll.js"></script>
   <script src="/assets/js/scripts.js"></script>
@@ -146,6 +129,7 @@
     src="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.js"></script>
 
   <script src="/javascripts/script.js"></script>
+  <script src="/javascripts/ajax.js"></script>
 </body>
 
 </html>

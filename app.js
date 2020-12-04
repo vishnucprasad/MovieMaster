@@ -28,12 +28,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(fileUpload());
 app.use(session({
-  secret: 'MovieMasterKey5f9512305dc3d50aa84f937c',
+  secret: 'MasterProjectKey5f9512305dc3d50aa84f937c',
   cookie: { maxAge: 1000 * 3600 * 24 * 30 * 2 },
   resave: true,
   saveUninitialized: true,
   store: new MongoStore({
-    url: 'mongodb://localhost:27017/MovieMaster',
+    url: 'mongodb://localhost:27017/MasterProject',
     ttl: 14 * 24 * 60 * 60
   })
 }));

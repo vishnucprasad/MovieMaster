@@ -6,7 +6,7 @@ const state = {
 
 module.exports.connect = function (done) {
     const url = 'mongodb://localhost:27017';
-    const dbName = 'MovieMaster';
+    const dbName = 'MasterProject';
 
     mongoClient.connect(url, { useUnifiedTopology: true }, (err, data) => {
         if (err) {
