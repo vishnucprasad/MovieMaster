@@ -89,20 +89,18 @@ module.exports = {
             ownerDetails.password = await bcrypt.hash(password, 10);
             ownerDetails.dateCreated = new Date();
 
-
-            db.get().collection(collection.THEATRE_COLLECTION).insertOne(ownerDetails).then((response) => {
-                mailer.sendMail({
-                    to: ownerDetails.email,
-                    subject: 'Added your theatre to MovieMaster',
-                    html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
-                }).then((response) => {
+            mailer.sendMail({
+                to: ownerDetails.email,
+                subject: 'Added your theatre to MovieMaster',
+                html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
+            }).then((response) => {
+                db.get().collection(collection.THEATRE_COLLECTION).insertOne(ownerDetails).then((response) => {
                     resolve({ response, alertMessage: 'Successfully added and send credentials to owner.' });
                 }).catch((error) => {
-                    console.log(error);
-                    reject({ error, errMessage: 'Failed to send credentials to owner.' });
+                    reject({ error, errMessage: 'Failed to add owner details.' });
                 });
-            }).cath((error) => {
-                reject({ error, errMessage: 'Failed to add owner details.' });
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to send credentials to owner.' });
             });
         });
     },
@@ -123,18 +121,41 @@ module.exports = {
     },
     editOwner: (ownerDetails) => {
         return new Promise(async (resolve, reject) => {
-            const ownerId = ownerDetails.ownerId;
+            const owner = await db.get().collection(collection.THEATRE_COLLECTION).findOne({ _id: ObjectID(ownerDetails.ownerId) });
             delete ownerDetails.ownerId;
-            
-            db.get().collection(collection.THEATRE_COLLECTION).updateOne({
-                _id: ObjectID(ownerId)
-            }, {
-                $set: ownerDetails
-            }).then((response) => {
-                resolve({ response, alertMessage: 'Successfully updated.' });
-            }).cath((error) => {
-                reject({ error, errMessage: 'Failed to update.' });
-            });
+
+            if (owner.email !== ownerDetails.email) {
+                const password = Math.floor(100000 + Math.random() * 900000).toString();
+                ownerDetails.password = await bcrypt.hash(password, 10);
+
+                mailer.sendMail({
+                    to: ownerDetails.email,
+                    subject: 'Added your theatre to MovieMaster',
+                    html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
+                }).then((response) => {
+                    db.get().collection(collection.THEATRE_COLLECTION).updateOne({
+                        _id: ObjectID(owner._id)
+                    }, {
+                        $set: ownerDetails
+                    }).then((response) => {
+                        resolve({ response, alertMessage: 'Successfully updated and send credentials to owner.' });
+                    }).catch((error) => {
+                        reject({ error, errMessage: 'Failed to update.' });
+                    });
+                }).catch((error) => {
+                    reject({ error, errMessage: 'Failed to send credentials to owner.' });
+                });
+            } else {
+                db.get().collection(collection.THEATRE_COLLECTION).updateOne({
+                    _id: ObjectID(owner._id)
+                }, {
+                    $set: ownerDetails
+                }).then((response) => {
+                    resolve({ response, alertMessage: 'Successfully updated.' });
+                }).catch((error) => {
+                    reject({ error, errMessage: 'Failed to update.' });
+                });
+            }
         });
     },
     deleteOwner: ({ ownerId }) => {

@@ -1,3 +1,7 @@
+body {
+  counter-reset: Serial; /* Set the Serial counter to 0 */
+}
+
 .lnr {
   font-size: 20px !important;
   opacity: 1 !important;
@@ -18,4 +22,41 @@ input {
 .serialNumber::before {
   counter-increment: Serial !important;
   content: counter(Serial) !important;
+}
+
+#alertBox {
+  position: absolute;
+  top: 14px;
+  z-index: 99999;
+}
+
+.border-primary-top {
+  border-top: 2px solid var(--primary);
+}
+.border-secondary-top {
+  border-top: 2px solid var(--secondary);
+}
+.border-success-top {
+  border-top: 2px solid var(--success);
+}
+.border-info-top {
+  border-top: 2px solid var(--info);
+}
+.border-warning-top {
+  border-top: 2px solid var(--warning);
+}
+.border-danger-top {
+  border-top: 2px solid var(--danger);
+}
+
+#profile-pic-wrapper {
+  width: 20vh;
+  height: 20vh;
+  object-fit: cover;
+}
+
+.sidebar-menu-collapsed #profile-pic-wrapper {
+  width: 25vh;
+  height: 25vh;
+  object-fit: cover;
 }

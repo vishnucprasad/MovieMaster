@@ -13,7 +13,13 @@
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
   <!-- Template CSS -->
-  <link rel="stylesheet" href="/assets/css/style-starter.css">
+  {{#if admin}}
+  <link rel="stylesheet" href="/assets/css/style-admin.css">
+  {{else if theatre}}
+  <link rel="stylesheet" href="/assets/css/style-theatre.css">
+  {{else}}
+  <link rel="stylesheet" href="/assets/css/style-theatre.css">
+  {{/if}}
 
   <!-- google fonts -->
   <link href="//fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap" rel="stylesheet">
@@ -32,6 +38,9 @@
   {{#if admin}}
   {{>admin-header}}
   {{>admin-sidebar}}
+  {{else if theatre}}
+  {{>theatre-header}}
+  {{>theatre-sidebar}}
   {{/if}}
   {{#if errMessage}}
   {{>error-alert}}

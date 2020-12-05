@@ -1,14 +1,17 @@
 const logout = (e, url) => {
     e.preventDefault();
 
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
+    Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-danger rounded-pill px-5 m-3',
+            cancelButton: 'btn btn-success rounded-pill px-5 m-3'
+        },
+        buttonsStyling: false
+    }).fire({
+        text: "Are you sure you want to logout ?",
+        icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Logout'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
