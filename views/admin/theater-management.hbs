@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table border" id="data-table">
+                        <table class="table border table-responsive-sm" id="data-table">
                             <thead class="bg-primary text-white">
                                 <tr>
                                     <th scope="col">ID</th>
@@ -34,18 +34,44 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Grand Opera</td>
+                                {{#each owners}}
+                                <tr id="{{this._id}}">
+                                    <th scope="row" class="serialNumber"></th>
+                                    <td>{{this.ownerName}}</td>
+                                    <td>{{this.theatreName}}</td>
                                     <td>
-                                        <a href="/admin/theatre-details" class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">View</a>
+                                        <a href="/admin/owner-details/{{this._id}}"
+                                            class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">View</a>
                                     </td>
                                     <td>
-                                        <a href="/admin/edit-theatre" class="btn btn-primary btn-sm rounded-pill text-uppercase px-3">Edit</a>
-                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">Delete</button>
+                                        <a href="/admin/edit-owner/{{this._id}}"
+                                            class="btn btn-primary btn-sm rounded-pill text-uppercase px-3">Edit</a>
+                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
+                                            data-toggle="modal" data-target="#deleteModal{{this._id}}">Delete</button>
                                     </td>
                                 </tr>
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal{{this._id}}" tabindex="-1" role="dialog"
+                                    data-backdrop="static" aria-labelledby="deleteModal{{this._id}}Title"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center text-uppercase p-5">
+                                                <h6 class="font-weight-bold">Are you sure you want to delete
+                                                    {{this.ownerName}} ?</h6>
+                                                <div class="row mt-5">
+                                                    <button type="button"
+                                                        class="btn btn-success btn-sm rounded-pill px-5"
+                                                        data-dismiss="modal">CANCEL</button>
+                                                    <button type="button"
+                                                        class="btn btn-danger btn-sm rounded-pill px-5 ml-auto"
+                                                        onclick="deleteOwner(event, '{{this._id}}')">DELETE</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/each}}
                             </tbody>
                         </table>
                     </div>

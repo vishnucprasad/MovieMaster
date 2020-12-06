@@ -9,7 +9,7 @@
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb my-breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Add Owners</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Theatre Owner Details</li>
                 </ol>
             </nav>
             <!-- //breadcrumbs -->
@@ -17,19 +17,28 @@
             <section class="pricing">
                 <div class="card card_border mb-5">
                     <div class="cards__heading">
-                        <h3>Enter Owner Details</h3>
+                        <h3>Edit Theatre Owner Details</h3>
                     </div>
                     <div class="card-body">
                         <div class="px-2 mb-4">
                             <div class="row justify-content-center">
                                 <div class="col-md-8">
-                                    <form action="/admin/add-owners" method="POST">
+                                    <form action="/admin/edit-owner" method="POST">
+                                        <div class="form-group row" hidden>
+                                            <div class="col-md-3 text-md-right">
+                                                <label for="ownerId">Owner ID</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <input type="text" name="ownerId" value="{{owner._id}}" required class="form-control"
+                                                    id="ownerId">
+                                            </div>
+                                        </div>
                                         <div class="form-group row">
                                             <div class="col-md-3 text-md-right">
                                                 <label for="ownerName">Owner Name</label>
                                             </div>
                                             <div class="col-md-9">
-                                                <input type="text" name="ownerName" class="form-control" required
+                                                <input type="text" name="ownerName" value="{{owner.ownerName}}" required class="form-control"
                                                     id="ownerName">
                                             </div>
                                         </div>
@@ -38,7 +47,7 @@
                                                 <label for="theatreName">Theatre Name</label>
                                             </div>
                                             <div class="col-md-9">
-                                                <input type="text" name="theatreName" class="form-control" required
+                                                <input type="text" name="theatreName" value="{{owner.theatreName}}" required class="form-control"
                                                     id="theatreName">
                                             </div>
                                         </div>
@@ -47,7 +56,7 @@
                                                 <label for="emailId">Email address</label>
                                             </div>
                                             <div class="col-md-9">
-                                                <input type="email" name="email" class="form-control" required id="emailId">
+                                                <input type="email" name="email" value="{{owner.email}}" required class="form-control" id="emailId">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -55,7 +64,7 @@
                                                 <label for="phoneNumber">Phone Number</label>
                                             </div>
                                             <div class="col-md-9">
-                                                <input type="tel" name="phoneNumber" class="form-control" required
+                                                <input type="tel" name="phoneNumber" value="{{owner.phoneNumber}}" required class="form-control"
                                                     id="phoneNumber">
                                             </div>
                                         </div>

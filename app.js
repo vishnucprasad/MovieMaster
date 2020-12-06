@@ -11,6 +11,7 @@ const MongoStore = require('connect-mongo')(session);
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
+var theatreRouter = require('./routes/theatre');
 
 var app = express();
 
@@ -28,15 +29,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(fileUpload());
 app.use(session({
-  secret: 'MovieMasterKey5f9512305dc3d50aa84f937c',
+  secret: 'MasterProjectKey5f9512305dc3d50aa84f937c',
   cookie: { maxAge: 1000 * 3600 * 24 * 30 * 2 },
   resave: true,
   saveUninitialized: true,
   store: new MongoStore({
-    url: 'mongodb://localhost:27017/MovieMaster',
+    url: 'mongodb://localhost:27017/MasterProject',
     ttl: 14 * 24 * 60 * 60
   })
 }));
+
 db.connect((err) => {
   if (err) console.log(`Connection Error: ${err}`);
   else console.log('Database Connected to PORT: 27017');
@@ -44,6 +46,7 @@ db.connect((err) => {
 
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
+app.use('/theatre', theatreRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

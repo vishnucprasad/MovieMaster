@@ -7,13 +7,13 @@
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb my-breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/theatre">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                 </ol>
             </nav>
             <div class="welcome-msg pt-3 pb-4">
-                <h1>Hi <span class="text-primary">{{admin.name}}</span>, Welcome back</h1>
-                <p>Very detailed & featured admin.</p>
+                <h1>Hi <span class="text-success">{{theatre.ownerName}}</span>, Welcome back</h1>
+                <p>Very detailed & featured Theatre Panel.</p>
             </div>
 
             <!-- statistics data -->
@@ -22,14 +22,14 @@
                     <div class="col-xl-6 pr-xl-2">
                         <div class="row">
                             <div class="col-sm-6 pr-sm-2 statistics-grid">
-                                <div class="card card_border border-primary-top p-4">
-                                    <i class="lnr text-primary">Active Users</i>
+                                <div class="card card_border border-success-top p-4">
+                                    <i class="lnr text-primary">No of Shows</i>
                                     <h3 class="text-primary number">60</h3>
                                 </div>
                             </div>
                             <div class="col-sm-6 pl-sm-2 statistics-grid">
-                                <div class="card card_border border-primary-top p-4">
-                                    <i class="lnr text-secondary">Theaters</i>
+                                <div class="card card_border border-success-top p-4">
+                                    <i class="lnr text-secondary">Seats Available</i>
                                     <h3 class="text-secondary number">60</h3>
                                 </div>
                             </div>
@@ -38,14 +38,14 @@
                     <div class="col-xl-6 pl-xl-2">
                         <div class="row">
                             <div class="col-sm-6 pr-sm-2 statistics-grid">
-                                <div class="card card_border border-primary-top p-4">
-                                    <i class="lnr text-success">Active Theatre</i>
+                                <div class="card card_border border-success-top p-4">
+                                    <i class="lnr text-success">No of Bookings</i>
                                     <h3 class="text-success number">43</h3>
                                 </div>
                             </div>
                             <div class="col-sm-6 pl-sm-2 statistics-grid">
-                                <div class="card card_border border-primary-top p-4">
-                                    <i class="lnr text-danger">On Hold</i>
+                                <div class="card card_border border-success-top p-4">
+                                    <i class="lnr text-danger">Paid Bookings</i>
                                     <h3 class="text-danger number">17</h3>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                     <div class="col-lg-12 mb-4">
                         <div class="card card_border">
                             <div class="card-header chart-grid__header">
-                                Admin Details
+                                Theatre Details
                             </div>
                             <div class="card-body">
                                 <div class="accordion" id="accordionExample">
@@ -80,14 +80,14 @@
                                                     <div class="col-md-2">
                                                         <div class="row">
                                                             <div class="col-12 text-center">
-                                                                <img src="{{#if admin.profilePic}}/images/admin/{{admin._id}}.jpg{{else}}/images/admin/admin-logo.png{{/if}}"
-                                                                    class="rounded-circle border border-primary img-fluid p-2"
+                                                                <img src="{{#if theatre.ownerPic}}/images/theatre/{{theatre._id}}.jpg{{else}}/images/theatre/theatre-logo.png{{/if}}"
+                                                                    class="rounded-circle border border-success img-fluid p-2"
                                                                     id="profile-pic-wrapper" alt=""
                                                                     style="border-width: 5px !important;" />
                                                             </div>
                                                             <div class="col-12 text-center">
                                                                 <div class="text-center pt-2">
-                                                                    <button class="btn btn-primary btn-sm rounded-pill"
+                                                                    <button class="btn btn-success btn-sm rounded-pill"
                                                                         data-toggle="modal"
                                                                         data-target="#profile-picture-modal">Change</button>
                                                                 </div>
@@ -102,7 +102,7 @@
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title text-primary"
                                                                             id="profile-picture-modalLabel">
-                                                                            ADMIN
+                                                                            Owner
                                                                         </h5>
                                                                         <button type="button" class="close"
                                                                             data-dismiss="modal" aria-label="Close">
@@ -111,12 +111,12 @@
                                                                     </div>
                                                                     <div
                                                                         class="modal-body text-center border-bottom mb-3">
-                                                                        <img src="{{#if admin.profilePic}}/images/admin/{{admin._id}}.jpg{{else}}/images/admin/admin-logo.png{{/if}}"
+                                                                        <img src="{{#if theatre.ownerPic}}/images/theatre/{{theatre._id}}.jpg{{else}}/images/theatre/theatre-logo.png{{/if}}"
                                                                             alt="" id="viewImage" class="img-fluid"
                                                                             width="50%">
 
                                                                         <form
-                                                                            action="/admin/update-profile-picture/{{admin._id}}"
+                                                                            action="/theatre/update-owner-picture/{{theatre._id}}"
                                                                             method="POST" enctype="multipart/form-data">
                                                                             <div class="form-group text-center">
                                                                                 <label for="">Upload new image</label>
@@ -126,15 +126,15 @@
                                                                                     for="my-file-selector">
                                                                                     <input id="my-file-selector"
                                                                                         required type="file"
-                                                                                        name="profilePicture"
+                                                                                        name="ownerPicture"
                                                                                         style="display:none"
                                                                                         onchange="loadImage(event);">
                                                                                     Choose Image
                                                                                 </label>
                                                                             </div>
                                                                             <div class="row">
-                                                                                {{#if admin.profilePic}}
-                                                                                <a href="/admin/remove-profile-picture/{{admin._id}}"
+                                                                                {{#if theatre.ownerPic}}
+                                                                                <a href="/theatre/remove-owner-picture/{{theatre._id}}"
                                                                                     type="button"
                                                                                     class="btn btn-danger mx-4"
                                                                                     onclick="return confirm('Are you sure you want to remove this profile picture?')">Remove</a>
@@ -154,27 +154,38 @@
                                                     <div class="col-md-6">
                                                         <button
                                                             class="btn btn-link text-decoration-none font-weight-bold float-right"
-                                                            id="edit" onclick="editAdminDetails(event);">Edit</button>
+                                                            id="edit" onclick="editTheatreDetails(event);">Edit</button>
                                                         <button
                                                             class="btn btn-link text-decoration-none font-weight-bold float-right"
-                                                            id="cancel" onclick="cancelEditAdminDetails(event);"
+                                                            id="cancel" onclick="cancelEditTheatreDetails(event);"
                                                             hidden>Cancel</button>
-                                                        <form action="/admin/update-admin-details" method="POST">
+                                                        <form action="/theatre/update-theatre-details" method="POST">
                                                             <div class="form-group">
-                                                                <label for="name">Name</label>
+                                                                <label for="ownerName">Owner Name</label>
                                                                 <input type="text" class="form-control"
-                                                                    placeholder="Name" readonly value="{{admin.name}}"
-                                                                    name="name" id="name">
+                                                                    placeholder="Owner Name" readonly value="{{theatre.ownerName}}"
+                                                                    name="ownerName" id="ownerName">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="theatreName">Theatre Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Owner Name" readonly value="{{theatre.theatreName}}"
+                                                                    name="theatreName" id="theatreName">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="email">Email address</label>
                                                                 <input type="text" class="form-control"
-                                                                    placeholder="Email" readonly value="{{admin.email}}"
-                                                                    name="email" id="email">
+                                                                    placeholder="Email" readonly
+                                                                    value="{{theatre.email}}" name="email" id="email">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="phoneNumber">Phone Number</label>
+                                                                <input type="tel" class="form-control" readonly
+                                                                    value="{{theatre.phoneNumber}}" name="phoneNumber" id="phoneNumber">
                                                             </div>
                                                             <div class="text-right">
                                                                 <button type="submit"
-                                                                    class="btn btn-primary rounded-pill btn-sm px-5"
+                                                                    class="btn btn-success rounded-pill btn-sm px-5"
                                                                     id="save" hidden>Save</button>
                                                             </div>
                                                         </form>
@@ -194,7 +205,7 @@
                                             <div class="card-body para__style">
                                                 <div class="row justify-content-center">
                                                     <div class="col-md-6">
-                                                        <form action="/admin/change-password" method="POST">
+                                                        <form action="/theatre/change-password" method="POST">
                                                             <div class="form-group">
                                                                 <label for="exampleInputPassword">Current
                                                                     Password</label>
@@ -215,7 +226,7 @@
                                                                 </div>
                                                                 <div class="text-center">
                                                                     <button type="submit"
-                                                                        class="btn btn-primary btn-sm rounded-pill px-5">Change
+                                                                        class="btn btn-success btn-sm rounded-pill px-5">Change
                                                                         Password</button>
                                                                 </div>
                                                         </form>

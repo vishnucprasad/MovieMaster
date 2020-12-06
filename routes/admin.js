@@ -38,7 +38,7 @@ router.post('/login', (req, res) => {
 router.get('/logout', (req, res) => {
   req.session.admin = null;
   req.session.adminLoggedIn = false;
-  res.redirect('/admin');
+  res.json({ status: true });
 });
 
 router.get('/', verifyLogin, function (req, res, next) {
@@ -105,19 +105,65 @@ router.post('/change-password', (req, res) => {
 });
 
 router.get('/theater-management', verifyLogin, (req, res) => {
-  res.render('admin/theater-management', { title: 'Admin | Theater Management', admin: req.session.admin });
+  adminHelpers.getOwners().then((owners) => {
+    res.render('admin/theater-management', { title: 'Admin | Theater Management', admin: req.session.admin, owners, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    req.session.errMessage = false;
+    req.session.alertMessage = false;
+  });
 });
 
 router.get('/add-owners', verifyLogin, (req, res) => {
-  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.session.admin })
+  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.session.admin, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+  req.session.errMessage = false;
+  req.session.alertMessage = false;
 });
 
-router.get('/theatre-details', verifyLogin, (req, res) => {
-  res.render('admin/theatre-details', { title: 'Admin | Theater Details', admin: req.session.admin })
+router.post('/add-owners', verifyLogin, (req, res) => {
+  adminHelpers.addOwners(req.body, req.session.admin._id).then((response) => {
+    req.session.alertMessage = response.alertMessage;
+    res.redirect('/admin/add-owners');
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/admin/add-owners');
+  });
 });
 
-router.get('/edit-theatre', verifyLogin, (req, res) => {
-  res.render('admin/edit-theatre', { title: 'Admin | Edit Theater Owner Details', admin: req.session.admin })
+router.get('/owner-details/:id', verifyLogin, (req, res) => {
+  adminHelpers.getOwner(req.params.id).then((owner) => {
+    res.render('admin/owner-details', { title: 'Admin | Theater Details', admin: req.session.admin, owner });
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/admin/theater-management');
+  });
+});
+
+router.get('/edit-owner/:id', verifyLogin, (req, res) => {
+  adminHelpers.getOwner(req.params.id).then((owner) => {
+    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.session.admin, owner, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    req.session.errMessage = false;
+    req.session.alertMessage = false;
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/admin/theater-management');
+  });
+});
+
+router.post('/edit-owner', verifyLogin, (req, res) => {
+  adminHelpers.editOwner(req.body).then((response) => {
+    req.session.alertMessage = response.alertMessage;
+    res.redirect('/admin/theater-management');
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect(`/admin/edit-owner/${req.body.ownerId}`)
+  });
+});
+
+router.post('/delete-owner', verifyLogin, (req, res) => {
+  adminHelpers.deleteOwner(req.body).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
 });
 
 router.get('/users-management', verifyLogin, (req, res) => {
