@@ -159,7 +159,7 @@ router.post('/edit-owner', verifyLogin, (req, res) => {
 });
 
 router.post('/delete-owner', verifyLogin, (req, res) => {
-  adminHelpers.deleteOwner(req.body).then((response) => {
+  adminHelpers.deleteOwner(req.body.id).then((response) => {
     res.json(response);
   }).catch((error) => {
     res.json(error);

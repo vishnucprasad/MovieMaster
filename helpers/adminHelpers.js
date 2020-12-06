@@ -158,7 +158,7 @@ module.exports = {
             }
         });
     },
-    deleteOwner: ({ ownerId }) => {
+    deleteOwner: (ownerId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.THEATRE_COLLECTION).removeOne({ _id: ObjectID(ownerId) }).then((response) => {
                 resolve({ status: true, alertMessage: 'Deleted Successfully.' });

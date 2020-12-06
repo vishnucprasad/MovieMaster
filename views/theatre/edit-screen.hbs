@@ -1,0 +1,71 @@
+<section>
+    <!-- main content start -->
+    <div class="main-content">
+
+        <!-- content -->
+        <div class="container-fluid content-top-gap">
+
+            <!-- breadcrumbs -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb my-breadcrumb">
+                    <li class="breadcrumb-item"><a href="/theatre">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Screen Details</li>
+                </ol>
+            </nav>
+            <!-- //breadcrumbs -->
+
+            <section class="pricing">
+                <div class="card card_border mb-5">
+                    <div class="cards__heading">
+                        <h3>Edit Screen Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="px-2 mb-4">
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <form action="/theatre/edit-screen" method="POST">
+                                        <div class="form-group row" hidden>
+                                            <div class="col-md-3 text-md-right">
+                                                <label for="screenId">Screen ID</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <input type="text" name="screenId" value="{{screen._id}}"
+                                                    class="form-control" required id="screenId">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-3 text-md-right">
+                                                <label for="screenName">Screen Name</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <input type="text" name="screenName" value="{{screen.screenName}}"
+                                                    class="form-control" required id="screenName">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-3 text-md-right">
+                                                <label for="seats">Seats</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <input type="number" name="seats" value="{{screen.seats}}"
+                                                    class="form-control" required id="seats">
+                                            </div>
+                                        </div>
+                                        <button type="submit"
+                                            class="btn btn-success float-right rounded-pill px-5">Submit</button>
+                                        <a href="/theatre/screens" type="submit"
+                                            class="btn btn-danger float-right rounded-pill px-5 mr-3">Cancel</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        <!-- //content -->
+
+    </div>
+    <!-- main content end-->
+</section>
