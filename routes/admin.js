@@ -13,7 +13,7 @@ router.get('/login', (req, res) => {
   }
 });
 
-router.post('/login', passport.authenticate('admin-login', { successRedirect: '/admin', failureRedirect: '/admin/login' }));
+router.post('/login', passport.authenticate('admin-login', { successRedirect: '/admin', failureRedirect: '/admin/login', failureFlash: true }));
 
 router.get('/logout', (req, res) => {
   req.logout();

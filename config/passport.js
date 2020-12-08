@@ -11,7 +11,7 @@ function initalize(passport) {
         function (email, password, done) {
             db.get().collection(collection.ADMIN_COLLECTION).findOne({ email }).then(async (user) => {
                 if (!user) {
-                    return done(null, false, { message: 'Incorrect username.' });
+                    return done(null, false, { message: 'Incorrect Email.' });
                 }
                 if (! await bcrypt.compare(password, user.password)) {
                     return done(null, false, { message: 'Incorrect password.' });
@@ -28,7 +28,7 @@ function initalize(passport) {
         function (email, password, done) {
             db.get().collection(collection.THEATRE_COLLECTION).findOne({ email }).then(async (user) => {
                 if (!user) {
-                    return done(null, false, { message: 'Incorrect username.' });
+                    return done(null, false, { message: 'Incorrect Email.' });
                 }
                 if (! await bcrypt.compare(password, user.password)) {
                     return done(null, false, { message: 'Incorrect password.' });

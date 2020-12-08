@@ -13,7 +13,7 @@ router.get('/login', (req, res) => {
   }
 });
 
-router.post('/login', passport.authenticate('theatre-login', { successRedirect: '/theatre', failureRedirect: '/theatre/login' }));
+router.post('/login', passport.authenticate('theatre-login', { successRedirect: '/theatre', failureRedirect: '/theatre/login', failureFlash: true }));
 
 router.get('/logout', (req, res) => {
   req.logout();

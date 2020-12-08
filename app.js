@@ -8,6 +8,7 @@ var fileUpload = require('express-fileupload');
 var db = require('./config/connection');
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('express-flash');
 const passport = require('passport');
 const initializePassport = require('./config/passport');
 
@@ -40,6 +41,8 @@ app.use(session({
     ttl: 14 * 24 * 60 * 60
   })
 }));
+
+app.use(flash());
 
 initializePassport(passport);
 app.use(passport.initialize());

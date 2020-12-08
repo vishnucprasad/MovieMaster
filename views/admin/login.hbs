@@ -12,9 +12,9 @@
                         <label for="exampleInputPassword1">Password</label>
                         <input type="password" class="form-control" placeholder="Type your Password" name="password" id="exampleInputPassword1">
                     </div>
-                    {{#if loginErr}}
+                    {{#if messages.error}}
                     <div class="text-center pb-2">
-                        <p class="text-danger">{{loginErr}}</p>
+                        <p class="text-danger">{{messages.error}}</p>
                     </div>
                     {{/if}}
                     <div class="text-center">
