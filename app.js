@@ -8,6 +8,8 @@ var fileUpload = require('express-fileupload');
 var db = require('./config/connection');
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const passport = require('passport');
+const initializePassport = require('./config/passport');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
@@ -38,6 +40,10 @@ app.use(session({
     ttl: 14 * 24 * 60 * 60
   })
 }));
+
+initializePassport(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
 db.connect((err) => {
   if (err) console.log(`Connection Error: ${err}`);

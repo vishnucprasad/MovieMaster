@@ -82,12 +82,13 @@ module.exports = {
             });
         });
     },
-    addOwners: (ownerDetails, adminId) => {
+    addOwners: (ownerDetails) => {
         return new Promise(async (resolve, reject) => {
             const password = Math.floor(100000 + Math.random() * 900000).toString();
 
             ownerDetails.password = await bcrypt.hash(password, 10);
             ownerDetails.dateCreated = new Date();
+            ownerDetails.theatre = true;
 
             mailer.sendMail({
                 to: ownerDetails.email,

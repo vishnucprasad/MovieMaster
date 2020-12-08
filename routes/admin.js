@@ -2,52 +2,31 @@ var express = require('express');
 var router = express.Router();
 const fs = require('fs');
 const adminHelpers = require('../helpers/adminHelpers');
-
-const verifyLogin = (req, res, next) => {
-  if (req.session.adminLoggedIn) {
-    next();
-  } else {
-    res.redirect('/admin/login');
-  }
-}
+const passport = require('passport');
+const isAdmin = require('../middleware/auth').isAdmin;
 
 router.get('/login', (req, res) => {
-  if (req.session.adminLoggedIn) {
+  if (req.isAuthenticated() && req.user.admin) {
     res.redirect('/admin');
   } else {
-    res.render('admin/login', { title: 'Admin | Login', loginErr: req.session.adminLoginErr });
-    req.session.adminLoginErr = false;
+    res.render('admin/login', { title: 'Admin | Login' });
   }
 });
 
-router.post('/login', (req, res) => {
-  adminHelpers.doLogin(req.body).then((response) => {
-    if (response.status) {
-      req.session.adminLoggedIn = true;
-      req.session.admin = response.admin;
-      res.redirect('/admin');
-    }
-  }).catch((error) => {
-    if (!error.status) {
-      req.session.adminLoginErr = error.errMessage;
-      res.redirect('/admin/login');
-    }
-  });
-});
+router.post('/login', passport.authenticate('admin-login', { successRedirect: '/admin', failureRedirect: '/admin/login' }));
 
 router.get('/logout', (req, res) => {
-  req.session.admin = null;
-  req.session.adminLoggedIn = false;
+  req.logout();
   res.json({ status: true });
 });
 
-router.get('/', verifyLogin, function (req, res, next) {
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.session.admin, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/', isAdmin, function (req, res, next) {
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
 
-router.post('/update-profile-picture/:id', verifyLogin, (req, res) => {
+router.post('/update-profile-picture/:id', isAdmin, (req, res) => {
   if (req.files.profilePicture) {
     adminHelpers.updateProfilePicture(req.params.id, true).then((response) => {
 
@@ -60,7 +39,6 @@ router.post('/update-profile-picture/:id', verifyLogin, (req, res) => {
           console.log(done);
         }
       });
-      req.session.admin = response.admin;
       req.session.alertMessage = response.alertMessage;
       res.redirect('/admin');
     }).catch((error) => {
@@ -70,9 +48,8 @@ router.post('/update-profile-picture/:id', verifyLogin, (req, res) => {
   }
 });
 
-router.get('/remove-profile-picture/:id', verifyLogin, (req, res) => {
+router.get('/remove-profile-picture/:id', isAdmin, (req, res) => {
   adminHelpers.updateProfilePicture(req.params.id, false).then((response) => {
-    req.session.admin = response.admin;
     req.session.alertMessage = response.alertMessage;
     fs.unlinkSync(`./public/images/admin/${response.admin._id}.jpg`);
     res.redirect('/admin');
@@ -82,10 +59,8 @@ router.get('/remove-profile-picture/:id', verifyLogin, (req, res) => {
   });;
 });
 
-router.post('/update-admin-details', verifyLogin, (req, res) => {
-  console.log(req.body);
-  adminHelpers.updateAdminDetails(req.body, req.session.admin._id).then((response) => {
-    req.session.admin = response.admin;
+router.post('/update-admin-details', isAdmin, (req, res) => {
+  adminHelpers.updateAdminDetails(req.body, req.user._id).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/admin');
   }).catch((error) => {
@@ -95,7 +70,7 @@ router.post('/update-admin-details', verifyLogin, (req, res) => {
 });
 
 router.post('/change-password', (req, res) => {
-  adminHelpers.changePassword(req.body, req.session.admin._id).then((response) => {
+  adminHelpers.changePassword(req.body, req.user._id).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/admin');
   }).catch((error) => {
@@ -104,22 +79,22 @@ router.post('/change-password', (req, res) => {
   });
 });
 
-router.get('/theater-management', verifyLogin, (req, res) => {
+router.get('/theater-management', isAdmin, (req, res) => {
   adminHelpers.getOwners().then((owners) => {
-    res.render('admin/theater-management', { title: 'Admin | Theater Management', admin: req.session.admin, owners, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    res.render('admin/theater-management', { title: 'Admin | Theater Management', admin: req.user, owners, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   });
 });
 
-router.get('/add-owners', verifyLogin, (req, res) => {
-  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.session.admin, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/add-owners', isAdmin, (req, res) => {
+  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
 
-router.post('/add-owners', verifyLogin, (req, res) => {
-  adminHelpers.addOwners(req.body, req.session.admin._id).then((response) => {
+router.post('/add-owners', isAdmin, (req, res) => {
+  adminHelpers.addOwners(req.body).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/admin/add-owners');
   }).catch((error) => {
@@ -128,18 +103,18 @@ router.post('/add-owners', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/owner-details/:id', verifyLogin, (req, res) => {
+router.get('/owner-details/:id', isAdmin, (req, res) => {
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/owner-details', { title: 'Admin | Theater Details', admin: req.session.admin, owner });
+    res.render('admin/owner-details', { title: 'Admin | Theater Details', admin: req.user, owner });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/admin/theater-management');
   });
 });
 
-router.get('/edit-owner/:id', verifyLogin, (req, res) => {
+router.get('/edit-owner/:id', isAdmin, (req, res) => {
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.session.admin, owner, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.user, owner, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   }).catch((error) => {
@@ -148,7 +123,7 @@ router.get('/edit-owner/:id', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/edit-owner', verifyLogin, (req, res) => {
+router.post('/edit-owner', isAdmin, (req, res) => {
   adminHelpers.editOwner(req.body).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/admin/theater-management');
@@ -158,7 +133,7 @@ router.post('/edit-owner', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/delete-owner', verifyLogin, (req, res) => {
+router.post('/delete-owner', isAdmin, (req, res) => {
   adminHelpers.deleteOwner(req.body.id).then((response) => {
     res.json(response);
   }).catch((error) => {
@@ -166,12 +141,12 @@ router.post('/delete-owner', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/users-management', verifyLogin, (req, res) => {
-  res.render('admin/users-management', { title: 'Admin | Users Management', admin: req.session.admin });
+router.get('/users-management', isAdmin, (req, res) => {
+  res.render('admin/users-management', { title: 'Admin | Users Management', admin: req.user });
 });
 
-router.get('/users-activity', verifyLogin, (req, res) => {
-  res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.session.admin });
+router.get('/users-activity', isAdmin, (req, res) => {
+  res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.user });
 });
 
 module.exports = router;

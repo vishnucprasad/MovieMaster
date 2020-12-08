@@ -2,52 +2,31 @@ var express = require('express');
 var router = express.Router();
 const fs = require('fs');
 const theatreHelpers = require('../helpers/theatreHelpers');
-
-const verifyLogin = (req, res, next) => {
-  if (req.session.theatreLoggedIn) {
-    next();
-  } else {
-    res.redirect('/theatre/login');
-  }
-}
+const passport = require('passport');
+const isTheatre = require('../middleware/auth').isTheatre;
 
 router.get('/login', (req, res) => {
-  if (req.session.theatreLoggedIn) {
+  if (req.isAuthenticated() && req.user.theatre) {
     res.redirect('/theatre');
   } else {
-    res.render('theatre/login', { title: 'Theatre | Login', loginErr: req.session.theatreLoginErr, adminStyle: true });
-    req.session.theatreLoginErr = false;
+    res.render('theatre/login', { title: 'Theatre | Login' });
   }
 });
 
-router.post('/login', (req, res) => {
-  theatreHelpers.doLogin(req.body).then((response) => {
-    if (response.status) {
-      req.session.theatreLoggedIn = true;
-      req.session.theatre = response.theatre;
-      res.redirect('/theatre');
-    }
-  }).catch((error) => {
-    if (!error.status) {
-      req.session.theatreLoginErr = error.errMessage;
-      res.redirect('/theatre/login');
-    }
-  });
-});
+router.post('/login', passport.authenticate('theatre-login', { successRedirect: '/theatre', failureRedirect: '/theatre/login' }));
 
 router.get('/logout', (req, res) => {
-  req.session.theatre = null;
-  req.session.theatreLoggedIn = false;
+  req.logout();
   res.json({ status: true });
 });
 
-router.get('/', verifyLogin, function (req, res, next) {
-  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.session.theatre, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/', isTheatre, function (req, res, next) {
+  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
 
-router.post('/update-owner-picture/:id', verifyLogin, (req, res) => {
+router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
   if (req.files.ownerPicture) {
     theatreHelpers.updateOwnerPicture(req.params.id, true).then((response) => {
 
@@ -60,7 +39,6 @@ router.post('/update-owner-picture/:id', verifyLogin, (req, res) => {
           console.log(done);
         }
       });
-      req.session.theatre = response.theatre;
       req.session.alertMessage = response.alertMessage;
       res.redirect('/theatre');
     }).catch((error) => {
@@ -70,9 +48,8 @@ router.post('/update-owner-picture/:id', verifyLogin, (req, res) => {
   }
 });
 
-router.get('/remove-owner-picture/:id', verifyLogin, (req, res) => {
+router.get('/remove-owner-picture/:id', isTheatre, (req, res) => {
   theatreHelpers.updateOwnerPicture(req.params.id, false).then((response) => {
-    req.session.theatre = response.theatre;
     req.session.alertMessage = response.alertMessage;
     fs.unlinkSync(`./public/images/theatre/${response.theatre._id}.jpg`);
     res.redirect('/theatre');
@@ -82,10 +59,9 @@ router.get('/remove-owner-picture/:id', verifyLogin, (req, res) => {
   });;
 });
 
-router.post('/update-theatre-details', verifyLogin, (req, res) => {
+router.post('/update-theatre-details', isTheatre, (req, res) => {
   console.log(req.body);
-  theatreHelpers.updateTheatreDetails(req.body, req.session.theatre._id).then((response) => {
-    req.session.theatre = response.theatre;
+  theatreHelpers.updateTheatreDetails(req.body, req.user._id).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/theatre');
   }).catch((error) => {
@@ -94,8 +70,8 @@ router.post('/update-theatre-details', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/change-password', verifyLogin, (req, res) => {
-  theatreHelpers.changePassword(req.body, req.session.theatre._id).then((response) => {
+router.post('/change-password', isTheatre, (req, res) => {
+  theatreHelpers.changePassword(req.body, req.user._id).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/theatre');
   }).catch((error) => {
@@ -104,22 +80,22 @@ router.post('/change-password', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/screens', verifyLogin, (req, res) => {
-  theatreHelpers.getAllScreens(req.session.theatre._id).then((screens) => {
-    res.render('theatre/screens', { title: 'Theatre | Screens', theatre: req.session.theatre, screens, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/screens', isTheatre, (req, res) => {
+  theatreHelpers.getAllScreens(req.user._id).then((screens) => {
+    res.render('theatre/screens', { title: 'Theatre | Screens', theatre: req.user, screens, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   });
 });
 
-router.get('/add-screens', verifyLogin, (req, res) => {
-  res.render('theatre/add-screens', { title: 'Admin | Add Screens', theatre: req.session.theatre, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/add-screens', isTheatre, (req, res) => {
+  res.render('theatre/add-screens', { title: 'Admin | Add Screens', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
 
-router.post('/add-screens', verifyLogin, (req, res) => {
-  theatreHelpers.addScreens(req.body, req.session.theatre._id).then((response) => {
+router.post('/add-screens', isTheatre, (req, res) => {
+  theatreHelpers.addScreens(req.body, req.user._id).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/theatre/add-screens');
   }).catch((error) => {
@@ -128,9 +104,9 @@ router.post('/add-screens', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/edit-screen/:id', verifyLogin, (req, res) => {
+router.get('/edit-screen/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then((screen) => {
-    res.render('theatre/edit-screen', { title: 'Admin | Edit Screen', theatre: req.session.theatre, screen, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    res.render('theatre/edit-screen', { title: 'Admin | Edit Screen', theatre: req.user, screen, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   }).catch((error) => {
@@ -139,7 +115,7 @@ router.get('/edit-screen/:id', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/edit-screen', verifyLogin, (req, res) => {
+router.post('/edit-screen', isTheatre, (req, res) => {
   theatreHelpers.editScreen(req.body).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/theatre/screens');
@@ -149,8 +125,7 @@ router.post('/edit-screen', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/delete-screen', verifyLogin, (req, res) => {
-  console.log(req.body);
+router.post('/delete-screen', isTheatre, (req, res) => {
   theatreHelpers.deleteScreen(req.body.id).then((response) => {
     res.json(response);
   }).catch((error) => {
@@ -158,22 +133,22 @@ router.post('/delete-screen', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/movie-management', verifyLogin, (req, res) => {
-  theatreHelpers.getAllMovies(req.session.theatre._id).then((movies) => {
-    res.render('theatre/movie-management', { title: 'Theatre | Movie Management', theatre: req.session.theatre, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/movie-management', isTheatre, (req, res) => {
+  theatreHelpers.getAllMovies(req.user._id).then((movies) => {
+    res.render('theatre/movie-management', { title: 'Theatre | Movie Management', theatre: req.user, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   });
 });
 
-router.get('/add-movies', verifyLogin, (req, res) => {
-  res.render('theatre/add-movies', { title: 'Theatre | Add Movies', theatre: req.session.theatre, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/add-movies', isTheatre, (req, res) => {
+  res.render('theatre/add-movies', { title: 'Theatre | Add Movies', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
 
-router.post('/add-movies', verifyLogin, (req, res) => {
-  theatreHelpers.addMovies(req.body, req.session.theatre._id).then((response) => {
+router.post('/add-movies', isTheatre, (req, res) => {
+  theatreHelpers.addMovies(req.body, req.user._id).then((response) => {
     let image = req.files.moviePoster;
 
     image.mv(`./public/images/movies/posters/${response.data._id}.jpg`, (err, done) => {
@@ -192,16 +167,16 @@ router.post('/add-movies', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/edit-movie/:id', verifyLogin, (req, res) => {
+router.get('/edit-movie/:id', isTheatre, (req, res) => {
   theatreHelpers.getMovie(req.params.id).then((movie) => {
-    res.render('theatre/edit-movie', { title: 'Theatre | Edit Movie', theatre: req.session.theatre, movie });
+    res.render('theatre/edit-movie', { title: 'Theatre | Edit Movie', theatre: req.user, movie });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/theatre/movie-management');
   });
 });
 
-router.post('/edit-movie', verifyLogin, (req, res) => {
+router.post('/edit-movie', isTheatre, (req, res) => {
   theatreHelpers.editMovie(req.body).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect('/theatre/movie-management');
@@ -223,8 +198,7 @@ router.post('/edit-movie', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/delete-movie', verifyLogin, (req, res) => {
-  console.log(req.body);
+router.post('/delete-movie', isTheatre, (req, res) => {
   theatreHelpers.deleteMovie(req.body.id).then((response) => {
     fs.unlinkSync(`./public/images/movies/posters/${req.body.id}.jpg`);
     res.json(response);
@@ -233,10 +207,10 @@ router.post('/delete-movie', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/view-schedule/:id', verifyLogin, (req, res) => {
+router.get('/view-schedule/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then(async (screen) => {
     const shows = await theatreHelpers.getAllShows(req.params.id);
-    res.render('theatre/view-schedule', { title: 'Theatre | View Schedule', theatre: req.session.theatre, screen, shows, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    res.render('theatre/view-schedule', { title: 'Theatre | View Schedule', theatre: req.user, screen, shows, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   }).catch((error) => {
@@ -245,15 +219,15 @@ router.get('/view-schedule/:id', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/add-shows/:id', verifyLogin, (req, res) => {
-  theatreHelpers.getAllMovies(req.session.theatre._id).then((movies) => {
-    res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.session.theatre, screenId: req.params.id, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/add-shows/:id', isTheatre, (req, res) => {
+  theatreHelpers.getAllMovies(req.user._id).then((movies) => {
+    res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.user, screenId: req.params.id, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   });
 });
 
-router.post('/add-shows', verifyLogin, (req, res) => {
+router.post('/add-shows', isTheatre, (req, res) => {
   theatreHelpers.addShows(req.body).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect(`/theatre/add-shows/${response.screenId}`);
@@ -263,10 +237,10 @@ router.post('/add-shows', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/edit-show', verifyLogin, (req, res) => {
-  theatreHelpers.getAllMovies(req.session.theatre._id).then(async (movies) => {
+router.get('/edit-show', isTheatre, (req, res) => {
+  theatreHelpers.getAllMovies(req.user._id).then(async (movies) => {
     const show = await theatreHelpers.getShow(req.query);
-    res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.session.theatre, show, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.user, show, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
   }).catch((error) => {
@@ -275,7 +249,7 @@ router.get('/edit-show', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/edit-show', verifyLogin, (req, res) => {
+router.post('/edit-show', isTheatre, (req, res) => {
   theatreHelpers.editShow(req.body).then((response) => {
     req.session.alertMessage = response.alertMessage;
     res.redirect(`/theatre/view-schedule/${req.body.screenId}`)
@@ -285,7 +259,7 @@ router.post('/edit-show', verifyLogin, (req, res) => {
   });
 });
 
-router.post('/delete-show', verifyLogin, (req, res) => {
+router.post('/delete-show', isTheatre, (req, res) => {
   theatreHelpers.deleteShow(req.body).then((response) => {
     res.json(response);
   }).catch((error) => {
@@ -293,8 +267,8 @@ router.post('/delete-show', verifyLogin, (req, res) => {
   });
 });
 
-router.get('/users-activity', verifyLogin, (req, res) => {
-  res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.session.theatre });
+router.get('/users-activity', isTheatre, (req, res) => {
+  res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user });
 });
 
 module.exports = router;
