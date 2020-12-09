@@ -27,25 +27,25 @@ const logout = (e, url) => {
     });
 }
 
-const deleteOwner = (e, ownerId) => {
+const deleteItem = (e, id, url) => {
     e.preventDefault();
     $.ajax({
-        url: '/admin/delete-owner',
+        url,
         method: 'post',
         data: {
-            ownerId
+            id
         },
         success: (response) => {
             if (response.status) {
-                $(`#${ownerId}`).remove();
-                $(`#deleteModal${ownerId}`).modal('hide');
+                $(`#${id}`).remove();
+                $(`#deleteModal${id}`).modal('hide');
                 $('#successAlertBody').html(response.alertMessage);
                 $('#successAlert').removeAttr('hidden');
                 setTimeout(() => {
                     $('#successAlert').slideUp();
                 }, 5000);
             } else {
-                $(`#deleteModal${ownerId}`).modal('hide');
+                $(`#deleteModal${id}`).modal('hide');
                 $('#errorAlertBody').html(response.errMessage);
                 $('#errorAlert').removeAttr('hidden');
                 setTimeout(() => {
@@ -54,7 +54,45 @@ const deleteOwner = (e, ownerId) => {
             }
         },
         error: (err) => {
-            $(`#deleteModal${ownerId}`).modal('hide');
+            $(`#deleteModal${id}`).modal('hide');
+            $('#errorAlertBody').html("Can't connect to the server.");
+            $('#errorAlert').removeAttr('hidden');
+            setTimeout(() => {
+                $('#errorAlert').slideUp();
+            }, 5000);
+        }
+    });
+}
+
+const deleteShow = (e, screenId, showId) => {
+    e.preventDefault();
+    $.ajax({
+        url: '/theatre/delete-show',
+        method: 'post',
+        data: {
+            screenId,
+            showId
+        },
+        success: (response) => {
+            if (response.status) {
+                $(`#${showId}`).remove();
+                $(`#deleteModal${showId}`).modal('hide');
+                $('#successAlertBody').html(response.alertMessage);
+                $('#successAlert').removeAttr('hidden');
+                setTimeout(() => {
+                    $('#successAlert').slideUp();
+                }, 5000);
+            } else {
+                $(`#deleteModal${showId}`).modal('hide');
+                $('#errorAlertBody').html(response.errMessage);
+                $('#errorAlert').removeAttr('hidden');
+                setTimeout(() => {
+                    $('#errorAlert').slideUp();
+                }, 5000);
+            }
+        },
+        error: (err) => {
+            $(`#deleteModal${showId}`).modal('hide');
             $('#errorAlertBody').html("Can't connect to the server.");
             $('#errorAlert').removeAttr('hidden');
             setTimeout(() => {

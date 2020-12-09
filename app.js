@@ -1,3 +1,4 @@
+require('dotenv/config');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -8,6 +9,9 @@ var fileUpload = require('express-fileupload');
 var db = require('./config/connection');
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('express-flash');
+const passport = require('passport');
+const initializePassport = require('./config/passport');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
@@ -29,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(fileUpload());
 app.use(session({
-  secret: 'MasterProjectKey5f9512305dc3d50aa84f937c',
+  secret: process.env.SESSION_SECRET,
   cookie: { maxAge: 1000 * 3600 * 24 * 30 * 2 },
   resave: true,
   saveUninitialized: true,
@@ -38,6 +42,12 @@ app.use(session({
     ttl: 14 * 24 * 60 * 60
   })
 }));
+
+app.use(flash());
+
+initializePassport(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
 db.connect((err) => {
   if (err) console.log(`Connection Error: ${err}`);

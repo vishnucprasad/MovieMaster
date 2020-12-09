@@ -82,26 +82,33 @@ module.exports = {
             });
         });
     },
-    addOwners: (ownerDetails, adminId) => {
+    addOwners: (ownerDetails) => {
         return new Promise(async (resolve, reject) => {
-            const password = Math.floor(100000 + Math.random() * 900000).toString();
+            const existingUser = await db.get().collection(collection.THEATRE_COLLECTION).findOne({ email: ownerDetails.email });
 
-            ownerDetails.password = await bcrypt.hash(password, 10);
-            ownerDetails.dateCreated = new Date();
+            if (existingUser) {
+                reject({ errMessage: 'Already have an owner with this email, Please choose another email.' });
+            } else {
+                const password = Math.floor(100000 + Math.random() * 900000).toString();
 
-            mailer.sendMail({
-                to: ownerDetails.email,
-                subject: 'Added your theatre to MovieMaster',
-                html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
-            }).then((response) => {
-                db.get().collection(collection.THEATRE_COLLECTION).insertOne(ownerDetails).then((response) => {
-                    resolve({ response, alertMessage: 'Successfully added and send credentials to owner.' });
+                ownerDetails.password = await bcrypt.hash(password, 10);
+                ownerDetails.dateCreated = new Date();
+                ownerDetails.theatre = true;
+
+                mailer.sendMail({
+                    to: ownerDetails.email,
+                    subject: 'Added your theatre to MovieMaster',
+                    html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
+                }).then((response) => {
+                    db.get().collection(collection.THEATRE_COLLECTION).insertOne(ownerDetails).then((response) => {
+                        resolve({ response, alertMessage: 'Successfully added and send credentials to owner.' });
+                    }).catch((error) => {
+                        reject({ error, errMessage: 'Failed to add owner details.' });
+                    });
                 }).catch((error) => {
-                    reject({ error, errMessage: 'Failed to add owner details.' });
+                    reject({ error, errMessage: 'Failed to send credentials to owner.' });
                 });
-            }).catch((error) => {
-                reject({ error, errMessage: 'Failed to send credentials to owner.' });
-            });
+            }
         });
     },
     getOwners: () => {
@@ -158,7 +165,7 @@ module.exports = {
             }
         });
     },
-    deleteOwner: ({ ownerId }) => {
+    deleteOwner: (ownerId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.THEATRE_COLLECTION).removeOne({ _id: ObjectID(ownerId) }).then((response) => {
                 resolve({ status: true, alertMessage: 'Deleted Successfully.' });

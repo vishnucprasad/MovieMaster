@@ -10157,7 +10157,7 @@ a.card__title:hover {
   font-size: 22px;
   line-height: 27px;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--success);
   margin: 0; }
 
 .align-self {
