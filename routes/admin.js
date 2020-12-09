@@ -15,6 +15,13 @@ router.get('/login', (req, res) => {
 
 router.post('/login', passport.authenticate('admin-login', { successRedirect: '/admin', failureRedirect: '/admin/login', failureFlash: true }));
 
+router.get('/auth/google', passport.authenticate('admin-google-auth', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', passport.authenticate('admin-google-auth', { failureRedirect: '/admin/login', failureFlash: true }), (req, res) => {
+  res.redirect('/admin');
+});
+
+
 router.get('/logout', (req, res) => {
   req.logout();
   res.json({ status: true });

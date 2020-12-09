@@ -24,6 +24,23 @@ function initalize(passport) {
         }
     ));
 
+    passport.use('admin-google-auth', new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_ADMIN_CALLBACK_URL
+    }, function (accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        db.get().collection(collection.ADMIN_COLLECTION).findOne({ email: profile._json.email }).then(async (user) => {
+            if (!user) {
+                return done(null, false, { message: 'Incorrect Email.' });
+            }
+            return done(null, user);
+        }).catch((err) => {
+            return done(err);
+        });
+    }
+    ));
+
     passport.use('theatre-login', new LocalStrategy(
         { usernameField: 'email' },
         function (email, password, done) {
