@@ -186,18 +186,56 @@ module.exports = {
         delete showDetails.screenId;
         showDetails.movie = ObjectID(showDetails.movie);
         showDetails._id = new ObjectID();
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.SCREEN_COLLECTION).updateOne({
-                _id: ObjectID(screenId)
-            }, {
-                $push: {
-                    shows: showDetails
+        return new Promise(async (resolve, reject) => {
+            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        _id: ObjectID(screenId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $project: {
+                        _id: '$shows._id',
+                        movie: '$shows.movie',
+                        date: '$shows.date',
+                        showTime: '$shows.showTime',
+                        vip: '$shows.vip',
+                        premium: '$shows.premium',
+                        executive: '$shows.executive',
+                        normal: '$shows.normal'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.MOVIE_COLLECTION,
+                        localField: 'movie',
+                        foreignField: '_id',
+                        as: 'movieDetails'
+                    }
                 }
-            }).then((response) => {
-                resolve({ response, screenId, alertMessage: 'Show added successfully.' });
-            }).catch((error) => {
-                reject({ error, screenId, errMessage: 'Failed to add show.' });
+            ]).toArray();
+
+            const scheduledTime = shows.filter((show) => {
+                if (show.date == showDetails.date && parseInt(show.showTime) > (parseInt(showDetails.showTime) - 3)) {
+                    return show;
+                }
             });
+
+            if (scheduledTime[0]) {
+                reject({ screenId, errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime)+3}:00` });
+            } else {
+                db.get().collection(collection.SCREEN_COLLECTION).updateOne({
+                    _id: ObjectID(screenId)
+                }, {
+                    $push: {
+                        shows: showDetails
+                    }
+                }).then((response) => {
+                    resolve({ response, screenId, alertMessage: 'Show added successfully.' });
+                }).catch((error) => {
+                    reject({ error, screenId, errMessage: 'Failed to add show.' });
+                });
+            }
         });
     },
     getAllShows: (screenId) => {
@@ -270,25 +308,63 @@ module.exports = {
         });
     },
     editShow: async (showDetails) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.SCREEN_COLLECTION).updateOne({
-                _id: ObjectID(showDetails.screenId),
-                'shows._id': ObjectID(showDetails.showId)
-            }, {
-                $set: {
-                    'shows.$.movie': ObjectID(showDetails.movie),
-                    'shows.$.date': showDetails.date,
-                    'shows.$.showTime': showDetails.showTime,
-                    'shows.$.vip': showDetails.vip,
-                    'shows.$.premium': showDetails.premium,
-                    'shows.$.executive': showDetails.executive,
-                    'shows.$.normal': showDetails.normal
+        return new Promise(async (resolve, reject) => {
+            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        _id: ObjectID(showDetails.screenId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $project: {
+                        _id: '$shows._id',
+                        movie: '$shows.movie',
+                        date: '$shows.date',
+                        showTime: '$shows.showTime',
+                        vip: '$shows.vip',
+                        premium: '$shows.premium',
+                        executive: '$shows.executive',
+                        normal: '$shows.normal'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.MOVIE_COLLECTION,
+                        localField: 'movie',
+                        foreignField: '_id',
+                        as: 'movieDetails'
+                    }
                 }
-            }).then((response) => {
-                resolve({ response, alertMessage: 'Successfully updated show details.' });
-            }).catch((error) => {
-                reject({ error, errMessage: 'Failed to update show details.' });
+            ]).toArray();
+
+            const scheduledTime = shows.filter((show) => {
+                if (show.date == showDetails.date && parseInt(show.showTime) > (parseInt(showDetails.showTime) - 3)) {
+                    return show;
+                }
             });
+
+            if (scheduledTime[0]) {
+                reject({ errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime)+3}:00` });
+            } else {
+                db.get().collection(collection.SCREEN_COLLECTION).updateOne({
+                    _id: ObjectID(showDetails.screenId),
+                    'shows._id': ObjectID(showDetails.showId)
+                }, {
+                    $set: {
+                        'shows.$.movie': ObjectID(showDetails.movie),
+                        'shows.$.date': showDetails.date,
+                        'shows.$.showTime': showDetails.showTime,
+                        'shows.$.vip': showDetails.vip,
+                        'shows.$.premium': showDetails.premium,
+                        'shows.$.executive': showDetails.executive,
+                        'shows.$.normal': showDetails.normal
+                    }
+                }).then((response) => {
+                    resolve({ response, alertMessage: 'Successfully updated show details.' });
+                }).catch((error) => {
+                    reject({ error, errMessage: 'Failed to update show details.' });
+                });
+            }
         });
     },
     deleteShow: ({ screenId, showId }) => {

@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <select class="form-control" id="movie" name="movie" required>
-                                                    <option></option>
+                                                    <option hidden></option>
                                                     {{#each movies}}
                                                     <option value="{{this._id}}">{{this.movieTitle}}</option>
                                                     {{/each}}
@@ -106,7 +106,7 @@
                                         </div>
                                         <button type="submit"
                                             class="btn btn-success float-right rounded-pill px-5">Submit</button>
-                                        <a href="/theatre/view-schedule" type="submit"
+                                        <a href="/theatre/view-schedule/{{screenId}}" type="submit"
                                             class="btn btn-danger float-right rounded-pill px-5 mr-3">Cancel</a>
                                     </form>
                                 </div>
