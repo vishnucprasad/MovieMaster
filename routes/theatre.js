@@ -213,6 +213,40 @@ router.post('/delete-movie', isTheatre, (req, res) => {
   });
 });
 
+router.get('/upcoming-movies', isTheatre, (req, res) => {
+  theatreHelpers.getAllUpcomingMovies(req.user._id).then((movies) => {
+    res.render('theatre/upcoming-movies', { title: 'Theatre | Upcoming Movies', theatre: req.user, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+    req.session.errMessage = false;
+    req.session.alertMessage = false;
+  });
+});
+
+router.get('/add-upcoming-movies', isTheatre, (req, res) => {
+  res.render('theatre/add-upcoming-movies', { title: 'Theatre | Add Movies', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+  req.session.errMessage = false;
+  req.session.alertMessage = false;
+});
+
+router.post('/add-upcoming-movies', isTheatre, (req, res) => {
+  theatreHelpers.addUpcomingMovies(req.body, req.user._id).then((response) => {
+    let image = req.files.moviePoster;
+
+    image.mv(`./public/images/movies/upcoming-movies/posters/${response.data._id}.jpg`, (err, done) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(done);
+      }
+    });
+
+    req.session.alertMessage = response.alertMessage;
+    res.redirect('/theatre/add-upcoming-movies');
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/theatre/add-upcoming-movies');
+  });
+});
+
 router.get('/view-schedule/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then(async (screen) => {
     const shows = await theatreHelpers.getAllShows(req.params.id);

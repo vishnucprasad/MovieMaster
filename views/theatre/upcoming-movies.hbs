@@ -9,7 +9,7 @@
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb my-breadcrumb">
                     <li class="breadcrumb-item"><a href="/theatre">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Movie Management</li>
+                    <li class="breadcrumb-item active" aria-current="page">Upcoming Movies</li>
                 </ol>
             </nav>
             <!-- //breadcrumbs -->
@@ -18,10 +18,8 @@
                 <div class="card card_border mb-5">
                     <div class="cards__heading">
                         <div class="row mx-1">
-                            <h3>Now Showing Movies</h3>
-                            <a href="/theatre/upcoming-movies" class="btn btn-success rounded-pill px-5 ml-auto mr-3">Up
-                                Coming Movies</a>
-                            <a href="/theatre/add-movies" class="btn btn-success rounded-pill px-5">Add Movies</a>
+                            <h3>Upcoming Movies</h3>
+                            <a href="/theatre/add-upcoming-movies" class="btn btn-success rounded-pill px-5 ml-auto">Add Movies</a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -43,7 +41,7 @@
                                     <td>{{this.releaseDate}}</td>
                                     <td>{{this.runTime}}</td>
                                     <td>
-                                        <a href="/theatre/edit-movie/{{this._id}}"
+                                        <a href="/theatre/edit-upcoming-movie/{{this._id}}"
                                             class="btn btn-primary btn-sm rounded-pill text-uppercase px-3">Edit</a>
                                         <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
                                             data-toggle="modal" data-target="#deleteModal{{this._id}}">Delete</button>
@@ -64,7 +62,7 @@
                                                         data-dismiss="modal">CANCEL</button>
                                                     <button type="button"
                                                         class="btn btn-danger btn-sm rounded-pill px-5 ml-auto"
-                                                        onclick="deleteItem(event, '{{this._id}}', '/theatre/delete-movie')">DELETE</button>
+                                                        onclick="deleteItem(event, '{{this._id}}', '/theatre/delete-upcoming-movie')">DELETE</button>
                                                 </div>
                                             </div>
                                         </div>

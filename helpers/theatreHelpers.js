@@ -181,6 +181,22 @@ module.exports = {
             })
         });
     },
+    addUpcomingMovies: (movieDetails, theatreId) => {
+        movieDetails.theatre = ObjectID(theatreId);
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
+                resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to add movie.' });
+            });
+        });
+    },
+    getAllUpcomingMovies: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const movies = await db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).find({ theatre: ObjectID(theatreId) }).toArray();
+            resolve(movies);
+        });
+    },
     addShows: (showDetails) => {
         const screenId = showDetails.screenId;
         delete showDetails.screenId;
