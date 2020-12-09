@@ -247,6 +247,37 @@ router.post('/add-upcoming-movies', isTheatre, (req, res) => {
   });
 });
 
+router.get('/edit-upcoming-movie/:id', isTheatre, (req, res) => {
+  theatreHelpers.getUpcomingMovie(req.params.id).then((movie) => {
+    res.render('theatre/edit-upcoming-movie', { title: 'Theatre | Edit Upcoming Movie', theatre: req.user, movie });
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/theatre/movie-management');
+  });
+});
+
+router.post('/edit-upcoming-movie', isTheatre, (req, res) => {
+  theatreHelpers.editUpcomingMovie(req.body).then((response) => {
+    req.session.alertMessage = response.alertMessage;
+    res.redirect('/theatre/upcoming-movies');
+
+    if (req.files.moviePoster) {
+      let image = req.files.moviePoster;
+
+      image.mv(`./public/images/movies/upcoming-movies/posters/${response.movieId}.jpg`, (err, done) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(done);
+        }
+      });
+    }
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/theatre/upcoming-movies');
+  });
+});
+
 router.get('/view-schedule/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then(async (screen) => {
     const shows = await theatreHelpers.getAllShows(req.params.id);

@@ -197,6 +197,30 @@ module.exports = {
             resolve(movies);
         });
     },
+    getUpcomingMovie: (movieId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).findOne({ _id: ObjectID(movieId) }).then((movie) => {
+                resolve(movie);
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to find movie.' });
+            });
+        });
+    },
+    editUpcomingMovie: (movieDetails) => {
+        const movieId = movieDetails.movieId;
+        delete movieDetails.movieId;
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).updateOne({
+                _id: ObjectID(movieId)
+            }, {
+                $set: movieDetails
+            }).then((response) => {
+                resolve({ response, movieId, alertMessage: 'Successfully updated movie details.' });
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to update movie details.' });
+            })
+        });
+    },
     addShows: (showDetails) => {
         const screenId = showDetails.screenId;
         delete showDetails.screenId;
@@ -238,7 +262,7 @@ module.exports = {
             });
 
             if (scheduledTime[0]) {
-                reject({ screenId, errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime)+3}:00` });
+                reject({ screenId, errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime) + 3}:00` });
             } else {
                 db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                     _id: ObjectID(screenId)
@@ -360,7 +384,7 @@ module.exports = {
             });
 
             if (scheduledTime[0]) {
-                reject({ errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime)+3}:00` });
+                reject({ errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime) + 3}:00` });
             } else {
                 db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                     _id: ObjectID(showDetails.screenId),
