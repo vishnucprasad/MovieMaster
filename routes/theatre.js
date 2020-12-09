@@ -15,6 +15,12 @@ router.get('/login', (req, res) => {
 
 router.post('/login', passport.authenticate('theatre-login', { successRedirect: '/theatre', failureRedirect: '/theatre/login', failureFlash: true }));
 
+router.get('/auth/google', passport.authenticate('theatre-google-auth', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', passport.authenticate('theatre-google-auth', { failureRedirect: '/theatre/login', failureFlash: true }), (req, res) => {
+  res.redirect('/theatre');
+});
+
 router.get('/logout', (req, res) => {
   req.logout();
   res.json({ status: true });

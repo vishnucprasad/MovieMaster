@@ -1,5 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const db = require('./connection');
 const collection = require('./collection');
 const bcrypt = require('bcrypt');
@@ -38,6 +39,23 @@ function initalize(passport) {
                 return done(err);
             });
         }
+    ));
+
+    passport.use('theatre-google-auth', new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_THEATRE_CALLBACK_URL
+    }, function (accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        db.get().collection(collection.THEATRE_COLLECTION).findOne({ email: profile._json.email }).then(async (user) => {
+            if (!user) {
+                return done(null, false, { message: 'Incorrect Email.' });
+            }
+            return done(null, user);
+        }).catch((err) => {
+            return done(err);
+        });
+    }
     ));
 
     passport.serializeUser(function (user, done) {

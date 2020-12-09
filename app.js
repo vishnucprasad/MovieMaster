@@ -1,3 +1,4 @@
+require('dotenv/config');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -32,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(fileUpload());
 app.use(session({
-  secret: 'MasterProjectKey5f9512305dc3d50aa84f937c',
+  secret: process.env.SESSION_SECRET,
   cookie: { maxAge: 1000 * 3600 * 24 * 30 * 2 },
   resave: true,
   saveUninitialized: true,
