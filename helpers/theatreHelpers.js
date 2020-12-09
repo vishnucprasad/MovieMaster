@@ -221,6 +221,15 @@ module.exports = {
             })
         });
     },
+    deleteUpcomingMovie: (movieId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).removeOne({ _id: ObjectID(movieId) }).then((response) => {
+                resolve({ status: true, alertMessage: 'Deleted Successfully.' });
+            }).catch((error) => {
+                reject({ status: false, error, errMessage: 'Failed to delete movie.' });
+            })
+        });
+    },
     addShows: (showDetails) => {
         const screenId = showDetails.screenId;
         delete showDetails.screenId;

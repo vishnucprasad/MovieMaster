@@ -278,6 +278,15 @@ router.post('/edit-upcoming-movie', isTheatre, (req, res) => {
   });
 });
 
+router.post('/delete-upcoming-movie', isTheatre, (req, res) => {
+  theatreHelpers.deleteUpcomingMovie(req.body.id).then((response) => {
+    fs.unlinkSync(`./public/images/movies/upcoming-movies/posters/${req.body.id}.jpg`);
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
 router.get('/view-schedule/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then(async (screen) => {
     const shows = await theatreHelpers.getAllShows(req.params.id);
