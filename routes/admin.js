@@ -9,7 +9,12 @@ router.get('/login', (req, res) => {
   if (req.isAuthenticated() && req.user.admin) {
     res.redirect('/admin');
   } else {
-    res.render('admin/login', { title: 'Admin | Login' });
+    if (req.session.messages) {
+      res.render('admin/login', { title: 'Admin | Login', messages: req.session.messages });
+      req.session.messages = false;
+    } else {
+      res.render('admin/login', { title: 'Admin | Login' });
+    }
   }
 });
 
@@ -17,10 +22,16 @@ router.post('/login', passport.authenticate('admin-login', { successRedirect: '/
 
 router.get('/auth/google', passport.authenticate('admin-google-auth', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', passport.authenticate('admin-google-auth', { failureRedirect: '/admin/login', failureFlash: true }), (req, res) => {
-  res.redirect('/admin');
+router.get('/auth/google/callback', passport.authenticate('admin-google-auth', { failureRedirect: '/admin/popup', failureFlash: true }), (req, res) => {
+  res.redirect('/admin/popup');
 });
 
+router.get('/popup', (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.session.messages = { error: 'Invalid Account' };
+  }
+  res.render('auth-popup-callback');
+});
 
 router.get('/logout', (req, res) => {
   req.logout();

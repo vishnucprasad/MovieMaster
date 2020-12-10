@@ -9,7 +9,12 @@ router.get('/login', (req, res) => {
   if (req.isAuthenticated() && req.user.theatre) {
     res.redirect('/theatre');
   } else {
-    res.render('theatre/login', { title: 'Theatre | Login' });
+    if (req.session.messages) {
+      res.render('theatre/login', { title: 'Theatre | Login', messages: req.session.messages });
+      req.session.messages = false;
+    } else {
+      res.render('theatre/login', { title: 'Theatre | Login' });
+    }
   }
 });
 
@@ -17,11 +22,14 @@ router.post('/login', passport.authenticate('theatre-login', { successRedirect: 
 
 router.get('/auth/google', passport.authenticate('theatre-google-auth', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', passport.authenticate('theatre-google-auth', { failureRedirect: '/theatre/login', failureFlash: true }), (req, res) => {
+router.get('/auth/google/callback', passport.authenticate('theatre-google-auth', { failureRedirect: '/theatre/popup', failureFlash: true }), (req, res) => {
   res.redirect('/theatre/popup');
 });
 
 router.get('/popup', (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.session.messages = { error: 'Invalid Account' };
+  }
   res.render('auth-popup-callback');
 });
 
