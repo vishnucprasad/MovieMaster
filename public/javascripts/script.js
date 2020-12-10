@@ -45,3 +45,20 @@ const cancelEditTheatreDetails = (e) => {
     document.getElementById('cancel').setAttribute('hidden', 'true');
     document.getElementById('edit').removeAttribute('hidden');
 }
+
+window.addEventListener('message', function(e) {
+    if (e.data !== 'popup-done') { return; }
+    window.location.reload();
+});
+
+const authPopup = (e, url) => {
+    e.preventDefault();
+    var width = 470, height = 580;
+    var w = window.outerWidth - width, h = window.outerHeight - height;
+    var left = Math.round(window.screenX + (w / 2));
+    var top = Math.round(window.screenY + (h / 2.5));
+
+    loginWindow = window.open(url, 'LogIn',
+        'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top +
+        ',toolbar=0,scrollbars=0,status=0,resizable=0,location=0,menuBar=0');
+}

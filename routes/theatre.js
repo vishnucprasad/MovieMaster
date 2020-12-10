@@ -18,7 +18,11 @@ router.post('/login', passport.authenticate('theatre-login', { successRedirect: 
 router.get('/auth/google', passport.authenticate('theatre-google-auth', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback', passport.authenticate('theatre-google-auth', { failureRedirect: '/theatre/login', failureFlash: true }), (req, res) => {
-  res.redirect('/theatre');
+  res.redirect('/theatre/popup');
+});
+
+router.get('/popup', (req, res) => {
+  res.render('auth-popup-callback');
 });
 
 router.get('/logout', (req, res) => {
