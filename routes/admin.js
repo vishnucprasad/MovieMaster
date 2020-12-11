@@ -10,10 +10,10 @@ router.get('/login', (req, res) => {
     res.redirect('/admin');
   } else {
     if (req.session.messages) {
-      res.render('admin/login', { title: 'Admin | Login', messages: req.session.messages });
+      res.render('admin/login', { title: 'Admin | Login', messages: req.session.messages, adminStyle:true });
       req.session.messages = false;
     } else {
-      res.render('admin/login', { title: 'Admin | Login' });
+      res.render('admin/login', { title: 'Admin | Login', adminStyle:true });
     }
   }
 });

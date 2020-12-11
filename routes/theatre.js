@@ -10,10 +10,10 @@ router.get('/login', (req, res) => {
     res.redirect('/theatre');
   } else {
     if (req.session.messages) {
-      res.render('theatre/login', { title: 'Theatre | Login', messages: req.session.messages });
+      res.render('theatre/login', { title: 'Theatre | Login', messages: req.session.messages, theatreStyle: true });
       req.session.messages = false;
     } else {
-      res.render('theatre/login', { title: 'Theatre | Login' });
+      res.render('theatre/login', { title: 'Theatre | Login', theatreStyle: true });
     }
   }
 });
