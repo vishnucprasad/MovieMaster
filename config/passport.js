@@ -92,6 +92,12 @@ function initalize(passport) {
             }).catch((err) => {
                 done(err);
             });
+        } else {
+            db.get().collection(collection.USER_COLLECTION).findOne({ _id: ObjectID(userId) }).then((user) => {
+                done(null, user)
+            }).catch((err) => {
+                done(err);
+            });
         }
     });
 }

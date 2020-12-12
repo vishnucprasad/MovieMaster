@@ -64,3 +64,12 @@ select {
   height: 25vh;
   object-fit: cover;
 }
+
+.card_shadow {
+  box-shadow: 5px 10px 18px #888888;
+}
+
+::placeholder {
+  font-size: 12px;
+  color: var(--primary);
+}

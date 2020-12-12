@@ -25,7 +25,8 @@
     "nodemailer": "^6.4.16",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "twilio": "^3.54.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

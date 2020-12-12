@@ -1,0 +1,42 @@
+<section class="container" style="height: 100vh !important;">
+    <div class="row h-100 justify-content-center">
+        <div class="col-md-4 my-auto" id="signupForm">
+            <div class="card card_shadow card_border border-primary-top p-4">
+                <h3 class="text-center text-uppercase text-primary font-weight-bold mb-5">Account Signup</h3>
+                <form action="/signup" method="POST">
+                    <div class="form-group">
+                        <label for="exampleInputName1" class="text-primary">Name</label>
+                        <input type="name" class="form-control border-top-0 border-right-0 border-left-0" name="name"
+                            placeholder="Type your Name" required id="exampleInputname1" aria-describedby="nameHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputMobile1" class="text-primary">Mobile</label>
+                        <div class="row">
+                            <div class="col-3">
+                                <select class="form-control form-select form-select-sm" name="contryCode" id="">
+                                    <option value="+91">+91</option>
+                                </select>
+                            </div>
+                            <div class="col-9">
+                                <input type="tel" class="form-control border-top-0 border-right-0 border-left-0"
+                                    placeholder="Type your Mobile Number" name="mobile" required
+                                    id="exampleInputMobile1">
+                            </div>
+                        </div>
+                    </div>
+                    {{#if messages.error}}
+                    <div class="text-center pb-2">
+                        <p class="text-danger">{{messages.error}}</p>
+                    </div>
+                    {{/if}}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 mt-3">Signup</button>
+                    </div>
+                </form>
+                <div class="mt-4 text-center">
+                    <a href="/login" class="small btn-link">Existing User ? Log in.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
