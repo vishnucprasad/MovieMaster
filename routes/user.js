@@ -19,6 +19,12 @@ router.get('/auth/facebook', passport.authenticate('facebook-auth', { scope: ['p
 
 router.get('/auth/facebook/callback', passport.authenticate('facebook-auth', { successRedirect: '/popup', failureRedirect: '/popup', failureFlash: true }));
 
+router.get('/auth/google', passport.authenticate('google-auth', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', passport.authenticate('google-auth', { failureRedirect: '/popup' }), (req, res) => {
+  res.redirect('/popup');
+});
+
 router.get('/signup', (req, res) => {
   if (req.isAuthenticated() && !req.user.theatre && !req.user.admin) {
     res.redirect('/');
