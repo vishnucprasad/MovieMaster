@@ -12,12 +12,11 @@
                     <div class="form-group">
                         <label for="exampleInputMobile1" class="text-primary">Mobile</label>
                         <div class="row">
-                            <div class="col-3">
-                                <select class="form-control form-select form-select-sm" name="contryCode" id="">
-                                    <option value="+91">+91</option>
-                                </select>
+                            <div class="col-3 pr-0">
+                                <input type="text" class="form-control border-0 text-right bg-white"
+                                    value="+91" name="contryCode" readOnly required id="exampleInputMobile1">
                             </div>
-                            <div class="col-9">
+                            <div class="col-9 pl-0">
                                 <input type="tel" class="form-control border-top-0 border-right-0 border-left-0"
                                     placeholder="Type your Mobile Number" name="mobile" required
                                     id="exampleInputMobile1">
@@ -33,6 +32,12 @@
                         <button type="submit" class="btn btn-primary rounded-pill px-5 mt-3">Signup</button>
                     </div>
                 </form>
+                <div class="text-center mt-5 mb-3">
+                    <a href="" class="btn btn-white btn-shadow px-4"><img src="/assets/images/Google_Icon.png" alt=""
+                            class="img-btn"></a>
+                    <a class="btn btn-white btn-shadow px-4" onClick="authPopup(event, '/auth/facebook')"><img src="/assets/images/Facebook_Icon.png" alt=""
+                            class="img-btn"></a>
+                </div>
                 <div class="mt-4 text-center">
                     <a href="/login" class="small btn-link">Existing User ? Log in.</a>
                 </div>

@@ -49,7 +49,7 @@ window.addEventListener('message', function(e) {
 
 const authPopup = (e, url) => {
     e.preventDefault();
-    var width = 470, height = 580;
+    var width = 720, height = 580;
     var w = window.outerWidth - width, h = window.outerHeight - height;
     var left = Math.round(window.screenX + (w / 2));
     var top = Math.round(window.screenY + (h / 2.5));

@@ -1,14 +1,35 @@
 var express = require('express');
 var router = express.Router();
 const userHelpers = require('../helpers/userHelpers');
+const passport = require('passport');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user });
 });
 
+router.get('/popup', (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.session.messages = { error: 'Authentication failed.' };
+  }
+  res.render('auth-popup-callback');
+});
+
+router.get('/auth/facebook', passport.authenticate('facebook-auth', { scope: ['public_profile', 'email'] }));
+
+router.get('/auth/facebook/callback', passport.authenticate('facebook-auth', { successRedirect: '/popup', failureRedirect: '/popup', failureFlash: true }));
+
 router.get('/signup', (req, res) => {
-  res.render('user/signup', { title: 'Account | Signup' });
+  if (req.isAuthenticated() && !req.user.theatre && !req.user.admin) {
+    res.redirect('/');
+  } else {
+    if (req.session.messages) {
+      res.render('user/signup', { title: 'Account | Signup', messages: req.session.messages });
+      req.session.messages = false;
+    } else {
+      res.render('user/signup', { title: 'Account | Signup' });
+    }
+  }
 });
 
 router.post('/signup', (req, res) => {
@@ -21,7 +42,16 @@ router.post('/signup', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-  res.render('user/login', { title: 'Account | Login' });
+  if (req.isAuthenticated() && !req.user.theatre && !req.user.admin) {
+    res.redirect('/');
+  } else {
+    if (req.session.messages) {
+      res.render('user/login', { title: 'Account | Login', messages: req.session.messages });
+      req.session.messages = false;
+    } else {
+      res.render('user/login', { title: 'Account | Login' });
+    }
+  }
 });
 
 router.post('/login', (req, res) => {

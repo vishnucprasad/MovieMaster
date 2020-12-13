@@ -72,6 +72,9 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdownMenu3"
                                     aria-haspopup="true" aria-expanded="false">
                                     <div class="profile_img">
+                                        {{#if user.profilePic}}
+                                        <img src="{{user.profilePic}}" alt="" class="rounded-circle" width="1.2em" height="1.2em">
+                                        {{else}}
                                         <svg width="1.2em" height="1.2em" viewBox="0 0 16 16"
                                             class="bi bi-person-circle" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -81,6 +84,7 @@
                                             <path fill-rule="evenodd"
                                                 d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z" />
                                         </svg>
+                                        {{/if}}
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu drp-mnu" aria-labelledby="dropdownMenu3">

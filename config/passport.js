@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const db = require('./connection');
 const collection = require('./collection');
 const bcrypt = require('bcrypt');
@@ -72,6 +73,39 @@ function initalize(passport) {
         }).catch((err) => {
             return done(err);
         });
+    }
+    ));
+
+    passport.use('facebook-auth', new FacebookStrategy({
+        clientID: process.env.FACEBOOK_CLIENT_ID,
+        clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+        callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+        profileFields: ['id', 'displayName', 'name', 'email', 'picture.type(large)']
+    }, async function (accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        const existingUser = await db.get().collection(collection.USER_COLLECTION).findOne({ facebookId: profile.id });
+        if (!existingUser) {
+            if (profile.emails[0]) {
+                email = profile.emails[0].value;
+            }
+
+            if (profile.photos[0]) {
+                profilePic = profile.photos[0].value
+            }
+
+            db.get().collection(collection.USER_COLLECTION).insertOne({ facebookId: profile.id, name: profile.displayName, email, profilePic }).then((response) => {
+                const user = response.ops[0];
+                done(null, user);
+            }).catch((err) => {
+                return done(err);
+            });
+        } else {
+            db.get().collection(collection.USER_COLLECTION).findOne({ facebookId: profile.id }).then((user) => {
+                return done(null, user);
+            }).catch((err) => {
+                return done(err);
+            });
+        }
     }
     ));
 
