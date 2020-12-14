@@ -67,7 +67,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             const upcomingMovies = await db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).find().sort({ releaseDate: 1 }).limit(4).toArray();
             resolve(upcomingMovies);
-        });  
+        });
     },
     getallMovies: () => {
         return new Promise(async (resolve, reject) => {
@@ -79,6 +79,61 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             const upcomingMovies = await db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).find().sort({ releaseDate: 1 }).toArray();
             resolve(upcomingMovies);
+        });
+    },
+    getMovie: (movieId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.MOVIE_COLLECTION).findOne({ _id: ObjectID(movieId) }).then((movie) => {
+                resolve(movie);
+            }).catch((error) => {
+                reject({ error, errMessage: 'Cannot find movie.' });
+            })
+        });
+    },
+    getMovieShows: (movieId) => {
+        return new Promise(async (resolve, reject) => {
+            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'shows.movie': ObjectID(movieId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $match: {
+                        'shows.movie': ObjectID(movieId)
+                    }
+                }, {
+                    $project: {
+                        theatre: '$theatre',
+                        screen: '$_id',
+                        screenName: '$screenName',
+                        show: '$shows._id',
+                        movie: '$shows.movie',
+                        date: '$shows.date',
+                        showTime: '$shows.showTime',
+                        vip: '$shows.vip',
+                        premium: '$shows.premium',
+                        executive: '$shows.executive',
+                        normal: '$shows.normal'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.THEATRE_COLLECTION,
+                        localField: 'theatre',
+                        foreignField: '_id',
+                        as: 'theatreDetails'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.MOVIE_COLLECTION,
+                        localField: 'movie',
+                        foreignField: '_id',
+                        as: 'movieDetails'
+                    }
+                }
+            ]).toArray();
+            resolve(shows);
         });
     }
 }

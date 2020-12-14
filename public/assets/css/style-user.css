@@ -18952,14 +18952,14 @@ screen and (max-height: 300px) {
 
 /* Styles for dialog window */
 .small-dialog{
-  max-width: 750px;
+  max-width: 852px;
   margin: 40px auto;
   position: relative;
 }
 
 div.small-dialog iframe {
   width: 100%;
-  height: 400px;
+  height: 480px;
   display: block;
   border-radius: 10px;
 }

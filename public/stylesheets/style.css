@@ -77,7 +77,7 @@ select {
 .img-btn {
   width: 1.2rem;
   height: 1.2rem;
-  margin: 0 0.5rem
+  margin: 0 0.5rem;
 }
 
 .btn-shadow {
@@ -86,4 +86,8 @@ select {
 
 .btn-shadow:hover {
   box-shadow: 1px 1px 4px 2px #888888 !important;
+}
+
+.pill_shadow:hover {
+  box-shadow: 3px 2px 8px #888888;
 }

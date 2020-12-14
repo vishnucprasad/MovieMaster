@@ -20,6 +20,16 @@ router.get('/upcoming-movies', async (req, res) => {
   res.render('user/upcoming-movies', { title: 'MovieMaster | Upcoming Movies', upcomingMovies });
 });
 
+router.get('/view-movie', async (req, res) => {
+  const shows = await userHelpers.getMovieShows(req.query.movieId);
+  const latestMovies = await userHelpers.getMovies();
+  userHelpers.getMovie(req.query.movieId).then((movie) => {
+    res.render('user/view-movie', { title: 'MovieMaster | View Movie', movie, shows, latestMovies });
+  }).catch((error) => {
+    res.redirect('/');
+  });
+});
+
 router.get('/popup', (req, res) => {
   if (!req.isAuthenticated()) {
     req.session.messages = { error: 'Authentication failed.' };
