@@ -56,5 +56,17 @@ module.exports = {
                 reject({ error, mobile, errMessage: 'Failed to check verification code.' });
             });
         });
+    },
+    getMovies: () => {
+        return new Promise(async (resolve, reject) => {
+            const movies = await db.get().collection(collection.MOVIE_COLLECTION).find().sort({ releaseDate: -1 }).limit(4).toArray();
+            resolve(movies);
+        });
+    },
+    getUpcomingMovies: () => {
+        return new Promise(async (resolve, reject) => {
+            const upcomingMovies = await db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).find().sort({ releaseDate: 1 }).limit(4).toArray();
+            resolve(upcomingMovies);
+        });  
     }
 }

@@ -15853,7 +15853,7 @@ button.owl-next {
 .w3l-grids .box16:after {
   content: "";
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.08) 69%, rgba(0, 0, 0, 0.76) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.76) 100%);
   top: 0;
   border-radius: 6px;
   transition: all .5s ease 0s;
@@ -19630,7 +19630,7 @@ input:checked+.mode-container i.gg-moon {
   border-radius: 5px; }
 
 ::-webkit-scrollbar-thumb {
-  background: #999; }
+  background: #e2e2e2; }
 
 /*-- //dark and light mode styling --*/
 sourceMappingURL=style-freedom.css.map

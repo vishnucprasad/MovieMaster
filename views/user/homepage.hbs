@@ -2,25 +2,38 @@
 <section class="w3l-main-slider position-relative" id="home">
     <div class="companies20-content">
         <div class="owl-one owl-carousel owl-theme">
+            {{#each movies}}
             <div class="item">
                 <li>
                     <div class="slider-info banner-view bg bg2"
-                        style="background: url(/images/movies/posters/5fcc4c96cb97ad4ac097880c.jpg) no-repeat center; background-size: cover;">
+                        style="background: url(/images/movies/posters/{{this._id}}.jpg) no-repeat center; background-size: cover;">
                         <div class="banner-info">
-                            <h3>Latest Movie Trailers</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.<span class="over-para">
-                                    Consequuntur hic odio
-                                    voluptatem tenetur consequatur.</span></p>
-                            <a href="#small-dialog1" class="popup-with-zoom-anim play-view1">
+                            <p class="text-truncate mb-3">
+                                <span class="bg-warning font-weight-bold text-truncate rounded px-3 py-1">
+                                    {{this.type}}
+                                </span>
+                                <span class="bg-info font-weight-bold text-truncate rounded ml-3 px-3 py-1">
+                                    {{this.language}}
+                                </span>
+                            </p>
+                            <h3>{{this.movieTitle}}</h3>
+                            <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Cast :
+                                </span>{{this.cast}}</p>
+                            <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Director :
+                                </span>{{this.director}}</p>
+                            <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Run Time :
+                                </span>{{this.runTime}}</p>
+                            <p class="text-truncate mt-1"><span class="font-weight-bold">Release Date :
+                                </span>{{this.releaseDate}}</p>
+                            <a href="#small-dialog{{this._id}}" class="popup-with-zoom-anim play-view1">
                                 <span class="video-play-icon">
                                     <span class="fa fa-play"></span>
                                 </span>
                                 <h6>Watch Trailer</h6>
                             </a>
                             <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                            <div id="small-dialog1" class="zoom-anim-dialog mfp-hide small-dialog">
-                                <iframe width="560" height="315" src="https://www.youtube.com/embed/TcMBFSGVi1c"
-                                    frameborder="0"
+                            <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
+                                <iframe width="560" height="315" src="{{this.trailerLink}}" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowfullscreen></iframe>
                             </div>
@@ -28,32 +41,7 @@
                     </div>
                 </li>
             </div>
-            <div class="item">
-                <li>
-                    <div class="slider-info  banner-view banner-top1 bg bg2"
-                        style="background: url(/images/movies/posters/5fcc58ea4fecdb173c5c92ae.jpg) no-repeat center; background-size: cover;">
-                        <div class="banner-info">
-                            <h3>Latest Online Movies</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.<span class="over-para">
-                                    Consequuntur hic odio
-                                    voluptatem tenetur consequatur.</span></p>
-                            <a href="#small-dialog2" class="popup-with-zoom-anim play-view1">
-                                <span class="video-play-icon">
-                                    <span class="fa fa-play"></span>
-                                </span>
-                                <h6>Watch Trailer</h6>
-                            </a>
-                            <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                            <div id="small-dialog2" class="zoom-anim-dialog mfp-hide small-dialog">
-                                <iframe width="560" height="315" src="https://www.youtube.com/embed/HZ7PAyCDwEg"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </div>
+            {{/each}}
         </div>
     </div>
 </section>
@@ -66,7 +54,7 @@
             <div class="headerhny-title">
                 <div class="w3l-title-grids">
                     <div class="headerhny-left">
-                        <h3 class="hny-title">Popular Movies</h3>
+                        <h3 class="hny-title">Now Showing Movies</h3>
                     </div>
                     <div class="headerhny-right text-lg-right">
                         <h4><a class="show-title" href="/">Show all</a></h4>
@@ -74,61 +62,42 @@
                 </div>
             </div>
             <div class="w3l-populohny-grids">
+                {{#each movies}}
                 <div class="item vhny-grid">
                     <div class="box16">
                         <figure>
-                            <img class="" src="/images/movies/posters/5fcc4c96cb97ad4ac097880c.jpg" alt=""
+                            <img class="" src="/images/movies/posters/{{this._id}}.jpg" alt=""
                                 style="height: 25rem; object-fit: cover !important;">
                         </figure>
                         <div class="box-content">
-                            <h3 class="title">Frozen 2</h3>
+                            <h3 class="title">{{this.movieTitle}}</h3>
                             <h4>
-                                <span class="post"><span class="fa fa-clock-o"> </span> 1 Hr 4min</span>
+                                <span class="post"><span class="fa fa-clock-o"> Run Time : </span>
+                                    {{this.runTime}}</span>
                             </h4>
-                            <a href=""
-                                class="btn btn-info text-uppercase font-weight-bold btn-sm rounded-pill float-right px-3">Book
-                                Now</a>
+                            <h4>
+                                <span
+                                    class="post bg-warning text-dark font-weight-bold text-truncate rounded px-3">{{this.type}}</span>
+                            </h4>
+                            <div class="row mt-5">
+                                <div class="col text-center">
+                                    <a href=""
+                                        class="btn btn-info text-uppercase font-weight-bold btn-sm rounded-pill px-5">View</a>
+                                </div>
+                            </div>
                         </div>
-                        <a href="#small-dialog3" class="popup-with-zoom-anim play-view1">
+                        <a href="#small-dialog{{this._id}}" class="popup-with-zoom-anim play-view1">
                             <span class="fa fa-play video-icon" aria-hidden="true"></span>
                         </a>
                         <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                        <div id="small-dialog3" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/TcMBFSGVi1c"
-                                frameborder="0"
+                        <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
+                            <iframe src="{{this.trailerLink}}" frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
-                <div class="item vhny-grid">
-                    <div class="box16">
-                        <figure>
-                            <img class="" src="/images/movies/posters/5fcc58ea4fecdb173c5c92ae.jpg" alt=""
-                                style="height: 25rem; object-fit: cover !important;">
-                        </figure>
-                        <div class="box-content">
-                            <h3 class="title">Frozen 2</h3>
-                            <h4 class="row">
-                                <span class="post"><span class="fa fa-clock-o"> </span> 1 Hr 4min</span>
-
-                            </h4>
-                            <a href=""
-                                class="btn btn-info text-uppercase font-weight-bold btn-sm rounded-pill float-right px-3">Book
-                                Now</a>
-                        </div>
-                        <a href="#small-dialog4" class="popup-with-zoom-anim play-view1">
-                            <span class="fa fa-play video-icon" aria-hidden="true"></span>
-                        </a>
-                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                        <div id="small-dialog4" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/HZ7PAyCDwEg"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
+                {{/each}}
             </div>
         </div>
     </div>
@@ -138,20 +107,22 @@
 <section class="w3l-mid-slider position-relative">
     <div class="companies20-content">
         <div class="owl-mid owl-carousel owl-theme">
+            {{#each upcomingMovies}}
             <div class="item">
                 <li>
                     <div class="slider-info mid-view bg bg2"
-                        style="background: url(/images/movies/posters/5fcc4c96cb97ad4ac097880c.jpg) no-repeat center; background-size: cover;">
+                        style="background: url(/images/movies/upcoming-movies/posters/{{this._id}}.jpg) no-repeat center; background-size: cover;">
                         <div class="container">
                             <div class="mid-info">
-                                <span class="sub-text">Comedy</span>
-                                <h3>Jumanji: The Next Level</h3>
-                                <p>2019 ‧ Comedy/Action ‧ 2h 3m</p>
-                                <a class="watch popup-with-zoom-anim play-view1" href="#small-dialog7"><span class="fa fa-play" aria-hidden="true"></span>
+                                <span class="sub-text">{{this.type}}</span>
+                                <h3>{{this.movieTitle}}</h3>
+                                <p>{{this.releaseDate}} ‧ {{this.language}} ‧ {{this.runTime}}</p>
+                                <a class="watch popup-with-zoom-anim play-view1" href="#small-dialog{{this._id}}"><span
+                                        class="fa fa-play" aria-hidden="true"></span>
                                     Watch Trailer</a>
                                 <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                                <div id="small-dialog7" class="zoom-anim-dialog mfp-hide small-dialog">
-                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/TcMBFSGVi1c"
+                                <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
+                                    <iframe width="560" height="315" src="{{this.trailerLink}}"
                                         frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen></iframe>
@@ -161,29 +132,7 @@
                     </div>
                 </li>
             </div>
-            <div class="item">
-                <li>
-                    <div class="slider-info mid-view bg bg2"
-                        style="background: url(/images/movies/posters/5fcc58ea4fecdb173c5c92ae.jpg) no-repeat center; background-size: cover;">
-                        <div class="container">
-                            <div class="mid-info">
-                                <span class="sub-text">Comedy</span>
-                                <h3>Jumanji: The Next Level</h3>
-                                <p>2019 ‧ Comedy/Action ‧ 2h 3m</p>
-                                <a class="watch popup-with-zoom-anim play-view1" href="#small-dialog7"><span class="fa fa-play" aria-hidden="true"></span>
-                                    Watch Trailer</a>
-                                <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                                <div id="small-dialog7" class="zoom-anim-dialog mfp-hide small-dialog">
-                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/HZ7PAyCDwEg"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </div>
+            {{/each}}
         </div>
     </div>
 </section>
@@ -195,7 +144,7 @@
             <div class="headerhny-title">
                 <div class="w3l-title-grids">
                     <div class="headerhny-left">
-                        <h3 class="hny-title">New Releases</h3>
+                        <h3 class="hny-title">Upcoming Movies</h3>
                     </div>
                     <div class="headerhny-right text-lg-right">
                         <h4><a class="show-title" href="">Show all</a></h4>
@@ -203,62 +152,40 @@
                 </div>
             </div>
             <div class="owl-three owl-carousel owl-theme">
+                {{#each upcomingMovies}}
                 <div class="item vhny-grid">
                     <div class="box16 mb-0">
                         <figure>
-                            <img class="img-fluid" src="/images/movies/posters/5fcc58ea4fecdb173c5c92ae.jpg"
+                            <img class="img-fluid" src="/images/movies/upcoming-movies/posters/{{this._id}}.jpg"
                                 style="height: 10rem; object-fit: cover;" alt="">
                         </figure>
                         <div class="box-content">
                             <h4>
-                                <span class="post"><span class="fa fa-clock-o"> </span> 2 Hr 4min </span>
+                                <span class="post"><span class="fa fa-clock-o"> </span> {{this.runTime}} </span>
                             </h4>
                         </div>
-                        <a href="#small-dialog5" class="popup-with-zoom-anim play-view1">
+                        <a href="#small-dialog{{this._id}}" class="popup-with-zoom-anim play-view1">
                             <span class="fa fa-play video-icon" aria-hidden="true"></span>
                         </a>
                         <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                        <div id="small-dialog5" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/HZ7PAyCDwEg"
-                                frameborder="0"
+                        <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
+                            <iframe width="560" height="315" src="{{this.trailerLink}}" frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                         </div>
                     </div>
-                    <h3> <a class="title-gd" href="">No Time to Die</a></h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                    <div style="height: 8rem; overflow-y: auto;">
+                        <h3 class=""> <a class="title-gd" type="button">{{this.movieTitle}}</a></h3>
+                        <p class="text-truncate"><span class="font-weight-bold">Cast : </span>{{this.cast}}</p>
+                        <p class="text-truncate"><span class="font-weight-bold">Director : </span>{{this.director}}</p>
+                        <p class="text-truncate"><span class="font-weight-bold">Release Date :
+                            </span>{{this.releaseDate}}</p>
+                    </div>
                     <div class="button-center text-center mt-4">
-                        <a href="" class="btn btn-outline-info btn-block text-uppercase">Book now</a>
+                        <a href="" class="btn btn-outline-info btn-block text-uppercase">View</a>
                     </div>
                 </div>
-                <div class="item vhny-grid">
-                    <div class="box16 mb-0">
-                        <figure>
-                            <img class="img-fluid" src="/images/movies/posters/5fcc4c96cb97ad4ac097880c.jpg"
-                                style="height: 10rem; object-fit: cover;" alt="">
-                        </figure>
-                        <div class="box-content">
-                            <h4>
-                                <span class="post"><span class="fa fa-clock-o"> </span> 2 Hr 4min </span>
-                            </h4>
-                        </div>
-                        <a href="#small-dialog6" class="popup-with-zoom-anim play-view1">
-                            <span class="fa fa-play video-icon" aria-hidden="true"></span>
-                        </a>
-                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                        <div id="small-dialog6" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/TcMBFSGVi1c"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <h3> <a class="title-gd" href="">No Time to Die</a></h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
-                    <div class="button-center text-center mt-4">
-                        <a href="" class="btn btn-outline-info btn-block text-uppercase">Book now</a>
-                    </div>
-                </div>
+                {{/each}}
             </div>
         </div>
     </div>

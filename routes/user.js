@@ -4,8 +4,10 @@ const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user });
+router.get('/', async (req, res, next) => {
+  const upcomingMovies = await userHelpers.getUpcomingMovies();
+  const movies = await userHelpers.getMovies();
+  res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user, movies, upcomingMovies });
 });
 
 router.get('/popup', (req, res) => {
