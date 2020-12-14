@@ -10,6 +10,16 @@ router.get('/', async (req, res, next) => {
   res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user, movies, upcomingMovies });
 });
 
+router.get('/now-showing-movies', async (req, res) => {
+  const nowShowingMovies = await userHelpers.getallMovies();
+  res.render('user/now-showing-movies', { title: 'MovieMaster | Now Showing Movies', nowShowingMovies });
+});
+
+router.get('/upcoming-movies', async (req, res) => {
+  const upcomingMovies = await userHelpers.getallUpcomingMovies();
+  res.render('user/upcoming-movies', { title: 'MovieMaster | Upcoming Movies', upcomingMovies });
+});
+
 router.get('/popup', (req, res) => {
   if (!req.isAuthenticated()) {
     req.session.messages = { error: 'Authentication failed.' };
