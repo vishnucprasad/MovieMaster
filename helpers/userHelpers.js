@@ -90,7 +90,7 @@ module.exports = {
             })
         });
     },
-    getMovieShows: (movieId) => {
+    getMovieShows: (movieId, date) => {
         return new Promise(async (resolve, reject) => {
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
@@ -101,7 +101,8 @@ module.exports = {
                     $unwind: '$shows'
                 }, {
                     $match: {
-                        'shows.movie': ObjectID(movieId)
+                        'shows.movie': ObjectID(movieId),
+                        'shows.date': date
                     }
                 }, {
                     $project: {
@@ -132,7 +133,7 @@ module.exports = {
                         as: 'movieDetails'
                     }
                 }
-            ]).toArray();
+            ]).sort({showTime: 1}).toArray();
             resolve(shows);
         });
     }

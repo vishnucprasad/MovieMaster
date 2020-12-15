@@ -21,10 +21,13 @@ router.get('/upcoming-movies', async (req, res) => {
 });
 
 router.get('/view-movie', async (req, res) => {
-  const shows = await userHelpers.getMovieShows(req.query.movieId);
+  const date = new Date();
+  const todayShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + 1}`);
+  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + 2}`);
   const latestMovies = await userHelpers.getMovies();
   userHelpers.getMovie(req.query.movieId).then((movie) => {
-    res.render('user/view-movie', { title: 'MovieMaster | View Movie', movie, shows, latestMovies });
+    res.render('user/view-movie', { title: 'MovieMaster | View Movie', movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
   }).catch((error) => {
     res.redirect('/');
   });

@@ -43,36 +43,96 @@
 <section class="w3l-grids mt-5">
     <div class="grids-main pt-5">
         <div class="container card_shadow py-lg-3">
-            {{#if shows}}
             <div class="headerhny-title">
                 <div class="w3l-title-grids">
                     <div class="headerhny-left">
-                        <h3 class="hny-title">Now Showing On</h3>
+                        <h3 class="hny-title">Shows</h3>
+                    </div>
+                    <div class="headerhny-right text-lg-right text-dark">
+                        <a class="btn btn-outline-info btn-info text-white" id="today"
+                            onclick="getShows('today','todayShows')">...</a>
+                        <a class="btn btn-outline-info" id="tomorrow"
+                            onclick="getShows('tomorrow','tomorrowShows')">...</a>
+                        <a class="btn btn-outline-info" id="dayAfterTomorrow"
+                            onclick="getShows('dayAfterTomorrow', 'dayAfterTomorrowShows')">...</a>
                     </div>
                 </div>
             </div>
-            {{#each shows}}
-            <div class="row pill_shadow mb-3 py-3 rounded">
-                <div class="col-md-3 pt-2">
-                    <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
-                            class="small text-info">({{this.screenName}})</span></h6>
+            <div id="todayShows">
+                {{#if todayShows}}
+                {{#each todayShows}}
+                <div class="row pill_shadow mb-3 py-3 rounded">
+                    <div class="col-md-3 pt-2">
+                        <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
+                                class="small text-info">({{this.screenName}})</span></h6>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        <h6 class="text-info">{{this.date}}</h6>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        <h6 class="text-info">{{this.showTime}}</h6>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <a href=""
+                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                            Seat</a>
+                    </div>
                 </div>
-                <div class="col-md-3 pt-2 text-center">
-                    <h6 class="text-info">{{this.date}}</h6>
-                </div>
-                <div class="col-md-3 pt-2 text-center">
-                    <h6 class="text-info">{{this.showTime}}</h6>
-                </div>
-                <div class="col-md-3 text-right">
-                    <a href=""
-                        class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                        Seat</a>
-                </div>
+                {{/each}}
+                {{else}}
+                <h3 class="text-center text-dark">No Shows Available</h3>
+                {{/if}}
             </div>
-            {{/each}}
-            {{else}}
-            <h3 class="text-center text-dark">No Shows Available</h3>
-            {{/if}}
+            <div id="tomorrowShows">
+                {{#if tomorrowShows}}
+                {{#each tomorrowShows}}
+                <div class="row pill_shadow mb-3 py-3 rounded">
+                    <div class="col-md-3 pt-2">
+                        <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
+                                class="small text-info">({{this.screenName}})</span></h6>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        <h6 class="text-info">{{this.date}}</h6>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        <h6 class="text-info">{{this.showTime}}</h6>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <a href=""
+                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                            Seat</a>
+                    </div>
+                </div>
+                {{/each}}
+                {{else}}
+                <h3 class="text-center text-dark">No Shows Available</h3>
+                {{/if}}
+            </div>
+            <div id="dayAfterTomorrowShows">
+                {{#if dayAfterTomorrowShows}}
+                {{#each dayAfterTomorrowShows}}
+                <div class="row pill_shadow mb-3 py-3 rounded">
+                    <div class="col-md-3 pt-2">
+                        <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
+                                class="small text-info">({{this.screenName}})</span></h6>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        <h6 class="text-info">{{this.date}}</h6>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        <h6 class="text-info">{{this.showTime}}</h6>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <a href=""
+                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                            Seat</a>
+                    </div>
+                </div>
+                {{/each}}
+                {{else}}
+                <h3 class="text-center text-dark">No Shows Available</h3>
+                {{/if}}
+            </div>
         </div>
     </div>
 </section>
@@ -129,3 +189,48 @@
     </div>
 </section>
 {{/if}}
+<script>
+    $('#tomorrowShows').hide();
+    $('#dayAfterTomorrowShows').hide();
+
+    $(document).ready(() => {
+        function getDayString(day) {
+            switch (day) {
+                case 0:
+                    return 'SUN'
+                    break;
+                case 1:
+                    return 'MON'
+                    break;
+                case 2:
+                    return 'TUE'
+                    break;
+                case 3:
+                    return 'WED'
+                    break;
+                case 4:
+                    return 'THE'
+                    break;
+                case 5:
+                    return 'FRI'
+                    break;
+                case 6:
+                    return 'SAT'
+                    break;
+                default:
+
+            }
+        }
+
+        const date = new Date();
+        const day = date.getDay();
+
+        const today = date.getDate() + ' - ' + getDayString(day);
+        const tomorrow = date.getDate() + 1 + ' - ' + getDayString(day + 1);
+        const dayAfterTomorrow = date.getDate() + 2 + ' - ' + getDayString(day + 2);
+
+        $('#today').html(today)
+        $('#tomorrow').html(tomorrow)
+        $('#dayAfterTomorrow').html(dayAfterTomorrow)
+    });
+</script>

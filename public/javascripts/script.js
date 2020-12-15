@@ -58,3 +58,16 @@ const authPopup = (e, url) => {
         'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top +
         ',toolbar=0,scrollbars=0,status=0,resizable=0,location=0,menuBar=0');
 }
+
+function getShows(btn, ID) {
+    $('#todayShows').hide()
+    $('#tomorrowShows').hide()
+    $('#dayAfterTomorrowShows').hide()
+    
+    $('#today').removeClass('btn-info text-white')
+    $('#tomorrow').removeClass('btn-info text-white')
+    $('#dayAfterTomorrow').removeClass('btn-info text-white')
+
+    $(`#${btn}`).addClass('btn-info text-white');
+    $(`#${ID}`).fadeIn();
+}
