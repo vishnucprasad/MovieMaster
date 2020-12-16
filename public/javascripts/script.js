@@ -71,3 +71,16 @@ function getShows(btn, ID) {
     $(`#${btn}`).addClass('btn-info text-white');
     $(`#${ID}`).fadeIn();
 }
+
+function showDetails() {
+    $('#submissionForm').slideDown();
+
+    var allSeatsVals = [];
+
+    $('#seatsBlock :checked').each(function () {
+        allSeatsVals.push($(this).val());
+    });
+
+    $('#NumberDisplay').val(allSeatsVals.length);
+    $('#seatsDisplay').val(allSeatsVals);
+}

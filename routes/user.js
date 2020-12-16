@@ -109,4 +109,9 @@ router.get('/logout', (req, res) => {
   res.json({ status: true });
 });
 
+router.get('/book-seat', async (req, res) => {
+  const show = await userHelpers.getShow(req.query);
+  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', show });
+});
+
 module.exports = router;

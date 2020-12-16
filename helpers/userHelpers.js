@@ -136,5 +136,55 @@ module.exports = {
             ]).sort({showTime: 1}).toArray();
             resolve(shows);
         });
+    },
+    getShow: ({ showId, screenId }) => {
+        return new Promise(async (resolve, reject) => {
+            const show = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        _id: ObjectID(screenId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $match: {
+                        'shows._id': ObjectID(showId)
+                    }
+                }, {
+                    $project: {
+                        theatre: '$theatre',
+                        screen: '$_id',
+                        screenName: '$screenName',
+                        seats: '$seats',
+                        show: '$shows._id',
+                        movie: '$shows.movie',
+                        date: '$shows.date',
+                        showTime: '$shows.showTime',
+                        vip: '$shows.vip',
+                        premium: '$shows.premium',
+                        executive: '$shows.executive',
+                        normal: '$shows.normal'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.THEATRE_COLLECTION,
+                        localField: 'theatre',
+                        foreignField: '_id',
+                        as: 'theatreDetails'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.MOVIE_COLLECTION,
+                        localField: 'movie',
+                        foreignField: '_id',
+                        as: 'movieDetails'
+                    }
+                }
+            ]).toArray();
+            console.log(show);
+            console.log(show[0].movieDetails);
+            console.log(show[0].theatreDetails);
+            resolve(show);
+        });
     }
 }
