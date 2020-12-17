@@ -69,7 +69,6 @@ details,
 embed,
 figure,
 figcaption,
-footer,
 header,
 hgroup,
 menu,
@@ -95,7 +94,6 @@ aside,
 details,
 figcaption,
 figure,
-footer,
 header,
 hgroup,
 menu,
@@ -269,7 +267,7 @@ section  {
     flex-wrap: wrap;
 }
 
-.container {
+.seat-container {
     display: -webkit-flex;
     display: -webkit-box;
     display: -moz-flex;

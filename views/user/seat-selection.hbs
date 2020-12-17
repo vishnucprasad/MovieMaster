@@ -3,7 +3,7 @@
 <section onload="onLoaderFunc()" style="background: url(/images/desk.jpg) no-repeat center; background-size: cover"
     class="pt-5">
     <h1 class="text-center text-uppercase text-warning mt-5">Select Seats</h1>
-    <div class="container">
+    <div class="container seat-container">
         <div class="w3ls-reg my-4">
             <h3 class="text-uppercase text-white text-center mb-4" style="width: 100%;">
                 {{0.theatreDetails.0.theatreName}}</h3>
@@ -29,7 +29,7 @@
                     <div class="screen">
                         <h2 class="wthree">Screen</h2>
                     </div>
-                    <button onclick="showDetails()">Confirm Selection</button>
+                    <button class="btn btn-light" onclick="showDetails()">Confirm Selection</button>
                 </div>
             </div>
             <!-- //seat layout -->
