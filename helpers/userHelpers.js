@@ -155,7 +155,13 @@ module.exports = {
                         theatre: '$theatre',
                         screen: '$_id',
                         screenName: '$screenName',
-                        seats: '$seats',
+                        seatArrangement: {
+                            totalSeats: '$seats',
+                            columns: '$seatColumn',
+                            vipRows: '$vipRows',
+                            premiumRows: '$premiumRows',
+                            executiveRows: '$exicutiveRows'
+                        },
                         show: '$shows._id',
                         movie: '$shows.movie',
                         date: '$shows.date',

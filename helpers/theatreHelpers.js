@@ -83,9 +83,11 @@ module.exports = {
             });
         });
     },
-    addScreens: ({ screenName, seats }, theatreId) => {
+    addScreens: (screenDetails, theatreId) => {
+        screenDetails.theatre = ObjectID(theatreId);
+
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.SCREEN_COLLECTION).insertOne({ theatre: ObjectID(theatreId), screenName, seats }).then((response) => {
+            db.get().collection(collection.SCREEN_COLLECTION).insertOne(screenDetails).then((response) => {
                 resolve({ data: response.ops[0], alertMessage: 'Added Successfully.' });
             }).catch((error) => {
                 reject({ error, errMessage: 'Failed to add screen.' });
@@ -107,15 +109,14 @@ module.exports = {
             });
         });
     },
-    editScreen: ({ screenId, screenName, seats }) => {
+    editScreen: (screenDetails) => {
+        const screenId = screenDetails.screenId;
+        delete screenDetails.screenId;
         return new Promise((resolve, reject) => {
             db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                 _id: ObjectID(screenId)
             }, {
-                $set: {
-                    screenName,
-                    seats
-                }
+                $set: screenDetails
             }).then((response) => {
                 resolve({ response, alertMessage: 'Successfully updated screen details.' });
             }).catch((error) => {

@@ -259,7 +259,7 @@ section  {
 }
 
 .w3ls-reg {
-    width: 700px;
+    width: 100%;
     margin: 0 5vw;
     background: rgba(128, 128, 128, 0.34);
     padding: 3.5vw;
@@ -414,7 +414,12 @@ h2.wthree {
 }
 
 .seatVGap {
-    height: 40px;
+    width: 100px;
+    height: 60px;
+}
+
+.sections {
+    width: 100% !important;
 }
 
 table {
