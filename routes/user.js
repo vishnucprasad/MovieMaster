@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
+const isUser = require('../middleware/auth').isUser;
 
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
@@ -12,12 +13,12 @@ router.get('/', async (req, res, next) => {
 
 router.get('/now-showing-movies', async (req, res) => {
   const nowShowingMovies = await userHelpers.getallMovies();
-  res.render('user/now-showing-movies', { title: 'MovieMaster | Now Showing Movies', nowShowingMovies });
+  res.render('user/now-showing-movies', { title: 'MovieMaster | Now Showing Movies', user: req.user, nowShowingMovies });
 });
 
 router.get('/upcoming-movies', async (req, res) => {
   const upcomingMovies = await userHelpers.getallUpcomingMovies();
-  res.render('user/upcoming-movies', { title: 'MovieMaster | Upcoming Movies', upcomingMovies });
+  res.render('user/upcoming-movies', { title: 'MovieMaster | Upcoming Movies', user: req.user, upcomingMovies });
 });
 
 router.get('/view-movie', async (req, res) => {
@@ -27,7 +28,7 @@ router.get('/view-movie', async (req, res) => {
   const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + 2}`);
   const latestMovies = await userHelpers.getMovies();
   userHelpers.getMovie(req.query.movieId).then((movie) => {
-    res.render('user/view-movie', { title: 'MovieMaster | View Movie', movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
+    res.render('user/view-movie', { title: 'MovieMaster | View Movie', user: req.user, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
   }).catch((error) => {
     res.redirect('/');
   });
@@ -109,9 +110,14 @@ router.get('/logout', (req, res) => {
   res.json({ status: true });
 });
 
-router.get('/book-seat', async (req, res) => {
+router.get('/book-seat', isUser, async (req, res) => {
   const show = await userHelpers.getShow(req.query);
-  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', show });
+  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', user: req.user, show });
+});
+
+router.get('/checkout', isUser, async (req, res) => {
+  const show = await userHelpers.getShow(req.query);
+  res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, show, checkoutDetails: req.query });
 });
 
 module.exports = router;

@@ -8,7 +8,7 @@
             <h3 class="text-uppercase text-white text-center mb-4" style="width: 100%;">
                 {{0.theatreDetails.0.theatreName}}</h3>
             <h class="text-uppercase text-info text-center mb-4" style="width: 100%;">{{0.screenName}} &nbsp; | &nbsp;
-                {{0.date}} &nbsp; | &nbsp; {{0.showTime}}</h>
+                {{0.date}} &nbsp; | &nbsp; {{0.showTime}} &nbsp; | &nbsp; <span class="text-capitalize">{{0.movieDetails.0.movieTitle}}</span></h>
             <!-- //input fields -->
             <!-- seat availabilty list -->
             <ul class="seat_w3ls" style="width: 100%;">
@@ -36,18 +36,36 @@
             <!-- details after booking displayed here -->
             <div class="card card_shadow mt-4" style="width: 100%; display: none;" id="submissionForm">
                 <div class="card-body">
-                    <form class="mt-4" action="/checkout" method="POST">
+                    <form class="mt-4" id="bookingForm">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-12" hidden>
                                 <div class="form-group">
-                                    <label for="NumberDisplay" class="text-dark">Number of Seats</label>
-                                    <input type="text" class="form-control" id="NumberDisplay" required readonly>
+                                    <label for="showId" class="text-dark">Show Id</label>
+                                    <input type="text" class="form-control" id="showId" name="showId" value="{{0.show}}" required readonly>
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-12" hidden>
+                                <div class="form-group">
+                                    <label for="screenId" class="text-dark">Screen</label>
+                                    <input type="text" class="form-control" id="screenId" name="screenId" value="{{0.screen}}" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="NumberDisplay" class="text-dark">Number of Seats</label>
+                                    <input type="text" class="form-control" name="numberOfSeats" id="NumberDisplay" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="PriceDisplay" class="text-dark">Total Price</label>
+                                    <input type="text" class="form-control" name="totalAmount" id="PriceDisplay" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="seatsDisplay" class="text-dark">Seats</label>
-                                    <input type="text" class="form-control" id="seatsDisplay" required readonly>
+                                    <input type="text" class="form-control" name="seats" id="seatsDisplay" required readonly>
                                 </div>
                             </div>
                         </div>
@@ -72,6 +90,8 @@
     const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     for (i = 0; i <= totalRows + 1; i++) {
+        let price = i <= vipRows ? {{show.0.vip}} : (i <= (vipRows + premiumRows) ? {{show.0.premium}} : (i <= (vipRows + premiumRows + executiveRows) ? {{show.0.executive}} : {{show.0.normal}}));
+
         if (i === totalRows + 1) {
             if ((totalSeats - totalRows * totalColumns) > 0) {
                 const row = document.createElement("tr");
@@ -94,7 +114,7 @@
                         }
                         const seat = document.createElement("td");
                         seat.setAttribute('id', `seat${j}`);
-                        seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}">`
+                        seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}" id="${alphabets.charAt(i - 1)}${j}" data-price="${price}">`
                         document.getElementById(`row${i}`).appendChild(seat)
                     }
                 }
@@ -140,7 +160,7 @@
                     }
                     const seat = document.createElement("td");
                     seat.setAttribute('id', `seat${j}`);
-                    seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}">`
+                    seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}" id="${alphabets.charAt(i - 1)}${j}" data-price="${price}">`
                     document.getElementById(`row${i}`).appendChild(seat)
                 }
             }

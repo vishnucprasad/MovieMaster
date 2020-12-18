@@ -50,11 +50,11 @@
                     </div>
                     <div class="headerhny-right text-lg-right text-dark">
                         <a class="btn btn-outline-info btn-info text-white" id="today"
-                            onclick="getShows('today','todayShows')">...</a>
+                            onclick="getShows('today','todayShows')">Today</a>
                         <a class="btn btn-outline-info" id="tomorrow"
-                            onclick="getShows('tomorrow','tomorrowShows')">...</a>
+                            onclick="getShows('tomorrow','tomorrowShows')">Tomorrow</a>
                         <a class="btn btn-outline-info" id="dayAfterTomorrow"
-                            onclick="getShows('dayAfterTomorrow', 'dayAfterTomorrowShows')">...</a>
+                            onclick="getShows('dayAfterTomorrow', 'dayAfterTomorrowShows')">Day After Tomorrow</a>
                     </div>
                 </div>
             </div>
@@ -192,45 +192,4 @@
 <script>
     $('#tomorrowShows').hide();
     $('#dayAfterTomorrowShows').hide();
-
-    $(document).ready(() => {
-        function getDayString(day) {
-            switch (day) {
-                case 0:
-                    return 'SUN'
-                    break;
-                case 1:
-                    return 'MON'
-                    break;
-                case 2:
-                    return 'TUE'
-                    break;
-                case 3:
-                    return 'WED'
-                    break;
-                case 4:
-                    return 'THE'
-                    break;
-                case 5:
-                    return 'FRI'
-                    break;
-                case 6:
-                    return 'SAT'
-                    break;
-                default:
-
-            }
-        }
-
-        const date = new Date();
-        const day = date.getDay();
-
-        const today = date.getDate() + ' - ' + getDayString(day);
-        const tomorrow = date.getDate() + 1 + ' - ' + getDayString(day + 1);
-        const dayAfterTomorrow = date.getDate() + 2 + ' - ' + getDayString(day + 2);
-
-        $('#today').html(today)
-        $('#tomorrow').html(tomorrow)
-        $('#dayAfterTomorrow').html(dayAfterTomorrow)
-    });
 </script>

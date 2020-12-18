@@ -42,7 +42,7 @@ const cancelEditTheatreDetails = (e) => {
     document.getElementById('edit').removeAttribute('hidden');
 }
 
-window.addEventListener('message', function(e) {
+window.addEventListener('message', function (e) {
     if (e.data !== 'popup-done') { return; }
     window.location.reload();
 });
@@ -63,7 +63,7 @@ function getShows(btn, ID) {
     $('#todayShows').hide()
     $('#tomorrowShows').hide()
     $('#dayAfterTomorrowShows').hide()
-    
+
     $('#today').removeClass('btn-info text-white')
     $('#tomorrow').removeClass('btn-info text-white')
     $('#dayAfterTomorrow').removeClass('btn-info text-white')
@@ -73,7 +73,7 @@ function getShows(btn, ID) {
 }
 
 function showDetails() {
-    $('#submissionForm').slideDown();
+    let price = 0;
 
     var allSeatsVals = [];
 
@@ -81,6 +81,32 @@ function showDetails() {
         allSeatsVals.push($(this).val());
     });
 
-    $('#NumberDisplay').val(allSeatsVals.length);
-    $('#seatsDisplay').val(allSeatsVals);
+    if (allSeatsVals.length < 1) {
+        Swal.fire(
+            'No Seat Selected.',
+            'Please select atleast one seat.',
+            'info'
+        )
+    } else if (allSeatsVals.length > 10) {
+        Swal.fire(
+            'Maximum 10 seats.',
+            'You are only able to select a maximum of 10 seats per order.',
+            'info'
+        )
+    } else {
+        allSeatsVals.forEach(seat => {
+            price += parseInt($(`#${seat}`).data('price'));
+        });
+
+        $('#NumberDisplay').val(allSeatsVals.length);
+        $('#PriceDisplay').val(price);
+        $('#seatsDisplay').val(allSeatsVals);
+
+        $('#submissionForm').slideDown();
+    }
 }
+
+$('#bookingForm').submit((e) => {
+    e.preventDefault();
+    location.href = `/checkout?${$('#bookingForm').serialize()}`;
+});
