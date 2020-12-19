@@ -1,0 +1,99 @@
+<section class="w3l-main-slider position-relative">
+    <div class="companies20-content">
+        <div class="item">
+            <li>
+                <div class="slider-info banner-view bg bg2"
+                    style="background: url(/images/movies/upcoming-movies/posters/{{movie._id}}.jpg) no-repeat center; background-size: cover; border-radius: 0;">
+                    <div class="banner-info">
+                        <p class="text-truncate mb-3">
+                            <span class="bg-warning font-weight-bold text-truncate rounded px-3 py-1">
+                                {{movie.type}}
+                            </span>
+                            <span class="bg-info font-weight-bold text-truncate rounded ml-3 px-3 py-1">
+                                {{movie.language}}
+                            </span>
+                        </p>
+                        <h3>{{movie.movieTitle}}</h3>
+                        <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Cast :
+                            </span>{{movie.cast}}</p>
+                        <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Director :
+                            </span>{{movie.director}}</p>
+                        <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Run Time :
+                            </span>{{movie.runTime}}</p>
+                        <p class="text-truncate mt-1"><span class="font-weight-bold">Release Date :
+                            </span>{{movie.releaseDate}}</p>
+                        <a href="#small-dialog{{movie._id}}" class="popup-with-zoom-anim play-view1">
+                            <span class="video-play-icon">
+                                <span class="fa fa-play"></span>
+                            </span>
+                            <h6>Watch Trailer</h6>
+                        </a>
+                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
+                        <div id="small-dialog{{movie._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
+                            <iframe width="560" height="315" src="{{movie.trailerLink}}" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </div>
+    </div>
+</section>
+{{#if upcomingMovies}}
+<section class="w3l-grids mt-5">
+    <div class="grids-main py-5">
+        <div class="container py-lg-3">
+            <div class="headerhny-title">
+                <div class="w3l-title-grids">
+                    <div class="headerhny-left">
+                        <h3 class="hny-title">More Upcoming Movies</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="w3l-populohny-grids">
+                {{#each upcomingMovies}}
+                <div class="item vhny-grid">
+                    <div class="box16">
+                        <figure>
+                            <img class="" src="/images/movies/upcoming-movies/posters/{{this._id}}.jpg" alt=""
+                                style="height: 25rem; object-fit: cover !important;">
+                        </figure>
+                        <div class="box-content">
+                            <h3 class="title">{{this.movieTitle}}</h3>
+                            <h4>
+                                <span class="post"><span class="fa fa-clock-o"> Run Time : </span>
+                                    {{this.runTime}}</span>
+                            </h4>
+                            <h4>
+                                <span
+                                    class="post bg-warning text-dark font-weight-bold text-truncate rounded px-3">{{this.type}}</span>
+                            </h4>
+                            <div class="row mt-5">
+                                <div class="col text-center">
+                                    <a href="/view-movie?movieId={{this._id}}"
+                                        class="btn btn-info text-uppercase font-weight-bold btn-sm rounded-pill px-5">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#small-dialog{{this._id}}" class="popup-with-zoom-anim play-view1">
+                            <span class="fa fa-play video-icon" aria-hidden="true"></span>
+                        </a>
+                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
+                        <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
+                            <iframe src="{{this.trailerLink}}" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</section>
+{{/if}}
+<script>
+    $('#tomorrowShows').hide();
+    $('#dayAfterTomorrowShows').hide();
+</script>

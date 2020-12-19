@@ -34,6 +34,15 @@ router.get('/view-movie', async (req, res) => {
   });
 });
 
+router.get('/view-upcoming-movie', async (req, res) => {
+  const upcomingMovies = await userHelpers.getUpcomingMovies();
+  userHelpers.getUpcomingMovie(req.query.movieId).then((movie) => {
+    res.render('user/view-upcoming-movie', { title: 'MovieMaster | View Upcoming Movie', user: req.user, movie, upcomingMovies });
+  }).catch((error) => {
+    res.redirect('/');
+  });
+});
+
 router.post('/search', (req, res) => {
   userHelpers.searchMovie(req.body).then(async (products) => {
     res.json(products);

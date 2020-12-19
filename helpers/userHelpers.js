@@ -81,6 +81,15 @@ module.exports = {
             resolve(upcomingMovies);
         });
     },
+    getUpcomingMovie: (movieId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).findOne({ _id: ObjectID(movieId) }).then((movie) => {
+                resolve(movie);
+            }).catch((error) => {
+                reject({ error, errMessage: 'Cannot find movie.' });
+            })
+        });
+    },
     getMovie: (movieId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.MOVIE_COLLECTION).findOne({ _id: ObjectID(movieId) }).then((movie) => {
