@@ -34,6 +34,27 @@ router.get('/view-movie', async (req, res) => {
   });
 });
 
+router.post('/search', (req, res) => {
+  userHelpers.searchMovie(req.body).then(async (products) => {
+    res.json(products);
+  });
+});
+
+router.get('/search-movie', (req, res) => {
+  userHelpers.searchMovie(req.query).then((movies) => {
+    let searchNotFound = false;
+
+    if (movies[0]) {
+      searchedMovies = movies;
+      resultCount = movies.length;
+    } else {
+      searchNotFound = true;
+    }
+
+    res.render('user/search-result', { title: `MovieMaster | Search?q=${req.query.searchQuery}`, user: req.user, searchedMovies, resultCount, searchQuery: req.query.searchQuery, searchNotFound });
+  });
+});
+
 router.get('/popup', (req, res) => {
   if (!req.isAuthenticated()) {
     req.session.messages = { error: 'Authentication failed.' };

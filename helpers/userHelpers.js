@@ -192,5 +192,15 @@ module.exports = {
             console.log(show[0].theatreDetails);
             resolve(show);
         });
+    },
+    searchMovie: ({ searchQuery }) => {
+        return new Promise(async (resolve, reject) => {
+            searchResult = await db.get().collection(collection.MOVIE_COLLECTION).find({
+                movieTitle: {
+                    $regex: new RegExp(searchQuery, 'i')
+                }
+            }).toArray();
+            resolve(searchResult);
+        });
     }
 }

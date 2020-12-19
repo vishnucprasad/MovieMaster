@@ -91,3 +91,8 @@ select {
 .pill_shadow:hover {
   box-shadow: 3px 2px 8px #888888;
 }
+
+.results-pill {
+  height: 4rem;
+  max-height: 4rem;
+}
