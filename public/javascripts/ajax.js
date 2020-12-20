@@ -134,3 +134,81 @@ $('#search-box').submit((e) => {
         location.href = `/search-movie?searchQuery=${searchQuery}`;
     }
 });
+
+const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
+    e.preventDefault();
+    $.ajax({
+        url: '/checkoutRazorpay',
+        method: 'post',
+        data: {
+            screenId,
+            showId,
+            numberOfSeats,
+            seats,
+            totalAmount
+        },
+        success: (response) => {
+            console.log(response);
+            if (response.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong! Please try again.'
+                })
+            } else {
+                razorpayPayment(response);
+            }
+        }
+    });
+}
+
+const razorpayPayment = (order) => {
+    var options = {
+        "key": "rzp_test_fsFqCPdvUxG9MI", // Enter the Key ID generated from the Dashboard
+        "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "MovieMaster",
+        "description": "Secure Payments",
+        "image": "/favicon.ico",
+        "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            verifyPayment(response, order);
+        },
+        "prefill": {
+            "name": "Vishnu C Prasad",
+            "email": "vishnucprasad@example.com",
+            "contact": "9999999999"
+        },
+        "notes": {
+            "address": "EasyCart PVT.Ltd"
+        },
+        "theme": {
+            "color": "#007bff"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+
+const verifyPayment = (payment, order) => {
+    console.log(order);
+    $.ajax({
+        url: '/verify-razorpay-payment',
+        data: {
+            payment,
+            order
+        },
+        method: 'post',
+        success: (response) => {
+            if (response.status) {
+                location.href = `/view-order?orderId=${order.receipt}`
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: response.errMessage
+                })
+            }
+        }
+    });
+}

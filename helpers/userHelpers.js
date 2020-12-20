@@ -2,6 +2,12 @@ const db = require('../config/connection');
 const collection = require('../config/collection');
 const { ObjectID } = require('mongodb');
 const { sendVerificationToken, checkVerificationToken } = require('../utils/verify');
+const Razorpay = require('razorpay');
+const { resolve } = require('path');
+const instance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 module.exports = {
     doSignup: ({ name, contryCode, mobile }) => {
@@ -142,7 +148,7 @@ module.exports = {
                         as: 'movieDetails'
                     }
                 }
-            ]).sort({showTime: 1}).toArray();
+            ]).sort({ showTime: 1 }).toArray();
             resolve(shows);
         });
     },
@@ -196,9 +202,6 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            console.log(show);
-            console.log(show[0].movieDetails);
-            console.log(show[0].theatreDetails);
             resolve(show);
         });
     },
@@ -210,6 +213,99 @@ module.exports = {
                 }
             }).toArray();
             resolve(searchResult);
+        });
+    },
+    placeOrder: ({ screenId, showId, numberOfSeats, seats, totalAmount }, userId, { paymentMethod }) => {
+        return new Promise((resolve, reject) => {
+            const orderObject = {
+                userId: ObjectID(userId),
+                screenId: ObjectID(screenId),
+                showId: ObjectID(showId),
+                numberOfSeats,
+                seats: seats.split(','),
+                totalAmount,
+                paymentMethod,
+                orderDate: new Date(),
+                status: 'pending'
+            }
+
+            db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObject).then((response) => {
+                resolve(response.ops[0]);
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to place order.' });
+            })
+        });
+    },
+    getOrder: (orderId, userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).findOne({
+                _id: ObjectID(orderId),
+                userId: ObjectID(userId)
+            }).then((order) => {
+                resolve(order);
+            }).catch((error) => {
+                reject({ error, errMessage: 'Cannot find order.' })
+            });
+        });
+    },
+    generateRazorpay: (orderId, totalAmount) => {
+        return new Promise((resolve, reject) => {
+            var options = {
+                amount: totalAmount * 100,  // amount in the smallest currency unit
+                currency: "INR",
+                receipt: orderId.toString()
+            };
+            instance.orders.create(options, function (error, order) {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                } else {
+                    console.log(order);
+                    resolve(order)
+                }
+            });
+        });
+    },
+    verifyRazorpayPayment: (paymentDetails) => {
+        return new Promise((resolve, reject) => {
+            const crypto = require('crypto');
+
+            let hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+            hmac.update(paymentDetails['payment[razorpay_order_id]'] + '|' + paymentDetails['payment[razorpay_payment_id]']);
+            hmac = hmac.digest('hex');
+
+            if (hmac === paymentDetails['payment[razorpay_signature]']) {
+                resolve({ status: true });
+            } else {
+                reject({ status: false, errMessage: 'Payment falied' });
+            }
+        });
+    },
+    confirmOrder: (orderId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).updateOne({
+                _id: ObjectID(orderId)
+            }, {
+                $set: {
+                    status: 'booked'
+                }
+            }).then(async (response) => {
+                const order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ _id: ObjectID(orderId) });
+                db.get().collection(collection.SCREEN_COLLECTION).updateOne({
+                    _id: ObjectID(order.screenId),
+                    'shows._id': ObjectID(order.showId)
+                }, {
+                    $push: {
+                        'shows.$.reservedSeats': { $each: order.seats }
+                    }
+                }).then((response) => {
+                    resolve(response);
+                }).catch((error) => {
+                    reject(error);
+                });
+            }).catch((error) => {
+                reject(error);
+            });
         });
     }
 }

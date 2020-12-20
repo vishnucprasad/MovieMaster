@@ -150,4 +150,38 @@ router.get('/checkout', isUser, async (req, res) => {
   res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, show, checkoutDetails: req.query });
 });
 
+router.post('/checkoutRazorpay', isUser, (req, res) => {
+  userHelpers.placeOrder(req.body, req.user._id, { paymentMethod: 'razorpay' }).then((order) => {
+    userHelpers.generateRazorpay(order._id, order.totalAmount).then((response) => {
+      res.json(response);
+    }).catch((error) => {
+      res.json(error);
+    });
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/verify-razorpay-payment', (req, res) => {
+  userHelpers.verifyRazorpayPayment(req.body).then((status) => {
+    userHelpers.confirmOrder(req.body['order[receipt]']).then((response) => {
+      res.json(status);
+    });
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.get('/view-order', isUser, (req, res) => {
+  userHelpers.getOrder(req.query.orderId, req.user._id).then((order) => {
+    userHelpers.getShow({ showId: order.showId, screenId: order.screenId }).then((show) => {
+      order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`
+      res.render('user/view-order', {title: 'MovieMaster | View Order', user: req.user, order, show});
+    });
+  }).catch((error) => {
+    req.flash('error', error.errMessage);
+    req.redirect('/');
+  });
+});
+
 module.exports = router;
