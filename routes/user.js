@@ -151,7 +151,7 @@ router.get('/checkout', isUser, async (req, res) => {
 });
 
 router.post('/checkoutRazorpay', isUser, (req, res) => {
-  userHelpers.placeOrder(req.body, req.user._id, { paymentMethod: 'razorpay' }).then((order) => {
+  userHelpers.placeOrder(req.body, req.user._id, { paymentMethod: 'Razorpay' }).then((order) => {
     userHelpers.generateRazorpay(order._id, order.totalAmount).then((response) => {
       res.json(response);
     }).catch((error) => {
@@ -172,11 +172,34 @@ router.post('/verify-razorpay-payment', (req, res) => {
   });
 });
 
+router.post('/checkoutPaypal', (req, res) => {
+  userHelpers.placeOrder(req.body, req.user._id, { paymentMethod: 'PayPal' }).then(async (order) => {
+    const show = await userHelpers.getShow({ showId: order.showId, screenId: order.screenId });
+    userHelpers.createPaypal(show, order).then((approvalLink) => {
+      res.json({ approvalLink });
+    });
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.get('/success-paypal', (req, res) => {
+  userHelpers.getVerifiedPaypalOrder(req.query.paymentId).then((order) => {
+    userHelpers.confirmOrder(order._id).then((response) => {
+      res.redirect(`/view-order?orderId=${order._id}`);
+    });
+  });
+});
+
+router.get('/cancel-paypal', (req, res) => {
+  res.redirect('/');
+});
+
 router.get('/view-order', isUser, (req, res) => {
   userHelpers.getOrder(req.query.orderId, req.user._id).then((order) => {
     userHelpers.getShow({ showId: order.showId, screenId: order.screenId }).then((show) => {
       order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`
-      res.render('user/view-order', {title: 'MovieMaster | View Order', user: req.user, order, show});
+      res.render('user/view-order', { title: 'MovieMaster | View Order', user: req.user, order, show });
     });
   }).catch((error) => {
     req.flash('error', error.errMessage);

@@ -2,6 +2,12 @@ const db = require('../config/connection');
 const collection = require('../config/collection');
 const { ObjectID } = require('mongodb');
 const { sendVerificationToken, checkVerificationToken } = require('../utils/verify');
+var paypal = require('paypal-rest-sdk');
+paypal.configure({
+    'mode': 'sandbox',
+    'client_id': process.env.PAYPAL_CLIENT_ID,
+    'client_secret': process.env.PAYPAL_CLIENT_SECRET
+});
 const Razorpay = require('razorpay');
 const { resolve } = require('path');
 const instance = new Razorpay({
@@ -279,6 +285,64 @@ module.exports = {
             } else {
                 reject({ status: false, errMessage: 'Payment falied' });
             }
+        });
+    },
+    createPaypal: (show, order) => {
+        return new Promise((resolve, reject) => {
+            const create_payment_json = {
+                "intent": "ORDER",
+                "payer": {
+                    "payment_method": "paypal"
+                },
+                "redirect_urls": {
+                    "return_url": process.env.PAYPAL_RETURN_URL,
+                    "cancel_url": process.env.PAYPAL_CANCEL_URL
+                },
+                "transactions": [{
+                    "item_list": {
+                        "items": [{
+                            "name": "item",
+                            "sku": "001",
+                            "price": order.totalAmount / order.numberOfSeats,
+                            "currency": "INR",
+                            "quantity": order.numberOfSeats
+                        }]
+                    },
+                    "amount": {
+                        "currency": "INR",
+                        "total": order.totalAmount
+                    },
+                    "description": "MovieMaster ticket booking."
+                }]
+            };
+
+            paypal.payment.create(create_payment_json, function (error, payment) {
+                if (error) {
+                    reject({ error, errMessage: 'Unable to make payment. Please Try again.' });
+                } else {
+                    db.get().collection(collection.ORDER_COLLECTION).updateOne({
+                        _id: ObjectID(order._id)
+                    }, {
+                        $set: {
+                            paymentId: payment.id
+                        }
+                    }).then((response) => {
+                        const approvalLink = payment.links.filter(link => link.rel === 'approval_url');
+                        resolve(approvalLink[0].href);
+                    }).catch((error) => {
+                        reject({ error, errMessage: 'Unable to make payment. Please Try again.' });
+                    });
+                }
+            });
+        });
+    },
+    getVerifiedPaypalOrder: (paymentId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).findOne({ paymentId }).then((order) => {
+                resolve(order);
+            }).catch((error) => {
+                reject(error);
+            });
         });
     },
     confirmOrder: (orderId) => {

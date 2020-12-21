@@ -212,3 +212,24 @@ const verifyPayment = (payment, order) => {
         }
     });
 }
+
+const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
+    e.preventDefault();
+    $.ajax({
+        url: '/checkoutPaypal',
+        method: 'post',
+        data: {
+            screenId,
+            showId,
+            numberOfSeats,
+            seats,
+            totalAmount
+        },
+        success: (response) => {
+            console.log(response);
+            if (response.approvalLink) {
+                location.href = response.approvalLink;
+            }
+        }
+    });
+}

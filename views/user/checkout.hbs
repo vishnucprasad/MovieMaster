@@ -105,7 +105,7 @@
                         <div class="row">
                             {{#with checkoutDetails}}
                             <div class="col-md-6">
-                                <a href="" class="btn btn-warning btn-paypal rounded py-1">
+                                <a type="button" onclick="checkoutPaypal(event, '{{screenId}}', '{{showId}}', '{{numberOfSeats}}', '{{seats}}', '{{totalAmount}}' )" class="btn btn-warning btn-paypal rounded py-1">
                                     <img src="/assets/images/Paypal.png" style="width: 80%;" class="my-2" alt="">
                                 </a>
                             </div>
