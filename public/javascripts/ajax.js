@@ -137,6 +137,14 @@ $('#search-box').submit((e) => {
 
 const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
     e.preventDefault();
+    swal.fire({
+        title: 'Processing...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        onOpen: () => {
+            swal.showLoading();
+        }
+    });
     $.ajax({
         url: '/checkoutRazorpay',
         method: 'post',
@@ -148,6 +156,7 @@ const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount
             totalAmount
         },
         success: (response) => {
+            swal.close();
             console.log(response);
             if (response.error) {
                 Swal.fire({
@@ -213,8 +222,18 @@ const verifyPayment = (payment, order) => {
     });
 }
 
+
+
 const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
     e.preventDefault();
+    swal.fire({
+        title: 'Processing...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        onOpen: () => {
+            swal.showLoading();
+        }
+    });
     $.ajax({
         url: '/checkoutPaypal',
         method: 'post',
@@ -226,9 +245,16 @@ const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) 
             totalAmount
         },
         success: (response) => {
+            swal.close();
             console.log(response);
             if (response.approvalLink) {
                 location.href = response.approvalLink;
+            } else if (response.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: response.error.errMessage
+                })
             }
         }
     });
