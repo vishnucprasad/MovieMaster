@@ -221,12 +221,19 @@ module.exports = {
             resolve(searchResult);
         });
     },
-    placeOrder: ({ screenId, showId, numberOfSeats, seats, totalAmount }, userId, { paymentMethod }) => {
+    placeOrder: ({ screenId, numberOfSeats, seats, totalAmount }, show, userId, { paymentMethod }) => {
         return new Promise((resolve, reject) => {
             const orderObject = {
                 userId: ObjectID(userId),
                 screenId: ObjectID(screenId),
-                showId: ObjectID(showId),
+                showDetails: {
+                    _id: show[0].show,
+                    screenName: show[0].screenName,
+                    date: show[0].date,
+                    showTime: show[0].showTime
+                },
+                theatreDetails: show[0].theatreDetails[0],
+                movieDetails: show[0].movieDetails[0],
                 numberOfSeats,
                 seats: seats.split(','),
                 totalAmount,
@@ -370,6 +377,12 @@ module.exports = {
             }).catch((error) => {
                 reject(error);
             });
+        });
+    },
+    getAllOrders: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            const orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: ObjectID(userId) }).sort({ orderDate: -1 }).toArray();
+            resolve(orders);
         });
     }
 }

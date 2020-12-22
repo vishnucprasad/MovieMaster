@@ -2,8 +2,14 @@
     <div class="card_shadow rounded">
         <div class="p-4">
             <div class="header">
-                <h6 class="text-primary text-uppercase" style="letter-spacing: 3px;">Order Summary
-                </h6>
+                <div class="row">
+                    <div class="col">
+                        <h6 class="text-primary text-uppercase" style="letter-spacing: 3px;">Order Summary</h6>
+                    </div>
+                    <div class="col">
+                        <a href="/my-orders" class="btn btn-shadow px-5 text-white bg-secondary float-right">My Orders</a>
+                    </div>
+                </div>
             </div>
             <div class="card-body border-bottom p-0 mt-4">
                 <div class="row px-3 pb-3">
@@ -30,13 +36,16 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <h6 class="text-dark">{{show.0.movieDetails.0.movieTitle}}</h6>
+                        <h6 class="text-dark">{{order.movieDetails.movieTitle}}</h6>
                         <div class="my-3">
-                            <p>{{show.0.movieDetails.0.type}}</p>
-                            <p><span class="text-dark font-weight-bold">Language : </span>{{show.0.movieDetails.0.language}}</p>
-                            <p><span class="text-dark font-weight-bold">Runtime : </span>{{show.0.movieDetails.0.runTime}}</p>
-                            <p><span class="text-dark font-weight-bold">Releasedate : </span>{{show.0.movieDetails.0.releaseDate}}</p>
-                            <p><span class="text-dark font-weight-bold">Cast : </span>{{show.0.movieDetails.0.cast}}</p>
+                            <p>{{order.movieDetails.type}}</p>
+                            <p><span class="text-dark font-weight-bold">Language :
+                                </span>{{order.movieDetails.language}}</p>
+                            <p><span class="text-dark font-weight-bold">Runtime : </span>{{order.movieDetails.runTime}}
+                            </p>
+                            <p><span class="text-dark font-weight-bold">Releasedate :
+                                </span>{{order.movieDetails.releaseDate}}</p>
+                            <p><span class="text-dark font-weight-bold">Cast : </span>{{order.movieDetails.cast}}</p>
                         </div>
                     </div>
                     <div class="col-md-8">
@@ -45,17 +54,17 @@
                                 <div class="item vhny-grid">
                                     <div class="box16">
                                         <figure>
-                                            <img class="" src="/images/movies/posters/{{show.0.movieDetails.0._id}}.jpg"
+                                            <img class="" src="/images/movies/posters/{{order.movieDetails._id}}.jpg"
                                                 alt="" style="height: 15rem; object-fit: cover !important;">
                                         </figure>
-                                        <a href="#small-dialog{{show.0.movieDetails.0._id}}"
+                                        <a href="#small-dialog{{order.movieDetails._id}}"
                                             class="popup-with-zoom-anim play-view1">
                                             <span class="fa fa-play video-icon" aria-hidden="true"></span>
                                         </a>
                                         <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                                        <div id="small-dialog{{show.0.movieDetails.0._id}}"
+                                        <div id="small-dialog{{order.movieDetails._id}}"
                                             class="zoom-anim-dialog mfp-hide small-dialog">
-                                            <iframe src="{{show.0.movieDetails.0.trailerLink}}" frameborder="0"
+                                            <iframe src="{{order.movieDetails.trailerLink}}" frameborder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowfullscreen></iframe>
                                         </div>
@@ -70,11 +79,11 @@
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Theatre</h6>
-                    <h6 class="ml-auto text-dark">{{show.0.theatreDetails.0.theatreName}}</h6>
+                    <h6 class="ml-auto text-dark">{{order.theatreDetails.theatreName}}</h6>
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Screen</h6>
-                    <h6 class="ml-auto text-dark">{{show.0.screenName}}</h6>
+                    <h6 class="ml-auto text-dark">{{order.showDetails.screenName}}</h6>
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Seats
@@ -85,12 +94,12 @@
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Date</h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{show.0.date}}
+                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.showDetails.date}}
                     </h6>
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Time</h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{show.0.showTime}}
+                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.showDetails.showTime}}
                     </h6>
                 </div>
             </div>

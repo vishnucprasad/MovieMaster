@@ -210,6 +210,7 @@ const verifyPayment = (payment, order) => {
         method: 'post',
         success: (response) => {
             if (response.status) {
+                console.log(order.receipt);
                 location.href = `/view-order?orderId=${order.receipt}`
             } else {
                 Swal.fire({
@@ -221,8 +222,6 @@ const verifyPayment = (payment, order) => {
         }
     });
 }
-
-
 
 const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
     e.preventDefault();

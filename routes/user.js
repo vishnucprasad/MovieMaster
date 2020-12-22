@@ -150,8 +150,9 @@ router.get('/checkout', isUser, async (req, res) => {
   res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, show, checkoutDetails: req.query });
 });
 
-router.post('/checkoutRazorpay', isUser, (req, res) => {
-  userHelpers.placeOrder(req.body, req.user._id, { paymentMethod: 'Razorpay' }).then((order) => {
+router.post('/checkoutRazorpay', isUser, async (req, res) => {
+  const show = await userHelpers.getShow({ showId: req.body.showId, screenId: req.body.screenId });
+  userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'Razorpay' }).then((order) => {
     userHelpers.generateRazorpay(order._id, order.totalAmount).then((response) => {
       res.json(response);
     }).catch((error) => {
@@ -172,8 +173,9 @@ router.post('/verify-razorpay-payment', (req, res) => {
   });
 });
 
-router.post('/checkoutPaypal', (req, res) => {
-  userHelpers.placeOrder(req.body, req.user._id, { paymentMethod: 'PayPal' }).then(async (order) => {
+router.post('/checkoutPaypal', async (req, res) => {
+  const show = await userHelpers.getShow({ showId: req.body.showId, screenId: req.body.screenId });
+  userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'PayPal' }).then(async (order) => {
     const show = await userHelpers.getShow({ showId: order.showId, screenId: order.screenId });
     userHelpers.createPaypal(show, order).then((approvalLink) => {
       res.json({ approvalLink });
@@ -197,14 +199,18 @@ router.get('/cancel-paypal', (req, res) => {
 
 router.get('/view-order', isUser, (req, res) => {
   userHelpers.getOrder(req.query.orderId, req.user._id).then((order) => {
-    userHelpers.getShow({ showId: order.showId, screenId: order.screenId }).then((show) => {
-      order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`
-      res.render('user/view-order', { title: 'MovieMaster | View Order', user: req.user, order, show });
-    });
+    order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`;
+    res.render('user/view-order', { title: 'MovieMaster | View Order', user: req.user, order });
   }).catch((error) => {
     req.flash('error', error.errMessage);
-    req.redirect('/');
+    res.redirect('/');
   });
 });
+
+router.get('/my-orders', async (req, res) => {
+  const orders = await userHelpers.getAllOrders(req.user._id);
+  console.log(orders);
+  res.render('user/my-orders', { tittle: 'MovieMaster | My Orders', user: req.user, orders })
+})
 
 module.exports = router;
