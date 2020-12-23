@@ -200,7 +200,14 @@ const razorpayPayment = (order) => {
 }
 
 const verifyPayment = (payment, order) => {
-    console.log(order);
+    swal.fire({
+        title: 'Processing...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        onOpen: () => {
+            swal.showLoading();
+        }
+    });
     $.ajax({
         url: '/verify-razorpay-payment',
         data: {
@@ -209,6 +216,7 @@ const verifyPayment = (payment, order) => {
         },
         method: 'post',
         success: (response) => {
+            swal.close();
             if (response.status) {
                 console.log(order.receipt);
                 location.href = `/view-order?orderId=${order.receipt}`

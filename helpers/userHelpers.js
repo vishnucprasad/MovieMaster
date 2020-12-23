@@ -1,6 +1,7 @@
 const db = require('../config/connection');
 const collection = require('../config/collection');
 const { ObjectID } = require('mongodb');
+const mailer = require('../utils/mailer')
 const { sendVerificationToken, checkVerificationToken } = require('../utils/verify');
 var paypal = require('paypal-rest-sdk');
 paypal.configure({
@@ -353,7 +354,7 @@ module.exports = {
             });
         });
     },
-    confirmOrder: (orderId) => {
+    confirmOrder: (orderId, user) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ORDER_COLLECTION).updateOne({
                 _id: ObjectID(orderId)
@@ -363,6 +364,7 @@ module.exports = {
                 }
             }).then(async (response) => {
                 const order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ _id: ObjectID(orderId) });
+                order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`;
                 db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                     _id: ObjectID(order.screenId),
                     'shows._id': ObjectID(order.showDetails._id)
@@ -371,7 +373,23 @@ module.exports = {
                         'shows.$.reservedSeats': { $each: order.seats }
                     }
                 }).then((response) => {
-                    resolve(response);
+                    if (user.email) {
+                        mailer.sendMail({
+                            from: process.env.USER,
+                            to: user.email,
+                            subject: 'Ticket Booked Successfully',
+                            template: 'templates/ticket',
+                            context: { order }
+                        }).then((response) => {
+                            console.log(response);
+                            resolve(response);
+                        }).catch((error) => {
+                            console.log(error);
+                            reject(error);
+                        });
+                    } else {
+                        resolve(response);
+                    }
                 }).catch((error) => {
                     reject(error);
                 });

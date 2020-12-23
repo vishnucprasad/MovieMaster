@@ -1,0 +1,65 @@
+<div style="max-width: 480px; margin: 25px auto; padding: 0 10px;">
+    <div style="box-shadow: 5px 10px 18px rgba(0, 0, 0, 0.2); padding: 8px 16px; background-color: #ffffff;">
+        <h2 style="color: #df0e62; text-align: center; margin: 8px 0 0 0;">{{order.movieDetails.movieTitle}}</h2>
+        <h4 style="color: #127681; text-align: center;"> {{order.theatreDetails.theatreName}} | {{order.showDetails.screenName}} | {{order.showDetails.date}} | {{order.showDetails.showTime}}</h4>
+        <div style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); padding: 8px 16px; background-color: #f1f1f1;">
+            <h3 style="color: #f57b51; text-align: center;">Order Details</h3>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Total Amount:</h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.totalAmount}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Seats({{order.numberOfSeats}}):</h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.seats}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Booked On</h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.orderDate}}</h4>
+            </div>
+        </div>
+        <div
+            style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); padding: 8px 16px; margin: 20px 0; background-color: #f1f1f1;">
+            <h3 style="color: #f57b51; text-align: center;">Movie Details</h3>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">{{order.movieDetails.movieTitle}} <span style="font-weight: normal;">({{order.movieDetails.type}})</span>
+                </h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Language: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.movieDetails.language}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Runtime: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.movieDetails.runTime}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Releasedate: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.movieDetails.releaseDate}}</h4>
+            </div>
+        </div>
+        <div
+            style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); padding: 8px 16px; margin-bottom: 12px; background-color: #f1f1f1;">
+            <h3 style="color: #f57b51; text-align: center;">Theatre and Show Details</h3>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Theatre: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.theatreDetails.theatreName}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Screen: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.showDetails.screenName}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Show Date: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.showDetails.date}}
+                </h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Show Time: </h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.showDetails.showTime}}</h4>
+            </div>
+        </div>
+    </div>
+    <div style="background-color: #f57b51; text-align: center; padding: 8px 16px;">
+        <h3 style="color: #ffffff; text-transform: uppercase; margin: 0;">Status : {{order.status}}</h3>
+    </div>
+</div>

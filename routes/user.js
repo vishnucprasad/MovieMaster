@@ -165,7 +165,7 @@ router.post('/checkoutRazorpay', isUser, async (req, res) => {
 
 router.post('/verify-razorpay-payment', (req, res) => {
   userHelpers.verifyRazorpayPayment(req.body).then((status) => {
-    userHelpers.confirmOrder(req.body['order[receipt]']).then((response) => {
+    userHelpers.confirmOrder(req.body['order[receipt]'], req.user).then((response) => {
       res.json(status);
     });
   }).catch((error) => {
@@ -187,7 +187,7 @@ router.post('/checkoutPaypal', async (req, res) => {
 
 router.get('/success-paypal', (req, res) => {
   userHelpers.getVerifiedPaypalOrder(req.query.paymentId).then((order) => {
-    userHelpers.confirmOrder(order._id).then((response) => {
+    userHelpers.confirmOrder(order._id, req.user).then((response) => {
       res.redirect(`/view-order?orderId=${order._id}`);
     });
   });

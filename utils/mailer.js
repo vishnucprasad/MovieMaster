@@ -1,10 +1,11 @@
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
+const handleBars = require('nodemailer-express-handlebars');
 
 const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
 
-module.exports.sendMail = function (mailDetails) {
+module.exports.sendMail = function (mailOptions) {
     return new Promise(async (resolve, reject) => {
         const accessToken = await oAuth2Client.getAccessToken();
 
@@ -20,12 +21,15 @@ module.exports.sendMail = function (mailDetails) {
             }
         });
 
-        const mailOptions = {
-            from: process.env.USER,
-            to: mailDetails.to,
-            subject: mailDetails.subject,
-            html: mailDetails.html
-        }
+        transport.use('compile', handleBars({          
+                viewEngine: {  
+                extname: '.hbs',
+                layoutsDir: 'views/templates/',
+                defaultLayout : 'main'           
+                },
+                viewPath: './views',                   
+                extName: '.hbs'
+        }));
 
         transport.sendMail(mailOptions).then((response) => {
             resolve(response);
