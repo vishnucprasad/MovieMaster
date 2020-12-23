@@ -96,3 +96,16 @@ select {
   height: 4rem;
   max-height: 4rem;
 }
+
+#NumberDisplay,
+#PriceDisplay,
+#seatsDisplay {
+  background-color: rgb(54 70 93 / 99%);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.reservedSeat::before{
+  background-color: #ff0000 !important;
+  cursor: not-allowed;
+}

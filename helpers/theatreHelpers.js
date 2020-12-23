@@ -407,7 +407,8 @@ module.exports = {
                         'shows.$.vip': showDetails.vip,
                         'shows.$.premium': showDetails.premium,
                         'shows.$.executive': showDetails.executive,
-                        'shows.$.normal': showDetails.normal
+                        'shows.$.normal': showDetails.normal,
+                        'shows.$.reservedSeats': []
                     }
                 }).then((response) => {
                     resolve({ response, alertMessage: 'Successfully updated show details.' });

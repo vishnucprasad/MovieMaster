@@ -245,6 +245,14 @@ const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) 
         },
         success: (response) => {
             swal.close();
+            swal.fire({
+                title: 'Redirecting...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                onOpen: () => {
+                    swal.showLoading();
+                }
+            });
             console.log(response);
             if (response.approvalLink) {
                 location.href = response.approvalLink;

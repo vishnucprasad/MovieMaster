@@ -190,7 +190,8 @@ module.exports = {
                         vip: '$shows.vip',
                         premium: '$shows.premium',
                         executive: '$shows.executive',
-                        normal: '$shows.normal'
+                        normal: '$shows.normal',
+                        reservedSeats: '$shows.reservedSeats'
                     }
                 }, {
                     $lookup: {
@@ -364,7 +365,7 @@ module.exports = {
                 const order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ _id: ObjectID(orderId) });
                 db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                     _id: ObjectID(order.screenId),
-                    'shows._id': ObjectID(order.showId)
+                    'shows._id': ObjectID(order.showDetails._id)
                 }, {
                     $push: {
                         'shows.$.reservedSeats': { $each: order.seats }

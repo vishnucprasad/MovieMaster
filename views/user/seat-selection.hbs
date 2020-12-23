@@ -29,53 +29,11 @@
                     <div class="screen">
                         <h2 class="wthree">Screen</h2>
                     </div>
-                    <button class="btn btn-light" onclick="showDetails()">Confirm Selection</button>
+                    <button class="btn btn-light" onclick="showDetails('{{0.show}}', '{{0.screen}}')">Confirm Selection</button>
+                    <div id="reservedSeats" hidden>{{0.reservedSeats}}</div>
                 </div>
             </div>
             <!-- //seat layout -->
-            <!-- details after booking displayed here -->
-            <div class="card card_shadow mt-4" style="width: 100%; display: none;" id="submissionForm">
-                <div class="card-body">
-                    <form class="mt-4" id="bookingForm">
-                        <div class="row">
-                            <div class="col-md-12" hidden>
-                                <div class="form-group">
-                                    <label for="showId" class="text-dark">Show Id</label>
-                                    <input type="text" class="form-control" id="showId" name="showId" value="{{0.show}}" required readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-12" hidden>
-                                <div class="form-group">
-                                    <label for="screenId" class="text-dark">Screen</label>
-                                    <input type="text" class="form-control" id="screenId" name="screenId" value="{{0.screen}}" required readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="NumberDisplay" class="text-dark">Number of Seats</label>
-                                    <input type="text" class="form-control" name="numberOfSeats" id="NumberDisplay" required readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="PriceDisplay" class="text-dark">Total Price</label>
-                                    <input type="text" class="form-control" name="totalAmount" id="PriceDisplay" required readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="seatsDisplay" class="text-dark">Seats</label>
-                                    <input type="text" class="form-control" name="seats" id="seatsDisplay" required readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-white btn-shadow text-info px-5">Book Now</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!-- //details after booking displayed here -->
         </div>
     </div>
 </section>
@@ -166,4 +124,10 @@
             }
         }
     }
+
+    const reservedSeats = document.getElementById('reservedSeats').innerHTML.split(',');
+    reservedSeats.forEach((seat) => {
+        document.getElementById(`${seat}`).disabled = true;
+        document.getElementById(`${seat}`).classList.add("reservedSeat");
+    });
 </script>

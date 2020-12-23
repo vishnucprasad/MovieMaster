@@ -72,7 +72,7 @@ function getShows(btn, ID) {
     $(`#${ID}`).fadeIn();
 }
 
-function showDetails() {
+function showDetails(showId, screenId) {
     let price = 0;
 
     var allSeatsVals = [];
@@ -103,10 +103,62 @@ function showDetails() {
         $('#seatsDisplay').val(allSeatsVals);
 
         $('#submissionForm').slideDown();
+
+        Swal.mixin({
+            customClass: {
+                confirmButton: 'btn bg-white btn-shadow'
+            },
+            buttonsStyling: false
+        }).fire({
+            title: 'Book Now',
+            html:
+                '<form class="mt-4" id="bookingForm">' +
+                '<div class="row">' +
+                '<div class="col-md-12" hidden>' +
+                '<div class="form-group">' +
+                '<label for="showId" class="text-white">Show Id</label>' +
+                `<input type="text" class="form-control" id="showId" name="showId" value="${showId}" required readonly>` +
+                '</div>' +
+                '</div>' +
+                '<div class="col-md-12" hidden>' +
+                '<div class="form-group">' +
+                '<label for="screenId" class="text-white">Screen</label>' +
+                `<input type="text" class="form-control" id="screenId" name="screenId" value="${screenId}" required readonly>` +
+                '</div>' +
+                '</div>' +
+                '<div class="col-md-6">' +
+                '<div class="form-group">' +
+                '<label for="NumberDisplay" class="text-white">Number of Seats</label>' +
+                `<input type="text" class="form-control" name="numberOfSeats" value="${allSeatsVals.length}" id="NumberDisplay" required readonly>` +
+                '</div>' +
+                '</div>' +
+                '<div class="col-md-6">' +
+                '<div class="form-group">' +
+                '<label for="PriceDisplay" class="text-white">Total Price</label>' +
+                `<input type="text" class="form-control" name="totalAmount" value="${price}" id="PriceDisplay" required readonly>` +
+                '</div>' +
+                '</div>' +
+                '<div class="col-md-12">' +
+                '<div class="form-group">' +
+                '<label for="seatsDisplay" class="text-white">Seats</label>' +
+                `<input type="text" class="form-control" name="seats" id="seatsDisplay" value="${allSeatsVals}" required readonly>` +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</form>',
+            confirmButtonText: 'Continue&nbsp;<i class="fa fa-arrow-right"></i>',
+            focusConfirm: false,
+            preConfirm: () => {
+                location.href = `/checkout?${$('#bookingForm').serialize()}`;
+                swal.fire({
+                    title: 'Processing...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    onOpen: () => {
+                        swal.showLoading();
+                    }
+                });
+            }
+        })
     }
 }
-
-$('#bookingForm').submit((e) => {
-    e.preventDefault();
-    location.href = `/checkout?${$('#bookingForm').serialize()}`;
-});
