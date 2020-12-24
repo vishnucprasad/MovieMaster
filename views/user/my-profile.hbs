@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="card-body overlap">
-                    <h4 class="text-primary text-center mt-2">{{user.name}} </h4>
+                    <h4 class="text-primary text-center mt-2" id="profileName">{{user.name}} </h4>
                 </div>
             </div>
             <div class="card_shadow rounded mt-5">
@@ -104,7 +104,7 @@
                         <div class="py-3 mb-3 border-bottom">
                             <form class="form-inline" id="editMobile">
                                 <input type="text" class="form-control form-control-sm text-right mr-sm-2" value="+91"
-                                    name="contryCode" readOnly required style="width: 4rem;">
+                                    name="contryCode" readOnly required style="width: 4rem;" hidden>
                                 <input id="input-mobile" class="form-control form-control-sm mr-sm-2" type="text"
                                     value="{{user.mobileNumber}}" name="mobile" required readonly>
                                 <button id="save-mobile"

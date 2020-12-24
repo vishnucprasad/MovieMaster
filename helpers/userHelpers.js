@@ -434,7 +434,7 @@ module.exports = {
     },
     updateMobile: ({ contryCode, mobile }, userId) => {
         return new Promise((resolve, reject) => {
-            const mobileNumber = `${contryCode}${mobile}`;
+            const mobileNumber = mobile.substr(0, 3) === '+91' ? mobile : `${contryCode}${mobile}`;
 
             sendVerificationToken(mobileNumber).then((verification) => {
                 resolve(mobileNumber);

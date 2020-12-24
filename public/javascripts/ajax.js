@@ -292,6 +292,7 @@ $("#editPersonalInfo").submit((e) => {
                 $("#selectGender").attr("disabled", "true");
                 $("#cancel-personal-info").attr("hidden", "true");
                 $("#edit-personal-info").removeAttr("hidden");
+                $("#profileName").html($("#input-personal-info").val());
                 setTimeout(() => {
                     $('#successAlert').slideUp();
                 }, 5000);
@@ -371,7 +372,7 @@ $("#editMobile").submit((e) => {
                     title: 'Number Verification',
                     html:
                         '<form class="mt-5" id="numberVerification">' +
-                        '<div class="form-group" >' +
+                        '<div class="form-group" hidden >' +
                         '<label for="mobileNumber" class="text-white">Mobile</label>' +
                         `<input type="tel" class="form-control border-top-0 border-right-0 border-left-0" value="${response.mobileNumber}" name="mobile" required id="mobileNumber">` +
                         '</div>' +
@@ -414,6 +415,8 @@ const numberVerification = (e) => {
                     $('#successAlert').slideUp();
                 }, 5000);
             } else {
+                $('#verifyButton').html('Verify');
+                $('#verificationCode').val('');
                 $('#errorAlertBody').html(response.errMessage);
                 $('#errorAlert').removeAttr('hidden');
                 setTimeout(() => {
