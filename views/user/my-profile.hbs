@@ -54,10 +54,11 @@
                                 class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
                         </div>
                         <div class="py-3 mb-3 border-bottom">
-                            <form class="form-inline" id="edit-personal-info-form">
+                            <form class="form-inline" id="editPersonalInfo">
                                 <input id="input-personal-info" class="form-control form-control-sm mr-sm-2" type="text"
                                     value="{{user.name}}" name="name" required readonly>
-                                <select id="selectGender" class="custom-select custom-select-sm mr-sm-2" disabled>
+                                <select id="selectGender" name="gender" class="custom-select custom-select-sm mr-sm-2"
+                                    disabled>
                                     {{#if user.gender}}
                                     <option value="{{user.gender}}" hidden>{{user.gender}}</option>
                                     <option value="Male">Male</option>
@@ -70,7 +71,7 @@
                                 </select>
                                 <button id="save-personal-info"
                                     class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
-                                    onclick="editPersonalInfo('edit-personal-info-form')" hidden>Save</button>
+                                    hidden>Save</button>
                             </form>
                         </div>
                     </div>
@@ -81,63 +82,14 @@
                                 class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
                             <a role="button" id="cancel-email" hidden
                                 class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
-                            <a type="button" class="text-decoration-none text-info font-weight-bold ml-4"
-                                data-toggle="modal" data-target="#changePassword">Change
-                                Password</a>
-                            <div class="modal fade" id="changePassword" data-backdrop="static" data-keyboard="false"
-                                tabindex="-1" aria-labelledby="changePasswordLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title text-primary" id="changePasswordLabel">
-                                                Change Password
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="alert alert-info alert-dismissible fade show" role="alert"
-                                                id="password-change-alert" hidden>
-                                                <strong class="text-success" id="password-change-alert-body"></strong>
-                                                <button type="button" class="close" data-dismiss="alert"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form id="change-password-form">
-                                                <div class="form-group">
-                                                    <label for="Input-current-password">Current password</label>
-                                                    <input type="password" required name="currentPassword"
-                                                        class="form-control" id="Input-current-password">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="Input-new-password">New password</label>
-                                                    <input type="password" required name="newPassword"
-                                                        class="form-control" id="Input-new-password">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="Input-confirm-password">Confirm new
-                                                        password</label>
-                                                    <input type="password" required name="confirmPassword"
-                                                        class="form-control" id="Input-confirm-password">
-                                                </div>
-                                                <div class="row">
-                                                    <button type="submit"
-                                                        class="btn btn-primary rounded-pill px-5 ml-auto mr-3">Submit</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="py-3 mb-3 border-bottom">
-                            <form class="form-inline" id="edit-email-form">
+                            <form class="form-inline" id="editEmail">
                                 <input id="input-email" class="form-control form-control-sm mr-sm-2" type="email"
                                     value="{{user.email}}" name="email" required readonly>
-                                <button id="save-email" class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0"
-                                    type="submit" onclick="editPersonalInfo('edit-email-form')" hidden>Save</button>
+                                <button id="save-email"
+                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
+                                    hidden>Save</button>
                             </form>
                         </div>
                     </div>
@@ -150,11 +102,14 @@
                                 class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
                         </div>
                         <div class="py-3 mb-3 border-bottom">
-                            <form class="form-inline" id="edit-mobile-form">
+                            <form class="form-inline" id="editMobile">
+                                <input type="text" class="form-control form-control-sm text-right mr-sm-2" value="+91"
+                                    name="contryCode" readOnly required style="width: 4rem;">
                                 <input id="input-mobile" class="form-control form-control-sm mr-sm-2" type="text"
                                     value="{{user.mobileNumber}}" name="mobile" required readonly>
-                                <button id="save-mobile" class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0"
-                                    type="submit" onclick="editPersonalInfo('edit-mobile-form')" hidden>Save</button>
+                                <button id="save-mobile"
+                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
+                                    hidden>Save</button>
                             </form>
                         </div>
                         <div>
@@ -166,7 +121,8 @@
                                     account related communication on your updated email address (or mobile
                                     number).
                                 </p>
-                                <h6 class="my-2">When will my MovieMaster account be updated with the new mobile number ?</h6>
+                                <h6 class="my-2">When will my MovieMaster account be updated with the new mobile number
+                                    ?</h6>
                                 <p>It happens as soon as you confirm the verification code sent to your email
                                     (or
                                     mobile) and save the changes.</p>

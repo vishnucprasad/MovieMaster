@@ -413,9 +413,56 @@ module.exports = {
                     profilePic: url
                 }
             }).then(async (response) => {
-                resolve({ alertMessage: 'Success.' });
+                resolve({ alertMessage: 'Successfully updated.' });
             }).catch((error) => {
                 reject({ error, errMessage: 'Faild to update profile picture.' });
+            });
+        });
+    },
+    updateProfileInfo: (userData, userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({
+                _id: ObjectID(userId)
+            }, {
+                $set: userData
+            }).then((response) => {
+                resolve({ status: true, response, alertMessage: 'Successfully updated.' });
+            }).catch((error) => {
+                reject({ status: false, errMessage: 'Failed to update user info' });
+            });
+        });
+    },
+    updateMobile: ({ contryCode, mobile }, userId) => {
+        return new Promise((resolve, reject) => {
+            const mobileNumber = `${contryCode}${mobile}`;
+
+            sendVerificationToken(mobileNumber).then((verification) => {
+                resolve(mobileNumber);
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to send verification code.' });
+            });
+        });
+    },
+    verifyMobile: ({ mobile, OTP }, userId) => {
+        return new Promise((resolve, reject) => {
+            checkVerificationToken({ mobile, OTP }).then((verification_check) => {
+                if (verification_check.status === 'approved') {
+                    db.get().collection(collection.USER_COLLECTION).updateOne({
+                        _id: ObjectID(userId)
+                    }, {
+                        $set: {
+                            mobileNumber: mobile
+                        }
+                    }).then((response) => {
+                        resolve({ status: true, response, alertMessage: 'Successfully updated.' });
+                    }).catch((error) => {
+                        reject({ status: false, error, mobileNumber: mobile, errMessage: 'Failed to update.' });
+                    });
+                } else if (verification_check.status === 'pending') {
+                    reject({ status: false, mobileNumber: mobile, errMessage: 'Invalid verification code.' });
+                }
+            }).catch((error) => {
+                reject({ status: false, error, mobileNumber: mobile, errMessage: 'Failed to check verification code.' });
             });
         });
     }

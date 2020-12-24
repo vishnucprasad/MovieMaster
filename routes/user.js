@@ -230,8 +230,10 @@ router.post('/update-profile-picture', isUser, (req, res) => {
           console.log(done);
         }
       });
+      req.flash('info', response.alertMessage);
       res.redirect('/my-profile');
     }).catch((error) => {
+      req.flash('error', error.errMessage);
       res.redirect('/my-profile');
     });
   }
@@ -240,10 +242,38 @@ router.post('/update-profile-picture', isUser, (req, res) => {
 router.get('/remove-profile-picture', isUser, (req, res) => {
   userHelpers.updateProfilePicture(req.user._id, null).then((response) => {
     fs.unlinkSync(`./public/images/user/profile/${req.user._id}.jpg`);
+    req.flash('info', response.alertMessage);
     res.redirect('/my-profile');
   }).catch((error) => {
+    req.flash('error', error.errMessage);
     res.redirect('/my-profile');
   });;
+});
+
+router.post('/edit-personal-info', isUser, (req, res) => {
+  userHelpers.updateProfileInfo(req.body, req.user._id).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/update-mobile', isUser, (req, res) => {
+  userHelpers.updateMobile(req.body, req.user._id).then((mobileNumber) => {
+    res.json({ mobileNumber });
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/verify-mobile', isUser, (req, res) => {
+  console.log(req.body);
+  userHelpers.verifyMobile(req.body, req.user._id).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    console.log(error);
+    res.json(error);
+  });
 });
 
 module.exports = router;

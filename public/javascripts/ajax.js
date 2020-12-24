@@ -274,3 +274,152 @@ const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) 
         }
     });
 }
+
+$("#editPersonalInfo").submit((e) => {
+    e.preventDefault();
+    $.ajax({
+        url: '/edit-personal-info',
+        method: 'post',
+        data: $("#editPersonalInfo").serialize(),
+        success: (response) => {
+            if (response.status) {
+                $('#successAlertBody').html(response.alertMessage);
+                $('#successAlert').removeAttr('hidden');
+                $('#successAlert').hide();
+                $('#successAlert').slideDown();
+                $("#input-personal-info").attr("readonly", "true");
+                $("#save-personal-info").attr("hidden", "true");
+                $("#selectGender").attr("disabled", "true");
+                $("#cancel-personal-info").attr("hidden", "true");
+                $("#edit-personal-info").removeAttr("hidden");
+                setTimeout(() => {
+                    $('#successAlert').slideUp();
+                }, 5000);
+            } else {
+                $('#errorAlertBody').html(response.errMessage);
+                $('#errorAlert').removeAttr('hidden');
+                setTimeout(() => {
+                    $('#errorAlert').slideUp();
+                }, 5000);
+            }
+        },
+        error: (err) => {
+            $('#errorAlertBody').html("Can't connect to the server.");
+            $('#errorAlert').removeAttr('hidden');
+            setTimeout(() => {
+                $('#errorAlert').slideUp();
+            }, 5000);
+        }
+    });
+});
+
+$("#editEmail").submit((e) => {
+    e.preventDefault();
+    $.ajax({
+        url: '/edit-personal-info',
+        method: 'post',
+        data: $("#editEmail").serialize(),
+        success: (response) => {
+            if (response.status) {
+                $('#successAlertBody').html(response.alertMessage);
+                $('#successAlert').removeAttr('hidden');
+                $('#successAlert').hide();
+                $('#successAlert').slideDown();
+                $("#input-email").attr("readonly", "true");
+                $("#save-email").attr("hidden", "true");
+                $("#cancel-email").attr("hidden", "true");
+                $("#edit-email").removeAttr("hidden");
+                setTimeout(() => {
+                    $('#successAlert').slideUp();
+                }, 5000);
+            } else {
+                $('#errorAlertBody').html(response.errMessage);
+                $('#errorAlert').removeAttr('hidden');
+                setTimeout(() => {
+                    $('#errorAlert').slideUp();
+                }, 5000);
+            }
+        },
+        error: (err) => {
+            $('#errorAlertBody').html("Can't connect to the server.");
+            $('#errorAlert').removeAttr('hidden');
+            setTimeout(() => {
+                $('#errorAlert').slideUp();
+            }, 5000);
+        }
+    });
+});
+
+$("#editMobile").submit((e) => {
+    e.preventDefault();
+    swal.fire({
+        title: 'Processing...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        onOpen: () => {
+            swal.showLoading();
+        }
+    });
+    $.ajax({
+        url: '/update-mobile',
+        method: 'post',
+        data: $("#editMobile").serialize(),
+        success: (response) => {
+            console.log(response);
+            if (response.mobileNumber) {
+                Swal.fire({
+                    title: 'Number Verification',
+                    html:
+                        '<form class="mt-5" id="numberVerification">' +
+                        '<div class="form-group" >' +
+                        '<label for="mobileNumber" class="text-white">Mobile</label>' +
+                        `<input type="tel" class="form-control border-top-0 border-right-0 border-left-0" value="${response.mobileNumber}" name="mobile" required id="mobileNumber">` +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label for="verificationCode" class="text-white text-center">Enter OTP</label>' +
+                        '<input type="text" class="form-control border-top-0 border-right-0 border-left-0" placeholder="Type your Verification code" name="OTP" required id="verificationCode">' +
+                        '</div>' +
+                        '<div class="text-center">' +
+                        '<button type="submit" id="verifyButton" onclick="numberVerification(event)" class="btn btn-primary rounded-pill px-5 mt-3">Verify</button>' +
+                        '</div>' +
+                        '</form >',
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+            }
+        }
+    });
+});
+
+const numberVerification = (e) => {
+    e.preventDefault();
+    $('#verifyButton').html('Checking...');
+    $.ajax({
+        url: '/verify-mobile',
+        method: 'post',
+        data: $('#numberVerification').serialize(),
+        success: (response) => {
+            console.log(response);
+            if (response.status) {
+                Swal.close();
+                $('#successAlertBody').html(response.alertMessage);
+                $('#successAlert').removeAttr('hidden');
+                $('#successAlert').hide();
+                $('#successAlert').slideDown();
+                $("#input-mobile").attr("readonly", "true");
+                $("#save-mobile").attr("hidden", "true");
+                $("#cancel-mobile").attr("hidden", "true");
+                $("#edit-mobile").removeAttr("hidden");
+                setTimeout(() => {
+                    $('#successAlert').slideUp();
+                }, 5000);
+            } else {
+                $('#errorAlertBody').html(response.errMessage);
+                $('#errorAlert').removeAttr('hidden');
+                setTimeout(() => {
+                    $('#errorAlert').slideUp();
+                }, 5000);
+            }
+        }
+    });
+}
