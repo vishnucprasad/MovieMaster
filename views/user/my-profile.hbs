@@ -59,6 +59,7 @@
                                     value="{{user.name}}" name="name" required readonly>
                                 <select id="selectGender" class="custom-select custom-select-sm mr-sm-2" disabled>
                                     {{#if user.gender}}
+                                    <option value="{{user.gender}}" hidden>{{user.gender}}</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     {{else}}
@@ -68,7 +69,7 @@
                                     {{/if}}
                                 </select>
                                 <button id="save-personal-info"
-                                    class="btn btn btn-outline-info rounded-pill px-5 my-2 my-sm-0" type="submit"
+                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
                                     onclick="editPersonalInfo('edit-personal-info-form')" hidden>Save</button>
                             </form>
                         </div>
@@ -135,7 +136,7 @@
                             <form class="form-inline" id="edit-email-form">
                                 <input id="input-email" class="form-control form-control-sm mr-sm-2" type="email"
                                     value="{{user.email}}" name="email" required readonly>
-                                <button id="save-email" class="btn btn btn-outline-info rounded-pill px-5 my-2 my-sm-0"
+                                <button id="save-email" class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0"
                                     type="submit" onclick="editPersonalInfo('edit-email-form')" hidden>Save</button>
                             </form>
                         </div>
@@ -152,7 +153,7 @@
                             <form class="form-inline" id="edit-mobile-form">
                                 <input id="input-mobile" class="form-control form-control-sm mr-sm-2" type="text"
                                     value="{{user.mobileNumber}}" name="mobile" required readonly>
-                                <button id="save-mobile" class="btn btn btn-outline-info rounded-pill px-5 my-2 my-sm-0"
+                                <button id="save-mobile" class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0"
                                     type="submit" onclick="editPersonalInfo('edit-mobile-form')" hidden>Save</button>
                             </form>
                         </div>
@@ -160,18 +161,16 @@
                             <h5 class="mb-3">FAQs</h5>
                             <div>
                                 <h6 class="mb-2">What happens when I update my email address (or mobile number)?</h6>
-                                <p>Your login email id (or mobile number) changes, likewise. You'll receive all
+                                <p>Your login mobile number changes, likewise. You'll receive all
                                     your
                                     account related communication on your updated email address (or mobile
                                     number).
                                 </p>
-                                <h6 class="my-2">When will my EasyCart account be updated with the new email address (or
-                                    mobile
-                                    number)?</h6>
+                                <h6 class="my-2">When will my MovieMaster account be updated with the new mobile number ?</h6>
                                 <p>It happens as soon as you confirm the verification code sent to your email
                                     (or
                                     mobile) and save the changes.</p>
-                                <h6 class="my-2">What happens to my existing EasyCart account when I update my email
+                                <h6 class="my-2">What happens to my existing MovieMaster account when I update my email
                                     address
                                     (or
                                     mobile number)?</h6>

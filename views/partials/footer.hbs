@@ -17,7 +17,11 @@
                                 <h6>Information</h6>
                                 <ul>
                                     <li><a href="/">Home</a> </li>
+                                    {{#if user}}
+                                    <li><a type="button" onclick="logout(event, '/logout')">Logout</a> </li>
+                                    {{else}}
                                     <li><a href="/login">Login</a> </li>
+                                    {{/if}}
                                 </ul>
                             </div>
                             <div class="col-md-4 col-sm-6 sub-two-right mt-5">
