@@ -205,9 +205,11 @@ $("#cancel-mobile").click(function () {
 const opnUpdateWindow = (e, profilePic) => {
     e.preventDefault();
     const attr = profilePic ? '' : 'hidden';
+    const defaultImage = profilePic ? '' : '<img src="/images/user/profile.png" alt="" id="viewImage" class="img-fluid" width="100%">';
     Swal.fire({
         title: '',
         html:
+            `${defaultImage}` +
             `<img src="${profilePic}" alt="" id="viewImage" class="img-fluid" width="100%">` +
             `<form action="/update-profile-picture" method="POST" enctype="multipart/form-data">` +
             `<div class="form-group text-center">` +
@@ -215,7 +217,7 @@ const opnUpdateWindow = (e, profilePic) => {
             `<input id="my-file-selector" required type="file" name="profilePicture" style="display:none" onchange="loadImage(event);"> Choose Image` +
             `</div >` +
             `<div class="row justify-content-center">` +
-            `<a href="/remove-profile-picture" ${attr} type="button" class="btn btn-danger rounded-pill ml-3 px-5" onclick="return confirm('Are you sure you want to remove this profile picture?')">Remove` +
+            `<a type="button" ${attr} type="button" class="btn btn-danger text-white rounded-pill ml-3 px-5" onclick="removeProfilePic(event)">Remove` +
             `</a>` +
             `<button type="submit" class="btn btn-success rounded-pill ml-auto mr-3 px-5">Upload` +
             `</button>` +
@@ -225,3 +227,23 @@ const opnUpdateWindow = (e, profilePic) => {
         showConfirmButton: false
     });
 }
+
+const removeProfilePic = (e) => {
+    e.preventDefault();
+    Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-danger rounded-pill px-5 m-3',
+            cancelButton: 'btn btn-success rounded-pill px-5 m-3'
+        },
+        buttonsStyling: false
+    }).fire({
+        text: "Are you sure you want to remove this profile picture.?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Remove'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = '/remove-profile-picture'
+        }
+    });
+} 

@@ -4,11 +4,17 @@
             <div class="card_shadow rounded" style="height: 25vh;">
                 <div class="overlap mt-5 row">
                     <div class="img-container rounded-circle mx-auto">
+                        {{#if user.profilePic}}
                         <img src="{{user.profilePic}}" alt="" id="profile-pic-wrapper"
                             class="rounded-circle shadow-dark overlay-img">
+                        {{else}}
+                        <img src="/images/user/profile.png" alt="" id="profile-pic-wrapper"
+                            class="rounded-circle shadow-dark overlay-img">
+                        {{/if}}
                         <div class="img-overlay">
                             <div class="d-flex align-items-end" style="min-height: 23vh;">
-                                <a type="button" onclick="opnUpdateWindow(event, '{{user.profilePic}}')" class="btn btn-info btn-sm rounded-pill px-3">Update</a>
+                                <a type="button" onclick="opnUpdateWindow(event, '{{user.profilePic}}')"
+                                    class="btn btn-info btn-sm text-white rounded-pill px-3">Update</a>
                             </div>
                         </div>
                     </div>

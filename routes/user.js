@@ -3,6 +3,7 @@ var router = express.Router();
 const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
 const isUser = require('../middleware/auth').isUser;
+const fs = require('fs');
 
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
@@ -215,6 +216,35 @@ router.get('/my-orders', isUser, async (req, res) => {
 
 router.get('/my-profile', isUser, (req, res) => {
   res.render('user/my-profile', { title: 'MovieMaster | My Profile', user: req.user });
+});
+
+router.post('/update-profile-picture', isUser, (req, res) => {
+  if (req.files.profilePicture) {
+    userHelpers.updateProfilePicture(req.user._id, `/images/user/profile/${req.user._id}.jpg`).then((response) => {
+
+      let image = req.files.profilePicture;
+
+      image.mv(`./public/images/user/profile/${req.user._id}.jpg`, (err, done) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(done);
+        }
+      });
+      res.redirect('/my-profile');
+    }).catch((error) => {
+      res.redirect('/my-profile');
+    });
+  }
+});
+
+router.get('/remove-profile-picture', isUser, (req, res) => {
+  userHelpers.updateProfilePicture(req.user._id, null).then((response) => {
+    fs.unlinkSync(`./public/images/user/profile/${req.user._id}.jpg`);
+    res.redirect('/my-profile');
+  }).catch((error) => {
+    res.redirect('/my-profile');
+  });;
 });
 
 module.exports = router;

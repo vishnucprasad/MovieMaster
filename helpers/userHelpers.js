@@ -403,5 +403,20 @@ module.exports = {
             const orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: ObjectID(userId) }).sort({ orderDate: -1 }).toArray();
             resolve(orders);
         });
+    },
+    updateProfilePicture: (userId, url) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({
+                _id: ObjectID(userId)
+            }, {
+                $set: {
+                    profilePic: url
+                }
+            }).then(async (response) => {
+                resolve({ alertMessage: 'Success.' });
+            }).catch((error) => {
+                reject({ error, errMessage: 'Faild to update profile picture.' });
+            });
+        });
     }
 }
