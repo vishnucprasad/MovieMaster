@@ -207,10 +207,14 @@ router.get('/view-order', isUser, (req, res) => {
   });
 });
 
-router.get('/my-orders', async (req, res) => {
+router.get('/my-orders', isUser, async (req, res) => {
   const orders = await userHelpers.getAllOrders(req.user._id);
   console.log(orders);
   res.render('user/my-orders', { tittle: 'MovieMaster | My Orders', user: req.user, orders })
-})
+});
+
+router.get('/my-profile', isUser, (req, res) => {
+  res.render('user/my-profile', { title: 'MovieMaster | My Profile', user: req.user });
+});
 
 module.exports = router;

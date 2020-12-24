@@ -162,3 +162,66 @@ function showDetails(showId, screenId) {
         })
     }
 }
+
+$("#edit-personal-info").click(function () {
+    $("#input-personal-info").removeAttr("readonly");
+    $("#save-personal-info").removeAttr("hidden");
+    $("#selectGender").removeAttr("disabled");
+    $("#edit-personal-info").attr("hidden", "true");
+    $("#cancel-personal-info").removeAttr("hidden");
+});
+$("#cancel-personal-info").click(function () {
+    $("#input-personal-info").attr("readonly", "true");
+    $("#save-personal-info").attr("hidden", "true");
+    $("#selectGender").attr("disabled", "true");
+    $("#cancel-personal-info").attr("hidden", "true");
+    $("#edit-personal-info").removeAttr("hidden");
+});
+$("#edit-email").click(function () {
+    $("#input-email").removeAttr("readonly");
+    $("#save-email").removeAttr("hidden");
+    $("#edit-email").attr("hidden", "true");
+    $("#cancel-email").removeAttr("hidden");
+});
+$("#cancel-email").click(function () {
+    $("#input-email").attr("readonly", "true");
+    $("#save-email").attr("hidden", "true");
+    $("#cancel-email").attr("hidden", "true");
+    $("#edit-email").removeAttr("hidden");
+});
+$("#edit-mobile").click(function () {
+    $("#input-mobile").removeAttr("readonly");
+    $("#save-mobile").removeAttr("hidden");
+    $("#edit-mobile").attr("hidden", "true");
+    $("#cancel-mobile").removeAttr("hidden");
+});
+$("#cancel-mobile").click(function () {
+    $("#input-mobile").attr("readonly", "true");
+    $("#save-mobile").attr("hidden", "true");
+    $("#cancel-mobile").attr("hidden", "true");
+    $("#edit-mobile").removeAttr("hidden");
+});
+
+const opnUpdateWindow = (e, profilePic) => {
+    e.preventDefault();
+    const attr = profilePic ? '' : 'hidden';
+    Swal.fire({
+        title: '',
+        html:
+            `<img src="${profilePic}" alt="" id="viewImage" class="img-fluid" width="100%">` +
+            `<form action="/update-profile-picture" method="POST" enctype="multipart/form-data">` +
+            `<div class="form-group text-center">` +
+            `<label class="btn btn-outline-light rounded-pill mt-3 px-5" for="my-file-selector">` +
+            `<input id="my-file-selector" required type="file" name="profilePicture" style="display:none" onchange="loadImage(event);"> Choose Image` +
+            `</div >` +
+            `<div class="row justify-content-center">` +
+            `<a href="/remove-profile-picture" ${attr} type="button" class="btn btn-danger rounded-pill ml-3 px-5" onclick="return confirm('Are you sure you want to remove this profile picture?')">Remove` +
+            `</a>` +
+            `<button type="submit" class="btn btn-success rounded-pill ml-auto mr-3 px-5">Upload` +
+            `</button>` +
+            `</div>` +
+            `</form >`,
+        focusConfirm: false,
+        showConfirmButton: false
+    });
+}
