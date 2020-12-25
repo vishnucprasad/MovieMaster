@@ -1,4 +1,4 @@
-<div style="max-width: 480px; margin: 25px auto; padding: 0 10px;">
+<div style="max-width: 480px; margin: 25px auto; border: 2px solid #f57b51;">
     <div style="box-shadow: 5px 10px 18px rgba(0, 0, 0, 0.2); padding: 8px 16px; background-color: #ffffff;">
         <h2 style="color: #df0e62; text-align: center; margin: 8px 0 0 0;">{{order.movieDetails.movieTitle}}</h2>
         <h4 style="color: #127681; text-align: center;"> {{order.theatreDetails.theatreName}} | {{order.showDetails.screenName}} | {{order.showDetails.date}} | {{order.showDetails.showTime}}</h4>
@@ -7,6 +7,10 @@
             <div style="display: flex;">
                 <h4 style="margin: 8px 0;">Total Amount:</h4>
                 <h4 style="margin: 5px 0 8px auto;">{{order.totalAmount}}</h4>
+            </div>
+            <div style="display: flex;">
+                <h4 style="margin: 8px 0;">Payment method:</h4>
+                <h4 style="margin: 5px 0 8px auto;">{{order.paymentMethod}}</h4>
             </div>
             <div style="display: flex;">
                 <h4 style="margin: 8px 0;">Seats({{order.numberOfSeats}}):</h4>

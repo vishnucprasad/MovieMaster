@@ -426,3 +426,41 @@ const numberVerification = (e) => {
         }
     });
 }
+
+$('#sendTicket').submit((e) => {
+    e.preventDefault();
+    swal.fire({
+        title: 'Sending...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        onOpen: () => {
+            swal.showLoading();
+        }
+    });
+    $.ajax({
+        url: '/sendTicket',
+        method: 'post',
+        data: $('#sendTicket').serialize(),
+        success: (response) => {
+            console.log(response);
+            swal.close();
+            if (response.status) {
+                $('#successAlertBody').html(response.alertMessage);
+                $('#successAlert').removeAttr('hidden');
+                $('#successAlert').hide();
+                $('#successAlert').slideDown();
+                setTimeout(() => {
+                    $('#successAlert').slideUp();
+                }, 5000);
+            } else {
+                $('#errorAlertBody').html(response.errMessage);
+                $('#errorAlert').removeAttr('hidden');
+                $('#errorAlert').hide();
+                $('#errorAlert').slideDown();
+                setTimeout(() => {
+                    $('#errorAlert').slideUp();
+                }, 5000);
+            }
+        }
+    });
+});

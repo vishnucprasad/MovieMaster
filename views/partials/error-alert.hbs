@@ -1,6 +1,6 @@
 <div class="row justify-content-center m-0">
     <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-        <div class="alert alert-danger alert-dismissible fade show m-0 mt-5" id="errAlert" role="alert">
+        <div class="alert {{#if user}}bg-danger text-white{{else}}alert-danger{{/if}} alert-dismissible fade show m-0 mt-5" id="errAlert" role="alert">
             <strong>!</strong> 
             {{#if messages.error}}
             {{messages.error}}

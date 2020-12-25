@@ -6,9 +6,14 @@
                     <div class="col">
                         <h6 class="text-primary text-uppercase" style="letter-spacing: 3px;">Order Summary</h6>
                     </div>
-                    <div class="col">
-                        <a href="/my-orders" class="btn btn-shadow px-5 text-white bg-secondary float-right">My Orders</a>
-                    </div>
+                    <form class="form-inline ml-auto" id="sendTicket">
+                        <input type="text" name="orderId" value="{{order._id}}" class="form-control mb-xs-2 mr-md-2" hidden>
+                        <input type="email" name="email" class="form-control mb-xs-2 mr-md-2" id="inlineFormInputEmail2"
+                            placeholder="Type email to send ticket" required>
+                        <button type="submit" class="btn btn-shadow px-5 text-white bg-white text-info"><i class="fa fa-paper-plane"></i></button>
+                        <a href="/my-orders" class="btn btn-shadow px-5 text-white bg-secondary ml-3">My
+                            Orders</a>
+                    </form>
                 </div>
             </div>
             <div class="card-body border-bottom p-0 mt-4">
@@ -18,6 +23,10 @@
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Total amount</h6>
                     <h6 class="ml-auto text-dark">Rs.{{order.totalAmount}}</h6>
+                </div>
+                <div class="row px-3 pb-3">
+                    <h6 class="text-dark">Pyment method</h6>
+                    <h6 class="ml-auto text-dark">{{order.paymentMethod}}</h6>
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Seats
@@ -84,13 +93,6 @@
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Screen</h6>
                     <h6 class="ml-auto text-dark">{{order.showDetails.screenName}}</h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Seats
-                        <span class="font-weight-normal text-dark">({{order.numberOfSeats}})</span>
-                    </h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.seats}}
-                    </h6>
                 </div>
                 <div class="row px-3 pb-3">
                     <h6 class="text-dark">Date</h6>

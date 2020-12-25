@@ -67,7 +67,7 @@
   {{/if}}
   <div class="row justify-content-center m-0">
     <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-      <div class="alert alert-success alert-dismissible fade show m-0 mt-5" id="successAlert" role="alert" hidden>
+      <div class="alert {{#if user}}bg-success text-white{{else}}alert-success{{/if}} alert-dismissible fade show m-0 mt-5" id="successAlert" role="alert" hidden>
         <div id="successAlertBody"></div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -77,7 +77,7 @@
   </div>
   <div class="row justify-content-center m-0">
     <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-      <div class="alert alert-danger alert-dismissible fade show m-0 mt-5" id="errorAlert" role="alert" hidden>
+      <div class="alert {{#if user}}bg-danger text-white{{else}}alert-danger{{/if}} alert-dismissible fade show m-0 mt-5" id="errorAlert" role="alert" hidden>
         <div id="errorAlertBody"></div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>

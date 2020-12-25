@@ -1,3 +1,4 @@
+{{#if orders}}
 <section>
     <div class="container my-5 pt-5">
         <div class="card_shadow">
@@ -49,3 +50,19 @@
         </div>
     </div>
 </section>
+{{else}}
+<section>
+    <div class="container my-5 pt-5">
+        <div class="card_shadow">
+            <div class="card-body">
+                <div class="text-center">
+                    <img src="/assets/images/MovieMaster-not-found.png" class="img-fluid" style="width: 15rem;">
+                    <h3 class="font-weight-normal my-3">No orders found</h3>
+                    <h6>Book Now</h6>
+                    <a href="/now-showing-movies" class="btn btn-primary rounded-pill mt-3 px-5">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/if}}

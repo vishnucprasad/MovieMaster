@@ -210,7 +210,7 @@ router.get('/view-order', isUser, (req, res) => {
 
 router.get('/my-orders', isUser, async (req, res) => {
   const orders = await userHelpers.getAllOrders(req.user._id);
-  res.render('user/my-orders', { tittle: 'MovieMaster | My Orders', user: req.user, orders })
+  res.render('user/my-orders', { title: 'MovieMaster | My Orders', user: req.user, orders })
 });
 
 router.get('/my-profile', isUser, (req, res) => {
@@ -272,6 +272,20 @@ router.post('/verify-mobile', isUser, (req, res) => {
     res.json(response);
   }).catch((error) => {
     console.log(error);
+    res.json(error);
+  });
+});
+
+router.post('/sendTicket', isUser, (req, res) => {
+  userHelpers.getOrder(req.body.orderId, req.user._id).then((order) => {
+    order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`;
+    userHelpers.sendTicket(order, req.body.email).then((response) => {
+      res.json(response);
+    }).catch((error) => {
+      res.json(error);
+    });
+  }).catch((error) => {
+    error.status = false;
     res.json(error);
   });
 });

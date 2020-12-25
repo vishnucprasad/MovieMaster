@@ -465,5 +465,22 @@ module.exports = {
                 reject({ status: false, error, mobileNumber: mobile, errMessage: 'Failed to check verification code.' });
             });
         });
+    },
+    sendTicket: (order, email) => {
+        return new Promise((resolve, reject) => {
+            mailer.sendMail({
+                from: process.env.USER,
+                to: email,
+                subject: 'Ticket Booked Successfully',
+                template: 'templates/ticket',
+                context: { order }
+            }).then((response) => {
+                console.log(response);
+                resolve({ status: true, response, alertMessage: `Successfully sent ticket to ${email}.` });
+            }).catch((error) => {
+                console.log(error);
+                reject({ status: false, error, errMessage: 'Failed to send ticket.' });
+            });
+        });
     }
 }
