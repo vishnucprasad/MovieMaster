@@ -38,8 +38,12 @@ router.get('/logout', (req, res) => {
   res.json({ status: true });
 });
 
-router.get('/', isTheatre, function (req, res, next) {
-  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/', isTheatre, async function (req, res, next) {
+  const totalShows = await theatreHelpers.getNumberOfShows(req.user._id);
+  const totalScreens = await theatreHelpers.getNumberOfScreens(req.user._id);
+  const totalBookings = await theatreHelpers.getNumberOfBookings(req.user._id);
+  const paidBookings = await theatreHelpers.getNumberOfPayedBookings(req.user._id);
+  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, totalShows, totalScreens, totalBookings, paidBookings, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
