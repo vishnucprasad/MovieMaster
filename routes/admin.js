@@ -10,10 +10,10 @@ router.get('/login', (req, res) => {
     res.redirect('/admin');
   } else {
     if (req.session.messages) {
-      res.render('admin/login', { title: 'Admin | Login', messages: req.session.messages, adminStyle:true });
+      res.render('admin/login', { title: 'Admin | Login', messages: req.session.messages, adminStyle: true });
       req.session.messages = false;
     } else {
-      res.render('admin/login', { title: 'Admin | Login', adminStyle:true });
+      res.render('admin/login', { title: 'Admin | Login', adminStyle: true });
     }
   }
 });
@@ -38,8 +38,12 @@ router.get('/logout', (req, res) => {
   res.json({ status: true });
 });
 
-router.get('/', isAdmin, function (req, res, next) {
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/', isAdmin, async function (req, res, next) {
+  const totalUsers = await adminHelpers.getNumberOfUsers();
+  const totalTheaters = await adminHelpers.getNumberOfTheaters();
+  const totalActiveTheaters = await adminHelpers.getNumberOfActiveTheaters();
+  const totalTheatersOnHold = await adminHelpers.getNumberOfTheatersOnHold();
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
