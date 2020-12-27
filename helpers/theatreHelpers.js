@@ -73,9 +73,9 @@ module.exports = {
                     location
                 }
             }).then((response) => {
-                resolve({response, alertMessage: 'Updated successfully.'})
+                resolve({ response, alertMessage: 'Updated successfully.' })
             }).catch((error) => {
-                reject({response, alertMessage: 'Failed to update location.'})
+                reject({ response, alertMessage: 'Failed to update location.' })
             });
         });
     },
@@ -480,7 +480,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(totalShows[0].totalShows);
+
+            if (totalShows[0]) {
+                resolve(totalShows[0].totalShows);
+            } else {
+                resolve(0);
+            }
         });
     },
     getNumberOfScreens: (theatreId) => {
@@ -503,7 +508,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(totalScreens[0].totalScreens);
+
+            if (totalScreens[0]) {
+                resolve(totalScreens[0].totalScreens);
+            } else {
+                resolve(0);
+            }
         });
     },
     getNumberOfBookings: (theatreId) => {
@@ -526,7 +536,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(totalBookings[0].totalBookings);
+
+            if (totalBookings[0]) {
+                resolve(totalBookings[0].totalBookings);
+            } else {
+                resolve(0);
+            }
         });
     },
     getNumberOfPayedBookings: (theatreId) => {
@@ -550,7 +565,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(paidBookings[0].totalPayedBookings);
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
         });
     }
 }

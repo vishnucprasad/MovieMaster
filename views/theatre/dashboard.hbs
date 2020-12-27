@@ -307,9 +307,15 @@
         zoom: 6 // starting zoom
     });
 
-    var marker = new mapboxgl.Marker()
-        .setLngLat([{{theatre.location.longitude}}, {{theatre.location.latitude}}])
+    const lng = document.getElementById('longitude').value
+    const lat = document.getElementById('latitude').value
+
+    if (lng && lat) {
+        console.log('DEFINED', lng, lat)
+        const marker = new mapboxgl.Marker()
+        .setLngLat([lng, lat])
         .addTo(map);
+    }
 
     map.on('load', function () {
         map.resize();
