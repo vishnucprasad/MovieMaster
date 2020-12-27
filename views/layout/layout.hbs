@@ -35,8 +35,16 @@
 
   <link rel="stylesheet" href="/assets/css/borderless.css">
 
+
   <script src="/assets/js/jquery-3.3.1.min.js"></script>
   <script src="/assets/js/jquery-1.10.2.min.js"></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+  <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+    type="text/css" />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+  <script
+    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
 </head>
 
 <title>{{title}}</title>
@@ -67,7 +75,9 @@
   {{/if}}
   <div class="row justify-content-center m-0">
     <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-      <div class="alert {{#if user}}bg-success text-white{{else}}alert-success{{/if}} alert-dismissible fade show m-0 mt-5" id="successAlert" role="alert" hidden>
+      <div
+        class="alert {{#if user}}bg-success text-white{{else}}alert-success{{/if}} alert-dismissible fade show m-0 mt-5"
+        id="successAlert" role="alert" hidden>
         <div id="successAlertBody"></div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -77,7 +87,9 @@
   </div>
   <div class="row justify-content-center m-0">
     <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-      <div class="alert {{#if user}}bg-danger text-white{{else}}alert-danger{{/if}} alert-dismissible fade show m-0 mt-5" id="errorAlert" role="alert" hidden>
+      <div
+        class="alert {{#if user}}bg-danger text-white{{else}}alert-danger{{/if}} alert-dismissible fade show m-0 mt-5"
+        id="errorAlert" role="alert" hidden>
         <div id="errorAlertBody"></div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>

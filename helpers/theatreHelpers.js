@@ -58,6 +58,27 @@ module.exports = {
             });
         });
     },
+    updateLocation: ({ longitude, latitude }, theatreId) => {
+        console.log(longitude, latitude, theatreId);
+        return new Promise((resolve, reject) => {
+            const location = {
+                longitude,
+                latitude
+            }
+
+            db.get().collection(collection.THEATRE_COLLECTION).updateOne({
+                _id: ObjectID(theatreId)
+            }, {
+                $set: {
+                    location
+                }
+            }).then((response) => {
+                resolve({response, alertMessage: 'Updated successfully.'})
+            }).catch((error) => {
+                reject({response, alertMessage: 'Failed to update location.'})
+            });
+        });
+    },
     changePassword: ({ password, newPassword, confirmPassword }, theatreId) => {
         return new Promise(async (resolve, reject) => {
             const theatre = await db.get().collection(collection.THEATRE_COLLECTION).findOne({ _id: ObjectID(theatreId) });

@@ -92,6 +92,16 @@ router.post('/update-theatre-details', isTheatre, (req, res) => {
   });
 });
 
+router.post('/update-location', (req, res) => {
+  theatreHelpers.updateLocation(req.body, req.user._id).then((response) => {
+    req.session.alertMessage = response.alertMessage;
+    res.redirect('/theatre');
+  }).catch((error) => {
+    req.session.errMessage = error.errMessage;
+    res.redirect('/theatre');
+  });
+});
+
 router.post('/change-password', isTheatre, (req, res) => {
   theatreHelpers.changePassword(req.body, req.user._id).then((response) => {
     req.session.alertMessage = response.alertMessage;
