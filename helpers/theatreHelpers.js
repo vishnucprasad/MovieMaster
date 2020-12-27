@@ -83,9 +83,11 @@ module.exports = {
             });
         });
     },
-    addScreens: ({ screenName, seats }, theatreId) => {
+    addScreens: (screenDetails, theatreId) => {
+        screenDetails.theatre = ObjectID(theatreId);
+
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.SCREEN_COLLECTION).insertOne({ theatre: ObjectID(theatreId), screenName, seats }).then((response) => {
+            db.get().collection(collection.SCREEN_COLLECTION).insertOne(screenDetails).then((response) => {
                 resolve({ data: response.ops[0], alertMessage: 'Added Successfully.' });
             }).catch((error) => {
                 reject({ error, errMessage: 'Failed to add screen.' });
@@ -107,15 +109,14 @@ module.exports = {
             });
         });
     },
-    editScreen: ({ screenId, screenName, seats }) => {
+    editScreen: (screenDetails) => {
+        const screenId = screenDetails.screenId;
+        delete screenDetails.screenId;
         return new Promise((resolve, reject) => {
             db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                 _id: ObjectID(screenId)
             }, {
-                $set: {
-                    screenName,
-                    seats
-                }
+                $set: screenDetails
             }).then((response) => {
                 resolve({ response, alertMessage: 'Successfully updated screen details.' });
             }).catch((error) => {
@@ -406,7 +407,8 @@ module.exports = {
                         'shows.$.vip': showDetails.vip,
                         'shows.$.premium': showDetails.premium,
                         'shows.$.executive': showDetails.executive,
-                        'shows.$.normal': showDetails.normal
+                        'shows.$.normal': showDetails.normal,
+                        'shows.$.reservedSeats': []
                     }
                 }).then((response) => {
                     resolve({ response, alertMessage: 'Successfully updated show details.' });
@@ -429,6 +431,105 @@ module.exports = {
             }).catch((error) => {
                 reject({ status: false, error, errMessage: 'Failed to delete show.' });
             })
+        });
+    },
+    getNumberOfShows: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalShows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $project: {
+                        shows: '$shows'
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalShows: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            resolve(totalShows[0].totalShows);
+        });
+    },
+    getNumberOfScreens: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalScreens = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId)
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalScreens: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            resolve(totalScreens[0].totalScreens);
+        });
+    },
+    getNumberOfBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId)
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            resolve(totalBookings[0].totalBookings);
+        });
+    },
+    getNumberOfPayedBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const paidBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId),
+                        status: "booked"
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPayedBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            resolve(paidBookings[0].totalPayedBookings);
         });
     }
 }

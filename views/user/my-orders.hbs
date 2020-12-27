@@ -1,0 +1,72 @@
+{{#if orders}}
+<section>
+    <div class="container my-5 pt-5">
+        <div class="card_shadow">
+            <div class="card-body">
+                {{#each orders}}
+                <a href="/view-order?orderId={{this._id}}" class="text-info">
+                    <div class="pill_shadow p-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div>
+                                    <h5 class="text-primary mb-3">{{this.movieDetails.movieTitle}}</h5>
+                                    <p>{{this.movieDetails.type}} | {{this.movieDetails.language}}</p>
+                                </div>
+                                <img class="img-fluid" src="/images/movies/posters/{{this.movieDetails._id}}.jpg" alt=""
+                                    style="height: 5rem; object-fit: cover !important;">
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="text-primary mb-3">{{this.theatreDetails.theatreName}}</h5>
+                                <div class="d-flex" style="height: 80%;">
+                                    <div class="my-auto">
+                                        <div>
+                                            <p><span class="font-weight-bold">Screen :
+                                                </span>{{this.showDetails.screenName}}</p>
+                                            <p><span class="font-weight-bold">Show Date :
+                                                </span>{{this.showDetails.date}}</p>
+                                            <p><span class="font-weight-bold">Show Time :
+                                                </span>{{this.showDetails.showTime}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex h-100">
+                                    <div class="align-self-center">
+                                        <div>
+                                            <p><span class="font-weight-bold">Seats :
+                                                </span>{{this.seats}}</p>
+                                            <p><span class="font-weight-bold">Total Amount :
+                                                </span>Rs.{{this.totalAmount}}</p>
+                                            <p><span class="font-weight-bold">Payment Method :
+                                                </span>{{this.paymentMethod}}</p>
+                                            <p><span class="font-weight-bold">Status :
+                                                </span><span class="text-capitalize text-primary">{{this.status}}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</section>
+{{else}}
+<section>
+    <div class="container my-5 pt-5">
+        <div class="card_shadow">
+            <div class="card-body">
+                <div class="text-center">
+                    <img src="/assets/images/MovieMaster-not-found.png" class="img-fluid" style="width: 15rem;">
+                    <h3 class="font-weight-normal my-3">No orders found</h3>
+                    <h6>Book Now</h6>
+                    <a href="/now-showing-movies" class="btn btn-primary rounded-pill mt-3 px-5">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/if}}

@@ -13,3 +13,11 @@ module.exports.isTheatre = (req, res, next) => {
         res.redirect('/theatre/login');
     }
 }
+
+module.exports.isUser = (req, res, next) => {
+    if (req.isAuthenticated() && !req.user.theatre && !req.user.admin) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}

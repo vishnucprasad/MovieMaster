@@ -23,9 +23,14 @@
     "mongodb": "^3.6.3",
     "morgan": "~1.9.1",
     "nodemailer": "^6.4.16",
+    "nodemailer-express-handlebars": "^4.0.0",
     "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "paypal-rest-sdk": "^1.8.1",
+    "razorpay": "^2.0.6",
+    "twilio": "^3.54.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

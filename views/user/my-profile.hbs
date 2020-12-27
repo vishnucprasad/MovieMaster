@@ -1,0 +1,144 @@
+<div class="container py-5">
+    <div class="row mt-5">
+        <div class="col-md-4 pt-5">
+            <div class="card_shadow rounded" style="height: 25vh;">
+                <div class="overlap mt-5 row">
+                    <div class="img-container rounded-circle mx-auto">
+                        {{#if user.profilePic}}
+                        <img src="{{user.profilePic}}" alt="" id="profile-pic-wrapper"
+                            class="rounded-circle shadow-dark overlay-img">
+                        {{else}}
+                        <img src="/images/user/profile.png" alt="" id="profile-pic-wrapper"
+                            class="rounded-circle shadow-dark overlay-img">
+                        {{/if}}
+                        <div class="img-overlay">
+                            <div class="d-flex align-items-end" style="min-height: 23vh;">
+                                <a type="button" onclick="opnUpdateWindow(event, '{{user.profilePic}}')"
+                                    class="btn btn-info btn-sm text-white rounded-pill px-3">Update</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body overlap">
+                    <h4 class="text-primary text-center mt-2" id="profileName">{{user.name}} </h4>
+                </div>
+            </div>
+            <div class="card_shadow rounded mt-5">
+                <div class="card-body">
+                    <div class="border-bottom py-2">
+                        <a href="/my-orders" class="text-info">
+                            <h6 class="text-uppercase pill_enlarge px-3 py-1">
+                                <i class="fa fa-ticket mr-3"></i> My Orders
+                            </h6>
+                        </a>
+                    </div>
+                    <div class="border-bottom py-2">
+                        <a type="button" onclick="logout(event, '/logout')" class="text-info">
+                            <h6 class="text-uppercase pill_enlarge px-3 py-1">
+                                <i class="fa fa-power-off mr-3"></i> Logout
+                            </h6>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card_shadow rounded">
+                <div class="card-body" id="personal-info">
+                    <div>
+                        <div class="row">
+                            <h5 class="ml-3">Personal Information</h5>
+                            <a role="button" id="edit-personal-info"
+                                class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
+                            <a role="button" id="cancel-personal-info" hidden
+                                class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
+                        </div>
+                        <div class="py-3 mb-3 border-bottom">
+                            <form class="form-inline" id="editPersonalInfo">
+                                <input id="input-personal-info" class="form-control form-control-sm mr-sm-2" type="text"
+                                    value="{{user.name}}" name="name" required readonly>
+                                <select id="selectGender" name="gender" class="custom-select custom-select-sm mr-sm-2"
+                                    disabled>
+                                    {{#if user.gender}}
+                                    <option value="{{user.gender}}" hidden>{{user.gender}}</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    {{else}}
+                                    <option value="" hidden>Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    {{/if}}
+                                </select>
+                                <button id="save-personal-info"
+                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
+                                    hidden>Save</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row">
+                            <h5 class="ml-3">Email Address</h5>
+                            <a role="button" id="edit-email"
+                                class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
+                            <a role="button" id="cancel-email" hidden
+                                class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
+                        </div>
+                        <div class="py-3 mb-3 border-bottom">
+                            <form class="form-inline" id="editEmail">
+                                <input id="input-email" class="form-control form-control-sm mr-sm-2" type="email"
+                                    value="{{user.email}}" name="email" required readonly>
+                                <button id="save-email"
+                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
+                                    hidden>Save</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row">
+                            <h5 class="ml-3">Mobile Number</h5>
+                            <a role="button" id="edit-mobile"
+                                class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
+                            <a role="button" id="cancel-mobile" hidden
+                                class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
+                        </div>
+                        <div class="py-3 mb-3 border-bottom">
+                            <form class="form-inline" id="editMobile">
+                                <input type="text" class="form-control form-control-sm text-right mr-sm-2" value="+91"
+                                    name="contryCode" readOnly required style="width: 4rem;" hidden>
+                                <input id="input-mobile" class="form-control form-control-sm mr-sm-2" type="text"
+                                    value="{{user.mobileNumber}}" name="mobile" required readonly>
+                                <button id="save-mobile"
+                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
+                                    hidden>Save</button>
+                            </form>
+                        </div>
+                        <div>
+                            <h5 class="mb-3">FAQs</h5>
+                            <div>
+                                <h6 class="mb-2">What happens when I update my email address (or mobile number)?</h6>
+                                <p>Your login mobile number changes, likewise. You'll receive all
+                                    your
+                                    account related communication on your updated email address (or mobile
+                                    number).
+                                </p>
+                                <h6 class="my-2">When will my MovieMaster account be updated with the new mobile number
+                                    ?</h6>
+                                <p>It happens as soon as you confirm the verification code sent to your email
+                                    (or
+                                    mobile) and save the changes.</p>
+                                <h6 class="my-2">What happens to my existing MovieMaster account when I update my email
+                                    address
+                                    (or
+                                    mobile number)?</h6>
+                                <p>Updating your email address (or mobile number) doesn't invalidate your
+                                    account.
+                                    Your account remains fully functional. You'll continue seeing your Order
+                                    history, saved information and personal details.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

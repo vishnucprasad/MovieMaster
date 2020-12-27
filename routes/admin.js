@@ -9,7 +9,12 @@ router.get('/login', (req, res) => {
   if (req.isAuthenticated() && req.user.admin) {
     res.redirect('/admin');
   } else {
-    res.render('admin/login', { title: 'Admin | Login' });
+    if (req.session.messages) {
+      res.render('admin/login', { title: 'Admin | Login', messages: req.session.messages, adminStyle: true });
+      req.session.messages = false;
+    } else {
+      res.render('admin/login', { title: 'Admin | Login', adminStyle: true });
+    }
   }
 });
 
@@ -17,18 +22,28 @@ router.post('/login', passport.authenticate('admin-login', { successRedirect: '/
 
 router.get('/auth/google', passport.authenticate('admin-google-auth', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', passport.authenticate('admin-google-auth', { failureRedirect: '/admin/login', failureFlash: true }), (req, res) => {
-  res.redirect('/admin');
+router.get('/auth/google/callback', passport.authenticate('admin-google-auth', { failureRedirect: '/admin/popup', failureFlash: true }), (req, res) => {
+  res.redirect('/admin/popup');
 });
 
+router.get('/popup', (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.session.messages = { error: 'Invalid Account' };
+  }
+  res.render('auth-popup-callback');
+});
 
 router.get('/logout', (req, res) => {
   req.logout();
   res.json({ status: true });
 });
 
-router.get('/', isAdmin, function (req, res, next) {
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/', isAdmin, async function (req, res, next) {
+  const totalUsers = await adminHelpers.getNumberOfUsers();
+  const totalTheaters = await adminHelpers.getNumberOfTheaters();
+  const totalActiveTheaters = await adminHelpers.getNumberOfActiveTheaters();
+  const totalTheatersOnHold = await adminHelpers.getNumberOfTheatersOnHold();
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });

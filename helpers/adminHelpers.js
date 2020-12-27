@@ -94,8 +94,10 @@ module.exports = {
                 ownerDetails.password = await bcrypt.hash(password, 10);
                 ownerDetails.dateCreated = new Date();
                 ownerDetails.theatre = true;
+                ownerDetails.status = 'Active';
 
                 mailer.sendMail({
+                    from: process.env.USER,
                     to: ownerDetails.email,
                     subject: 'Added your theatre to MovieMaster',
                     html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
@@ -136,6 +138,7 @@ module.exports = {
                 ownerDetails.password = await bcrypt.hash(password, 10);
 
                 mailer.sendMail({
+                    from: process.env.USER,
                     to: ownerDetails.email,
                     subject: 'Added your theatre to MovieMaster',
                     html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
@@ -172,6 +175,106 @@ module.exports = {
             }).catch((error) => {
                 reject({ status: false, error, errMessage: 'Failed to delete owner.' });
             })
+        });
+    },
+    getNumberOfUsers: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalUsers = await db.get().collection(collection.USER_COLLECTION).aggregate([
+                {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalUsers: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalUsers[0]) {
+                resolve(totalUsers[0].totalUsers);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfTheaters: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalTheaters = await db.get().collection(collection.THEATRE_COLLECTION).aggregate([
+                {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalTheaters: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalTheaters[0]) {
+                resolve(totalTheaters[0].totalTheaters);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfActiveTheaters: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalActiveTheaters = await db.get().collection(collection.THEATRE_COLLECTION).aggregate([
+                {
+                    $match: {
+                        status: 'Active'
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalActiveTheaters: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalActiveTheaters[0]) {
+                resolve(totalActiveTheaters[0].totalActiveTheaters);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfTheatersOnHold: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalTheatersOnHold = await db.get().collection(collection.THEATRE_COLLECTION).aggregate([
+                {
+                    $match: {
+                        status: 'Hold'
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalTheatersOnHold: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalTheatersOnHold[0]) {
+                resolve(totalTheatersOnHold[0].totalTheatersOnHold);
+            } else {
+                resolve(0);
+            }
         });
     }
 }

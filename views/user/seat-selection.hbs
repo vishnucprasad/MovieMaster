@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="/assets/css/seat-selection.css">
+{{#with show}}
+<section onload="onLoaderFunc()" style="background: url(/images/desk.jpg) no-repeat center; background-size: cover"
+    class="pt-5">
+    <h1 class="text-center text-uppercase text-warning mt-5">Select Seats</h1>
+    <div class="container seat-container">
+        <div class="w3ls-reg my-4">
+            <h3 class="text-uppercase text-white text-center mb-4" style="width: 100%;">
+                {{0.theatreDetails.0.theatreName}}</h3>
+            <h class="text-uppercase text-info text-center mb-4" style="width: 100%;">{{0.screenName}} &nbsp; | &nbsp;
+                {{0.date}} &nbsp; | &nbsp; {{0.showTime}} &nbsp; | &nbsp; <span class="text-capitalize">{{0.movieDetails.0.movieTitle}}</span></h>
+            <!-- //input fields -->
+            <!-- seat availabilty list -->
+            <ul class="seat_w3ls" style="width: 100%;">
+                <li class="smallBox greenBox">Selected Seat</li>
+
+                <li class="smallBox redBox">Reserved Seat</li>
+
+                <li class="smallBox emptyBox">Empty Seat</li>
+            </ul>
+            <!-- seat availabilty list -->
+            <!-- seat layout -->
+            <div class="d-flex justify-content-center" style="width: 100%;">
+                <div class="seatStructure txt-center" style="overflow-x:auto; width: fit-content;">
+                    <table id="seatsBlock">
+                        <p id="notification"></p>
+                    </table>
+
+                    <div class="screen">
+                        <h2 class="wthree">Screen</h2>
+                    </div>
+                    <button class="btn btn-light" onclick="showDetails('{{0.show}}', '{{0.screen}}')">Confirm Selection</button>
+                    <div id="reservedSeats" hidden>{{0.reservedSeats}}</div>
+                </div>
+            </div>
+            <!-- //seat layout -->
+        </div>
+    </div>
+</section>
+{{/with}}
+<script>
+    const totalSeats = parseInt({{ show.0.seatArrangement.totalSeats }});
+    const totalColumns = parseInt({{ show.0.seatArrangement.columns }});
+    const totalRows = parseInt(parseInt(totalSeats) / totalColumns);
+    const vipRows = parseInt({{ show.0.seatArrangement.vipRows }});
+    const premiumRows = parseInt({{ show.0.seatArrangement.premiumRows }});
+    const executiveRows = parseInt({{ show.0.seatArrangement.executiveRows }});
+    const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    for (i = 0; i <= totalRows + 1; i++) {
+        let price = i <= vipRows ? {{show.0.vip}} : (i <= (vipRows + premiumRows) ? {{show.0.premium}} : (i <= (vipRows + premiumRows + executiveRows) ? {{show.0.executive}} : {{show.0.normal}}));
+
+        if (i === totalRows + 1) {
+            if ((totalSeats - totalRows * totalColumns) > 0) {
+                const row = document.createElement("tr");
+                row.setAttribute('id', `row${i}`);
+                document.getElementById('seatsBlock').appendChild(row)
+                for (j = 0; j <= totalColumns; j++) {
+                    if (i !== 0 && j === 0) {
+                        const seatsNumber = document.createElement("td");
+                        seatsNumber.innerText = alphabets.charAt(i - 1);
+                        document.getElementById(`row${i}`).appendChild(seatsNumber)
+                    } else if (j <= (totalColumns - (totalSeats - totalRows * totalColumns)) / 2 || j > (totalColumns - (totalColumns - (totalSeats - totalRows * totalColumns)) / 2)) {
+                        const seat = document.createElement("td");
+                        seat.setAttribute('id', `seat${j}`);
+                        document.getElementById(`row${i}`).appendChild(seat)
+                    } else if (i !== 0 && j !== 0) {
+                        if (j === parseInt(totalColumns / 4) + 1 || j === (totalColumns - parseInt(totalColumns / 4)) + 1) {
+                            const seatGap = document.createElement("td");
+                            seatGap.setAttribute('class', 'seatGap');
+                            document.getElementById(`row${i}`).appendChild(seatGap)
+                        }
+                        const seat = document.createElement("td");
+                        seat.setAttribute('id', `seat${j}`);
+                        seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}" id="${alphabets.charAt(i - 1)}${j}" data-price="${price}">`
+                        document.getElementById(`row${i}`).appendChild(seat)
+                    }
+                }
+            }
+
+            const normalSection = document.createElement("tr");
+            normalSection.setAttribute('class', `seatVGap`);
+            normalSection.innerHTML = `<td></td><td colspan="${totalColumns + 2}" style="width: 100%;"><div class="text-light bg-info sections">NORMAL | {{show.0.normal}}</div></td colspan="2">`
+            document.getElementById('seatsBlock').appendChild(normalSection)
+        } else if (i !== totalRows + 1) {
+            if (i === vipRows + 1 || i === (vipRows + premiumRows + 1) || i === (vipRows + premiumRows + executiveRows + 1)) {
+                let section = i === vipRows + 1 ? `VIP | {{show.0.vip}}` : (i === (vipRows + premiumRows + 1) ? `PREMIUM | {{show.0.premium}}` : `EXECUTIVE | {{show.0.executive}}`);
+
+                const row = document.createElement("tr");
+                row.setAttribute('class', `seatVGap`);
+                row.innerHTML = `<td></td><td colspan="${totalColumns + 2}" style="width: 100%;"><div class="text-light bg-info sections">${section}</div></td colspan="2">`
+                document.getElementById('seatsBlock').appendChild(row)
+            }
+            const row = document.createElement("tr");
+            row.setAttribute('id', `row${i}`);
+            document.getElementById('seatsBlock').appendChild(row)
+            for (j = 0; j <= totalColumns; j++) {
+                if (i === 0 && j === 0) {
+                    const seatsNumber = document.createElement("td");
+                    document.getElementById(`row${i}`).appendChild(seatsNumber)
+                } else if (i === 0 && j !== 0) {
+                    if (j === parseInt(totalColumns / 4) + 1 || j === (totalColumns - parseInt(totalColumns / 4)) + 1) {
+                        const seatsNumber = document.createElement("td");
+                        document.getElementById(`row${i}`).appendChild(seatsNumber)
+                    }
+                    const seatsNumber = document.createElement("td");
+                    seatsNumber.innerText = j
+                    document.getElementById(`row${i}`).appendChild(seatsNumber)
+                } else if (i !== 0 && j === 0) {
+                    const seatsNumber = document.createElement("td");
+                    seatsNumber.innerText = alphabets.charAt(i - 1);
+                    document.getElementById(`row${i}`).appendChild(seatsNumber)
+                } else if (i !== 0 && j !== 0) {
+                    if (j === parseInt(totalColumns / 4) + 1 || j === (totalColumns - parseInt(totalColumns / 4)) + 1) {
+                        const seatGap = document.createElement("td");
+                        seatGap.setAttribute('class', 'seatGap');
+                        document.getElementById(`row${i}`).appendChild(seatGap)
+                    }
+                    const seat = document.createElement("td");
+                    seat.setAttribute('id', `seat${j}`);
+                    seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}" id="${alphabets.charAt(i - 1)}${j}" data-price="${price}">`
+                    document.getElementById(`row${i}`).appendChild(seat)
+                }
+            }
+        }
+    }
+
+    const reservedSeats = document.getElementById('reservedSeats').innerHTML.split(',');
+    reservedSeats.forEach((seat) => {
+        document.getElementById(`${seat}`).disabled = true;
+        document.getElementById(`${seat}`).classList.add("reservedSeat");
+    });
+</script>

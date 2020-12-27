@@ -1,0 +1,40 @@
+<section class="container" style="height: 100vh !important;">
+    <div class="row h-100 justify-content-center">
+        <div class="col-md-4 my-auto" id="loginForm">
+            <div class="card card_shadow card_border border-primary-top p-4">
+                <h3 class="text-center text-uppercase text-primary font-weight-bold mb-5">Account Login</h3>
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label for="exampleInputMobile1" class="text-primary">Mobile</label>
+                        <div class="row">
+                            <div class="col-3 pr-0">
+                                <input type="text" class="form-control border-0 text-right bg-white"
+                                    value="+91" name="contryCode" readOnly required id="exampleInputMobile1">
+                            </div>
+                            <div class="col-9 pl-0">
+                                <input type="tel" class="form-control border-top-0 border-right-0 border-left-0"
+                                    placeholder="Type your Mobile Number" name="mobile" required
+                                    id="exampleInputMobile1">
+                            </div>
+                        </div>
+                    </div>
+                    {{#if messages.error}}
+                    <div class="text-center pb-2">
+                        <p class="text-danger">{{messages.error}}</p>
+                    </div>
+                    {{/if}}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 mt-3">Request OTP</button>
+                    </div>
+                </form>
+                <div class="text-center mt-5 mb-3">
+                    <a class="btn btn-white btn-shadow px-4" onClick="authPopup(event, '/auth/google')"><img src="/assets/images/Google_Icon.png" alt="" class="img-btn"></a>
+                    <a class="btn btn-white btn-shadow px-4" onClick="authPopup(event, '/auth/facebook')"><img src="/assets/images/Facebook_Icon.png" alt="" class="img-btn"></a>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="/signup" class="small btn-link">New to MovieMaster ? Create new account.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

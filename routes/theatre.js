@@ -9,7 +9,12 @@ router.get('/login', (req, res) => {
   if (req.isAuthenticated() && req.user.theatre) {
     res.redirect('/theatre');
   } else {
-    res.render('theatre/login', { title: 'Theatre | Login' });
+    if (req.session.messages) {
+      res.render('theatre/login', { title: 'Theatre | Login', messages: req.session.messages, theatreStyle: true });
+      req.session.messages = false;
+    } else {
+      res.render('theatre/login', { title: 'Theatre | Login', theatreStyle: true });
+    }
   }
 });
 
@@ -17,8 +22,15 @@ router.post('/login', passport.authenticate('theatre-login', { successRedirect: 
 
 router.get('/auth/google', passport.authenticate('theatre-google-auth', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', passport.authenticate('theatre-google-auth', { failureRedirect: '/theatre/login', failureFlash: true }), (req, res) => {
-  res.redirect('/theatre');
+router.get('/auth/google/callback', passport.authenticate('theatre-google-auth', { failureRedirect: '/theatre/popup', failureFlash: true }), (req, res) => {
+  res.redirect('/theatre/popup');
+});
+
+router.get('/popup', (req, res) => {
+  if (!req.isAuthenticated()) {
+    req.session.messages = { error: 'Invalid Account' };
+  }
+  res.render('auth-popup-callback');
 });
 
 router.get('/logout', (req, res) => {
@@ -26,8 +38,12 @@ router.get('/logout', (req, res) => {
   res.json({ status: true });
 });
 
-router.get('/', isTheatre, function (req, res, next) {
-  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+router.get('/', isTheatre, async function (req, res, next) {
+  const totalShows = await theatreHelpers.getNumberOfShows(req.user._id);
+  const totalScreens = await theatreHelpers.getNumberOfScreens(req.user._id);
+  const totalBookings = await theatreHelpers.getNumberOfBookings(req.user._id);
+  const paidBookings = await theatreHelpers.getNumberOfPayedBookings(req.user._id);
+  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, totalShows, totalScreens, totalBookings, paidBookings, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });
