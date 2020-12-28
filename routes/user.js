@@ -290,4 +290,10 @@ router.post('/sendTicket', isUser, (req, res) => {
   });
 });
 
+router.get('/theatre-locations', (req, res) => {
+  userHelpers.getTheatreLocations().then((features) => {
+    res.json(features);
+  });
+});
+
 module.exports = router;

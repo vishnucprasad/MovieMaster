@@ -189,3 +189,38 @@ select {
 .img-container:hover .img-overlay {
   opacity: 1;
 }
+
+.marker {
+  background-image: url("/assets/images/marker.png");
+  background-size: cover;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mapboxgl-popup {
+  max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: "Open Sans", sans-serif;
+}
+
+#map {
+  box-shadow: 5px 10px 18px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  margin: auto;
+  left: -50vw;
+  right: -50vw;
+  top: -25vw;
+  bottom: -25vw;
+  width: 80vw;
+  height: 80vh;
+}
+
+#swal2-title {
+  position: relative;
+  margin: 0 auto 90vh auto;
+}

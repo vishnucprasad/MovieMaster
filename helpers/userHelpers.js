@@ -482,5 +482,20 @@ module.exports = {
                 reject({ status: false, error, errMessage: 'Failed to send ticket.' });
             });
         });
+    },
+    getTheatreLocations: () => {
+        return new Promise(async (resolve, reject) => {
+            const features = await db.get().collection(collection.THEATRE_COLLECTION).aggregate([
+                {
+                    $project: {
+                        _id: 0,
+                        location: 1,
+                        theatreName: 1,
+                        status: 1
+                    }
+                }
+            ]).toArray();
+            resolve(features);
+        });
     }
 }
