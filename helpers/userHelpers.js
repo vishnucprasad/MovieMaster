@@ -1,6 +1,7 @@
 const db = require('../config/connection');
 const collection = require('../config/collection');
 const { ObjectID } = require('mongodb');
+const axios = require('axios');
 const mailer = require('../utils/mailer')
 const { sendVerificationToken, checkVerificationToken } = require('../utils/verify');
 var paypal = require('paypal-rest-sdk');
@@ -496,6 +497,40 @@ module.exports = {
                 }
             ]).toArray();
             resolve(features);
+        });
+    },
+    getRoutes: (coordinates, features) => {
+        return new Promise((resolve, reject) => {
+            let routes = [];
+
+            features.forEach(feature => {
+                const url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + coordinates[0] + ',' + coordinates[1] + ';' + feature.location.longitude + ',' + feature.location.latitude + '?steps=true&geometries=geojson&access_token=' + process.env.MAPBOX_GL_ACCESS_TOKEN;
+
+                axios.get(url).then((response) => {
+                    const data = response.data.routes[0];
+                    const route = data.geometry.coordinates;
+                    const geojson = {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: route
+                        }
+                    };
+                    feature.geolocationData = data;
+                    feature.geojson = geojson;
+                    routes.push(feature);
+                });
+            });
+
+            const refreshInterval = setInterval(() => {
+                if (routes.length === features.length) {
+                    resolve(routes);
+                    stopRefresh();
+                }
+            }, 100);
+
+            const stopRefresh = () => clearInterval(refreshInterval);
         });
     }
 }

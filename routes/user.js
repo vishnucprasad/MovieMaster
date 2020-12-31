@@ -296,4 +296,12 @@ router.get('/theatre-locations', (req, res) => {
   });
 });
 
+router.post('/get-routes', async (req, res) => {
+  req.session.userLocation = req.body['start[]'];
+  const features = await userHelpers.getTheatreLocations();
+  userHelpers.getRoutes(req.body['start[]'], features).then((routes) => {
+    res.json(routes);
+  });
+});
+
 module.exports = router;

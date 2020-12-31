@@ -217,10 +217,28 @@ select {
   top: -25vw;
   bottom: -25vw;
   width: 80vw;
-  height: 80vh;
+  height: 70vh;
+}
+
+#instructions {
+  position: absolute;
+  margin: 80vh auto 0 auto;
+  width: 80vw;
+  height: 10vh;
+  left: -25vw;
+  right: -25vw;
+  top: 0;
+  bottom: 0;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  overflow-y: scroll;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  color: #000000;
+  line-height: 2em;
 }
 
 #swal2-title {
   position: relative;
-  margin: 0 auto 90vh auto;
+  margin: 0 auto 80vh auto;
 }
