@@ -236,8 +236,3 @@ select {
   color: #000000;
   line-height: 2em;
 }
-
-#swal2-title {
-  position: relative;
-  margin: 0 auto 80vh auto;
-}

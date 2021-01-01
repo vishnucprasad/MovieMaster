@@ -113,7 +113,7 @@ module.exports = {
             })
         });
     },
-    getMovieShows: (movieId, year, month, day, coordinates) => {
+    getTheatersByDistance: (movieId, year, month, day, coordinates) => {
         return new Promise(async (resolve, reject) => {
             month = month < 10 ? `0${month}` : month;
             day = day < 10 ? `0${day}` : day;
@@ -135,16 +135,6 @@ module.exports = {
                 }, {
                     $project: {
                         theatre: '$theatre',
-                        screen: '$_id',
-                        screenName: '$screenName',
-                        show: '$shows._id',
-                        movie: '$shows.movie',
-                        date: '$shows.date',
-                        showTime: '$shows.showTime',
-                        vip: '$shows.vip',
-                        premium: '$shows.premium',
-                        executive: '$shows.executive',
-                        normal: '$shows.normal'
                     }
                 }, {
                     $lookup: {
@@ -152,13 +142,6 @@ module.exports = {
                         localField: 'theatre',
                         foreignField: '_id',
                         as: 'theatreDetails'
-                    }
-                }, {
-                    $lookup: {
-                        from: collection.MOVIE_COLLECTION,
-                        localField: 'movie',
-                        foreignField: '_id',
-                        as: 'movieDetails'
                     }
                 }
             ]).sort({ showTime: 1 }).toArray();
@@ -213,6 +196,59 @@ module.exports = {
             } else {
                 resolve(shows);
             }
+        });
+    },
+    getMovieShows: (movieId, theatreId, year, month, day) => {
+        return new Promise(async (resolve, reject) => {
+            month = month < 10 ? `0${month}` : month;
+            day = day < 10 ? `0${day}` : day;
+
+            const date = `${year}-${month}-${day}`;
+            
+            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId),
+                        'shows.movie': ObjectID(movieId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $match: {
+                        'shows.movie': ObjectID(movieId),
+                        'shows.date': date
+                    }
+                }, {
+                    $project: {
+                        theatre: '$theatre',
+                        screen: '$_id',
+                        screenName: '$screenName',
+                        show: '$shows._id',
+                        movie: '$shows.movie',
+                        date: '$shows.date',
+                        showTime: '$shows.showTime',
+                        vip: '$shows.vip',
+                        premium: '$shows.premium',
+                        executive: '$shows.executive',
+                        normal: '$shows.normal'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.THEATRE_COLLECTION,
+                        localField: 'theatre',
+                        foreignField: '_id',
+                        as: 'theatreDetails'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.MOVIE_COLLECTION,
+                        localField: 'movie',
+                        foreignField: '_id',
+                        as: 'movieDetails'
+                    }
+                }
+            ]).sort({ showTime: 1 }).toArray();
+            resolve(shows);
         });
     },
     getShow: ({ showId, screenId }) => {
