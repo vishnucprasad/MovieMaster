@@ -166,7 +166,7 @@ router.post('/delete-screen', isTheatre, (req, res) => {
 });
 
 router.get('/movie-management', isTheatre, (req, res) => {
-  theatreHelpers.getAllMovies(req.user._id).then((movies) => {
+  theatreHelpers.getAllMovies().then((movies) => {
     res.render('theatre/movie-management', { title: 'Theatre | Movie Management', theatre: req.user, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
@@ -231,7 +231,7 @@ router.post('/edit-movie', isTheatre, (req, res) => {
 });
 
 router.post('/delete-movie', isTheatre, (req, res) => {
-  theatreHelpers.deleteMovie(req.body.id).then((response) => {
+  theatreHelpers.deleteMovie(req.body.id, req.user._id).then((response) => {
     fs.unlinkSync(`./public/images/movies/posters/${req.body.id}.jpg`);
     res.json(response);
   }).catch((error) => {
@@ -326,7 +326,7 @@ router.get('/view-schedule/:id', isTheatre, (req, res) => {
 });
 
 router.get('/add-shows/:id', isTheatre, (req, res) => {
-  theatreHelpers.getAllMovies(req.user._id).then((movies) => {
+  theatreHelpers.getAllMovies().then((movies) => {
     res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.user, screenId: req.params.id, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
     req.session.alertMessage = false;
@@ -344,7 +344,7 @@ router.post('/add-shows', isTheatre, (req, res) => {
 });
 
 router.get('/edit-show', isTheatre, (req, res) => {
-  theatreHelpers.getAllMovies(req.user._id).then(async (movies) => {
+  theatreHelpers.getAllMovies().then(async (movies) => {
     const show = await theatreHelpers.getShow(req.query);
     res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.user, show, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
     req.session.errMessage = false;
