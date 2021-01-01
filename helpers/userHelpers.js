@@ -113,8 +113,13 @@ module.exports = {
             })
         });
     },
-    getMovieShows: (movieId, date) => {
+    getMovieShows: (movieId, year, month, day) => {
         return new Promise(async (resolve, reject) => {
+            month = month < 10 ? `0${month}` : month;
+            day = day < 10 ? `0${day}` : day;
+
+            const date = `${year}-${month}-${day}`;
+            
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {

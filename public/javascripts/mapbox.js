@@ -2,7 +2,7 @@ Swal.fire({
     title: "Select Location",
     html: '<div id="map"></div>' +
         '<div id="instructions"></div>' +
-        '<button class="btn btn-shadow bg-white text-dark px-5 mt-3 rounded-pill text-center" onclick="Swal.close()" hidden id="confirmBtn">Confirm</button>',
+        '<button class="btn btn-shadow bg-white text-dark px-5 mt-4 rounded-pill text-center" onclick="Swal.close()" hidden id="confirmBtn">Confirm</button>',
     allowEscapeKey: false,
     allowOutsideClick: false,
     showConfirmButton: false
