@@ -113,13 +113,13 @@ module.exports = {
             })
         });
     },
-    getMovieShows: (movieId, year, month, day) => {
+    getMovieShows: (movieId, year, month, day, coordinates) => {
         return new Promise(async (resolve, reject) => {
             month = month < 10 ? `0${month}` : month;
             day = day < 10 ? `0${day}` : day;
 
             const date = `${year}-${month}-${day}`;
-            
+
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
@@ -162,7 +162,57 @@ module.exports = {
                     }
                 }
             ]).sort({ showTime: 1 }).toArray();
-            resolve(shows);
+
+            if (shows[0]) {
+                let showsWithDistance = [];
+                shows.forEach(show => {
+                    const url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + coordinates[0] + ',' + coordinates[1] + ';' + show.theatreDetails[0].location.longitude + ',' + show.theatreDetails[0].location.latitude + '?steps=true&geometries=geojson&access_token=' + process.env.MAPBOX_GL_ACCESS_TOKEN;
+
+                    axios.get(url).then((response) => {
+                        const data = response.data.routes[0];
+                        const route = data.geometry.coordinates;
+                        const geojson = {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: route
+                            }
+                        };
+                        data.distance = parseInt(data.distance / 1000); 
+                        show.geolocationData = data;
+                        show.geojson = geojson;
+                        showsWithDistance.push(show);
+                    });
+                });
+
+                const refreshInterval = setInterval(() => {
+                    if (showsWithDistance.length === shows.length) {
+                        showsWithDistance.sort((a, b) => {
+                            return a.geolocationData.distance - b.geolocationData.distance;
+                        });
+
+                        let theaters = [];
+                        let uniqueObject = {};
+
+                        for (let i in showsWithDistance) {
+                            objTheatre = showsWithDistance[i]['theatre'];
+                            uniqueObject[objTheatre] = showsWithDistance[i];
+                        }
+
+                        for (i in uniqueObject) {
+                            theaters.push(uniqueObject[i]);
+                        }
+
+                        resolve(theaters);
+                        stopRefresh();
+                    }
+                }, 100);
+
+                const stopRefresh = () => clearInterval(refreshInterval);
+            } else {
+                resolve(shows);
+            }
         });
     },
     getShow: ({ showId, screenId }) => {

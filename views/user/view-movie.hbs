@@ -46,7 +46,7 @@
             <div class="headerhny-title">
                 <div class="w3l-title-grids">
                     <div class="headerhny-left">
-                        <h3 class="hny-title">Shows</h3>
+                        <h3 class="hny-title">Now Showing Theaters</h3>
                     </div>
                     <div class="headerhny-right text-lg-right text-dark">
                         <a class="btn btn-outline-info btn-info text-white" id="today"
@@ -60,75 +60,96 @@
             </div>
             <div id="todayShows">
                 {{#if todayShows}}
-                {{#each todayShows}}
-                <div class="row pill_shadow mb-3 py-3 rounded">
-                    <div class="col-md-3 pt-2">
-                        <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
-                                class="small text-info">({{this.screenName}})</span></h6>
+                <div class="row">
+                    {{#each todayShows}}
+                    <div class="col-md-4">
+                        <div class="card pill_shadow mb-3" style="max-width: 540px;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src="/assets/images/theatre.png" class="card-img" alt="...">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
+                                        <p class="card-text">This theatre is <span
+                                                class="text-primary">{{this.geolocationData.distance}}</span> KM away
+                                            from your location.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center mb-3">
+                                <a href=""
+                                    class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                                    Here</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3 pt-2 text-center">
-                        <h6 class="text-info">{{this.date}}</h6>
-                    </div>
-                    <div class="col-md-3 pt-2 text-center">
-                        <h6 class="text-info">{{this.showTime}}</h6>
-                    </div>
-                    <div class="col-md-3 text-right">
-                        <a href="/book-seat?showId={{this.show}}&screenId={{this.screen}}"
-                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                            Seat</a>
-                    </div>
+                    {{/each}}
                 </div>
-                {{/each}}
                 {{else}}
                 <h3 class="text-center text-dark">No Shows Available</h3>
                 {{/if}}
             </div>
             <div id="tomorrowShows">
                 {{#if tomorrowShows}}
-                {{#each tomorrowShows}}
-                <div class="row pill_shadow mb-3 py-3 rounded">
-                    <div class="col-md-3 pt-2">
-                        <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
-                                class="small text-info">({{this.screenName}})</span></h6>
+                <div class="row">
+                    {{#each tomorrowShows}}
+                    <div class="col-md-4">
+                        <div class="card pill_shadow mb-3" style="max-width: 540px;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src="/assets/images/theatre.png" class="card-img" alt="...">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
+                                        <p class="card-text">This theatre is <span
+                                                class="text-primary">{{this.geolocationData.distance}}</span> KM away
+                                            from your location.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center mb-3">
+                                <a href=""
+                                    class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                                    Here</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3 pt-2 text-center">
-                        <h6 class="text-info">{{this.date}}</h6>
-                    </div>
-                    <div class="col-md-3 pt-2 text-center">
-                        <h6 class="text-info">{{this.showTime}}</h6>
-                    </div>
-                    <div class="col-md-3 text-right">
-                        <a href="/book-seat?showId={{this.show}}&screenId={{this.screen}}"
-                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                            Seat</a>
-                    </div>
+                    {{/each}}
                 </div>
-                {{/each}}
                 {{else}}
                 <h3 class="text-center text-dark">No Shows Available</h3>
                 {{/if}}
             </div>
             <div id="dayAfterTomorrowShows">
                 {{#if dayAfterTomorrowShows}}
+                <div class="row">
                 {{#each dayAfterTomorrowShows}}
-                <div class="row pill_shadow mb-3 py-3 rounded">
-                    <div class="col-md-3 pt-2">
-                        <h6 class="text-primary">{{this.theatreDetails.0.theatreName}} <span
-                                class="small text-info">({{this.screenName}})</span></h6>
-                    </div>
-                    <div class="col-md-3 pt-2 text-center">
-                        <h6 class="text-info">{{this.date}}</h6>
-                    </div>
-                    <div class="col-md-3 pt-2 text-center">
-                        <h6 class="text-info">{{this.showTime}}</h6>
-                    </div>
-                    <div class="col-md-3 text-right">
-                        <a href="/book-seat?showId={{this.show}}&screenId={{this.screen}}"
-                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                            Seat</a>
+                <div class="col-md-4">
+                    <div class="card pill_shadow mb-3" style="max-width: 540px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img src="/assets/images/theatre.png" class="card-img" alt="...">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
+                                    <p class="card-text">This theatre is <span
+                                            class="text-primary">{{this.geolocationData.distance}}</span> KM away
+                                        from your location.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <a href=""
+                                class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                                Here</a>
+                        </div>
                     </div>
                 </div>
                 {{/each}}
+                </div>
                 {{else}}
                 <h3 class="text-center text-dark">No Shows Available</h3>
                 {{/if}}

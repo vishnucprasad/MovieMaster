@@ -24,9 +24,10 @@ router.get('/upcoming-movies', async (req, res) => {
 
 router.get('/view-movie', async (req, res) => {
   const date = new Date();
-  const todayShows = await userHelpers.getMovieShows(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate());
-  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1);
-  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2);
+  const todayShows = await userHelpers.getMovieShows(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate(), req.session.userLocation);
+  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1, req.session.userLocation);
+  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2, req.session.userLocation);
+  console.log(todayShows);
   const latestMovies = await userHelpers.getMovies();
   userHelpers.getMovie(req.query.movieId).then((movie) => {
     res.render('user/view-movie', { title: 'MovieMaster | View Movie', user: req.user, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
