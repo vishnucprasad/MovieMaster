@@ -162,7 +162,7 @@ module.exports = {
                                 coordinates: route
                             }
                         };
-                        data.distance = parseInt(data.distance / 1000); 
+                        data.distance = parseInt(data.distance / 1000);
                         show.geolocationData = data;
                         show.geojson = geojson;
                         showsWithDistance.push(show);
@@ -204,7 +204,7 @@ module.exports = {
             day = day < 10 ? `0${day}` : day;
 
             const date = `${year}-${month}-${day}`;
-            
+
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
@@ -616,7 +616,14 @@ module.exports = {
 
             const refreshInterval = setInterval(() => {
                 if (routes.length === features.length) {
-                    resolve(routes);
+                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json?access_token=${process.env.MAPBOX_GL_ACCESS_TOKEN}`
+
+                    axios.get(url).then((response) => {
+                        const place_name = response.data.features[1].place_name;
+                        const userLocation = { coordinates, place_name };
+                        resolve({ routes, userLocation });
+                    });
+
                     stopRefresh();
                 }
             }, 100);

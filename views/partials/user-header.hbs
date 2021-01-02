@@ -25,6 +25,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="">Genre</a>
                     </li>
+                    {{#if userLocation}}
+                    <li class="nav-item">
+                        <button class="btn btn-info btn-sm rounded dropdown-toggle" type="button" onclick="loadMap()">
+                            {{userLocation.place_name}}
+                        </button>
+                    </li>
+                    {{/if}}
                 </ul>
 
                 <!--/search-right-->
