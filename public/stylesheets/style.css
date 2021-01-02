@@ -236,3 +236,8 @@ select {
   color: #000000;
   line-height: 2em;
 }
+
+#mapTitle {
+  position: relative;
+  margin: 0 auto 80vh auto;
+}

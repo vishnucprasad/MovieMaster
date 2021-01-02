@@ -207,7 +207,7 @@
                                             data-parent="#accordionExample">
                                             <div class="card-body para__style">
                                                 <div class="row justify-content-center">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-8">
                                                         <div class="row">
                                                             <div class="col md-6">
                                                                 <div id="locationPicker" class="card_shadow"
@@ -221,14 +221,21 @@
                                                                         <input type="text" name="longitude"
                                                                             value="{{theatre.location.longitude}}"
                                                                             class="form-control bg-white" id="longitude"
-                                                                            readonly>
+                                                                            readonly required>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="latitude">Latitude</label>
                                                                         <input type="text" name="latitude"
                                                                             value="{{theatre.location.latitude}}"
                                                                             class="form-control bg-white" id="latitude"
-                                                                            readonly>
+                                                                            readonly required>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="place">Place</label>
+                                                                        <input type="text" name="place_name"
+                                                                            value="{{theatre.location.place_name}}"
+                                                                            class="form-control bg-white" id="place"
+                                                                            readonly required>
                                                                     </div>
                                                                     <div class="text-center">
                                                                         <button type="submit"
@@ -311,10 +318,9 @@
     const lat = document.getElementById('latitude').value
 
     if (lng && lat) {
-        console.log('DEFINED', lng, lat)
         const marker = new mapboxgl.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map);
+            .setLngLat([lng, lat])
+            .addTo(map);
     }
 
     map.on('load', function () {
@@ -329,7 +335,44 @@
     );
 
     map.on('click', function (e) {
-        document.getElementById('longitude').value = e.lngLat.wrap().lng;
-        document.getElementById('latitude').value = e.lngLat.wrap().lat;
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.wrap().lng},${e.lngLat.wrap().lat}.json?access_token=${mapboxgl.accessToken}`
+
+        $.ajax({
+            url,
+            method: 'get',
+            success: (response) => {
+                if (map.getLayer('start')) {
+                    map.getSource('start').setData(start);
+                } else {
+                    map.addLayer({
+                        id: 'start',
+                        type: 'circle',
+                        source: {
+                            type: 'geojson',
+                            data: {
+                                type: 'FeatureCollection',
+                                features: [{
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [e.lngLat.wrap().lng, e.lngLat.wrap().lat]
+                                    }
+                                }]
+                            }
+                        },
+                        paint: {
+                            'circle-radius': 10,
+                            'circle-color': '#f30'
+                        }
+                    });
+                }
+
+                document.getElementById('place').value = response.features[1].place_name;
+                document.getElementById('longitude').value = e.lngLat.wrap().lng;
+                document.getElementById('latitude').value = e.lngLat.wrap().lat;
+            }
+        });
+
     })
 </script>

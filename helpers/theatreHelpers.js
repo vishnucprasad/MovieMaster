@@ -58,12 +58,12 @@ module.exports = {
             });
         });
     },
-    updateLocation: ({ longitude, latitude }, theatreId) => {
-        console.log(longitude, latitude, theatreId);
+    updateLocation: ({ longitude, latitude, place_name }, theatreId) => {
         return new Promise((resolve, reject) => {
             const location = {
                 longitude,
-                latitude
+                latitude,
+                place_name
             }
 
             db.get().collection(collection.THEATRE_COLLECTION).updateOne({
