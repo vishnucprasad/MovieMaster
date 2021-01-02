@@ -122,8 +122,7 @@
                                     Watch Trailer</a>
                                 <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
                                 <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
-                                    <iframe width="560" height="315" src="{{this.trailerLink}}"
-                                        frameborder="0"
+                                    <iframe width="560" height="315" src="{{this.trailerLink}}" frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen></iframe>
                                 </div>
@@ -182,7 +181,8 @@
                             </span>{{this.releaseDate}}</p>
                     </div>
                     <div class="button-center text-center mt-4">
-                        <a href="/view-upcoming-movie?movieId={{this._id}}" class="btn btn-outline-info btn-block text-uppercase">View</a>
+                        <a href="/view-upcoming-movie?movieId={{this._id}}"
+                            class="btn btn-outline-info btn-block text-uppercase">View</a>
                     </div>
                 </div>
                 {{/each}}
@@ -191,3 +191,9 @@
     </div>
 </section>
 <!--grids-sec2-->
+{{#if userLocation}}
+{{else}}
+<script>
+    loadMap();
+</script>
+{{/if}}

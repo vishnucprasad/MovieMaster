@@ -58,6 +58,27 @@ module.exports = {
             });
         });
     },
+    updateLocation: ({ longitude, latitude, place_name }, theatreId) => {
+        return new Promise((resolve, reject) => {
+            const location = {
+                longitude,
+                latitude,
+                place_name
+            }
+
+            db.get().collection(collection.THEATRE_COLLECTION).updateOne({
+                _id: ObjectID(theatreId)
+            }, {
+                $set: {
+                    location
+                }
+            }).then((response) => {
+                resolve({ response, alertMessage: 'Updated successfully.' })
+            }).catch((error) => {
+                reject({ response, alertMessage: 'Failed to update location.' })
+            });
+        });
+    },
     changePassword: ({ password, newPassword, confirmPassword }, theatreId) => {
         return new Promise(async (resolve, reject) => {
             const theatre = await db.get().collection(collection.THEATRE_COLLECTION).findOne({ _id: ObjectID(theatreId) });
@@ -135,17 +156,23 @@ module.exports = {
     },
     addMovies: (movieDetails, theatreId) => {
         movieDetails.theatre = ObjectID(theatreId);
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.MOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
-                resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
-            }).catch((error) => {
-                reject({ error, errMessage: 'Failed to add movie.' });
-            });
+        return new Promise(async (resolve, reject) => {
+            const existingMovie = await db.get().collection(collection.MOVIE_COLLECTION).find({ movieTitle: movieDetails.movieTitle }).toArray();
+
+            if (!existingMovie) {
+                db.get().collection(collection.MOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
+                    resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
+                }).catch((error) => {
+                    reject({ error, errMessage: 'Failed to add movie.' });
+                });
+            } else {
+                reject({ errMessage: 'This movie already exists.' });
+            }
         });
     },
-    getAllMovies: (theatreId) => {
+    getAllMovies: () => {
         return new Promise(async (resolve, reject) => {
-            const movies = await db.get().collection(collection.MOVIE_COLLECTION).find({ theatre: ObjectID(theatreId) }).toArray();
+            const movies = await db.get().collection(collection.MOVIE_COLLECTION).find().toArray();
             resolve(movies);
         });
     },
@@ -173,13 +200,19 @@ module.exports = {
             })
         });
     },
-    deleteMovie: (movieId) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.MOVIE_COLLECTION).removeOne({ _id: ObjectID(movieId) }).then((response) => {
-                resolve({ status: true, alertMessage: 'Deleted Successfully.' });
-            }).catch((error) => {
-                reject({ status: false, error, errMessage: 'Failed to delete movie.' });
-            })
+    deleteMovie: (movieId, theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const movie = await db.get().collection(collection.MOVIE_COLLECTION).findOne({ _id: ObjectID(movieId), theatre: ObjectID(theatreId) });
+
+            if (movie) {
+                db.get().collection(collection.MOVIE_COLLECTION).removeOne({ _id: ObjectID(movieId), theatre: ObjectID(theatreId) }).then((response) => {
+                    resolve({ status: true, alertMessage: 'Deleted Successfully.' });
+                }).catch((error) => {
+                    reject({ status: false, error, errMessage: 'Failed to delete movie.' });
+                })
+            } else {
+                reject({ status: false, errMessage: 'You are not authorized to delete this movie.' });
+            }
         });
     },
     addUpcomingMovies: (movieDetails, theatreId) => {
@@ -459,7 +492,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(totalShows[0].totalShows);
+
+            if (totalShows[0]) {
+                resolve(totalShows[0].totalShows);
+            } else {
+                resolve(0);
+            }
         });
     },
     getNumberOfScreens: (theatreId) => {
@@ -482,7 +520,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(totalScreens[0].totalScreens);
+
+            if (totalScreens[0]) {
+                resolve(totalScreens[0].totalScreens);
+            } else {
+                resolve(0);
+            }
         });
     },
     getNumberOfBookings: (theatreId) => {
@@ -505,7 +548,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(totalBookings[0].totalBookings);
+
+            if (totalBookings[0]) {
+                resolve(totalBookings[0].totalBookings);
+            } else {
+                resolve(0);
+            }
         });
     },
     getNumberOfPayedBookings: (theatreId) => {
@@ -529,7 +577,12 @@ module.exports = {
                     }
                 }
             ]).toArray();
-            resolve(paidBookings[0].totalPayedBookings);
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
         });
     }
 }

@@ -9,27 +9,40 @@ const fs = require('fs');
 router.get('/', async (req, res, next) => {
   const upcomingMovies = await userHelpers.getUpcomingMovies();
   const movies = await userHelpers.getMovies();
-  res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user, movies, upcomingMovies });
+  res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user, userLocation: req.session.userLocation, movies, upcomingMovies });
 });
 
 router.get('/now-showing-movies', async (req, res) => {
   const nowShowingMovies = await userHelpers.getallMovies();
-  res.render('user/now-showing-movies', { title: 'MovieMaster | Now Showing Movies', user: req.user, nowShowingMovies });
+  res.render('user/now-showing-movies', { title: 'MovieMaster | Now Showing Movies', user: req.user, userLocation: req.session.userLocation, nowShowingMovies });
 });
 
 router.get('/upcoming-movies', async (req, res) => {
   const upcomingMovies = await userHelpers.getallUpcomingMovies();
-  res.render('user/upcoming-movies', { title: 'MovieMaster | Upcoming Movies', user: req.user, upcomingMovies });
+  res.render('user/upcoming-movies', { title: 'MovieMaster | Upcoming Movies', user: req.user, userLocation: req.session.userLocation, upcomingMovies });
 });
 
 router.get('/view-movie', async (req, res) => {
   const date = new Date();
-  const todayShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
-  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + 1}`);
-  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate() + 2}`);
+  const todayShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate(), req.session.userLocation.coordinates);
+  const tomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1, req.session.userLocation.coordinates);
+  const dayAfterTomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2, req.session.userLocation.coordinates);
   const latestMovies = await userHelpers.getMovies();
   userHelpers.getMovie(req.query.movieId).then((movie) => {
-    res.render('user/view-movie', { title: 'MovieMaster | View Movie', user: req.user, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
+    res.render('user/view-movie', { title: 'MovieMaster | View Movie', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
+  }).catch((error) => {
+    res.redirect('/');
+  });
+});
+
+router.get('/view-shows', async (req, res) => {
+  const date = new Date();
+  const todayShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate());
+  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1);
+  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2);
+  const latestMovies = await userHelpers.getMovies();
+  userHelpers.getMovie(req.query.movieId).then((movie) => {
+    res.render('user/view-shows', { title: 'MovieMaster | View Shows', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies, theatreName: req.query.theatreName });
   }).catch((error) => {
     res.redirect('/');
   });
@@ -38,7 +51,7 @@ router.get('/view-movie', async (req, res) => {
 router.get('/view-upcoming-movie', async (req, res) => {
   const upcomingMovies = await userHelpers.getUpcomingMovies();
   userHelpers.getUpcomingMovie(req.query.movieId).then((movie) => {
-    res.render('user/view-upcoming-movie', { title: 'MovieMaster | View Upcoming Movie', user: req.user, movie, upcomingMovies });
+    res.render('user/view-upcoming-movie', { title: 'MovieMaster | View Upcoming Movie', user: req.user, userLocation: req.session.userLocation, movie, upcomingMovies });
   }).catch((error) => {
     res.redirect('/');
   });
@@ -61,7 +74,7 @@ router.get('/search-movie', (req, res) => {
       searchNotFound = true;
     }
 
-    res.render('user/search-result', { title: `MovieMaster | Search?q=${req.query.searchQuery}`, user: req.user, searchedMovies, resultCount, searchQuery: req.query.searchQuery, searchNotFound });
+    res.render('user/search-result', { title: `MovieMaster | Search?q=${req.query.searchQuery}`, user: req.user, userLocation: req.session.userLocation, searchedMovies, resultCount, searchQuery: req.query.searchQuery, searchNotFound });
   });
 });
 
@@ -143,12 +156,12 @@ router.get('/logout', (req, res) => {
 
 router.get('/book-seat', isUser, async (req, res) => {
   const show = await userHelpers.getShow(req.query);
-  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', user: req.user, show });
+  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', user: req.user, userLocation: req.session.userLocation, show });
 });
 
 router.get('/checkout', isUser, async (req, res) => {
   const show = await userHelpers.getShow(req.query);
-  res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, show, checkoutDetails: req.query });
+  res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, userLocation: req.session.userLocation, show, checkoutDetails: req.query });
 });
 
 router.post('/checkoutRazorpay', isUser, async (req, res) => {
@@ -201,7 +214,7 @@ router.get('/cancel-paypal', (req, res) => {
 router.get('/view-order', isUser, (req, res) => {
   userHelpers.getOrder(req.query.orderId, req.user._id).then((order) => {
     order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`;
-    res.render('user/view-order', { title: 'MovieMaster | View Order', user: req.user, order });
+    res.render('user/view-order', { title: 'MovieMaster | View Order', user: req.user, userLocation: req.session.userLocation, order });
   }).catch((error) => {
     req.flash('error', error.errMessage);
     res.redirect('/');
@@ -210,11 +223,11 @@ router.get('/view-order', isUser, (req, res) => {
 
 router.get('/my-orders', isUser, async (req, res) => {
   const orders = await userHelpers.getAllOrders(req.user._id);
-  res.render('user/my-orders', { title: 'MovieMaster | My Orders', user: req.user, orders })
+  res.render('user/my-orders', { title: 'MovieMaster | My Orders', user: req.user, userLocation: req.session.userLocation, orders })
 });
 
 router.get('/my-profile', isUser, (req, res) => {
-  res.render('user/my-profile', { title: 'MovieMaster | My Profile', user: req.user });
+  res.render('user/my-profile', { title: 'MovieMaster | My Profile', user: req.user, userLocation: req.session.userLocation, });
 });
 
 router.post('/update-profile-picture', isUser, (req, res) => {
@@ -287,6 +300,20 @@ router.post('/sendTicket', isUser, (req, res) => {
   }).catch((error) => {
     error.status = false;
     res.json(error);
+  });
+});
+
+router.get('/theatre-locations', (req, res) => {
+  userHelpers.getTheatreLocations().then((features) => {
+    res.json(features);
+  });
+});
+
+router.post('/get-routes', async (req, res) => {
+  const features = await userHelpers.getTheatreLocations();
+  userHelpers.getRoutes(req.body['start[]'], features).then((response) => {
+    req.session.userLocation = response.userLocation;
+    res.json(response.routes);
   });
 });
 

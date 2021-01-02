@@ -1,6 +1,7 @@
 const db = require('../config/connection');
 const collection = require('../config/collection');
 const { ObjectID } = require('mongodb');
+const axios = require('axios');
 const mailer = require('../utils/mailer')
 const { sendVerificationToken, checkVerificationToken } = require('../utils/verify');
 var paypal = require('paypal-rest-sdk');
@@ -112,11 +113,102 @@ module.exports = {
             })
         });
     },
-    getMovieShows: (movieId, date) => {
+    getTheatersByDistance: (movieId, year, month, day, coordinates) => {
         return new Promise(async (resolve, reject) => {
+            month = month < 10 ? `0${month}` : month;
+            day = day < 10 ? `0${day}` : day;
+
+            const date = `${year}-${month}-${day}`;
+
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
+                        'shows.movie': ObjectID(movieId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $match: {
+                        'shows.movie': ObjectID(movieId),
+                        'shows.date': date
+                    }
+                }, {
+                    $project: {
+                        theatre: '$theatre',
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.THEATRE_COLLECTION,
+                        localField: 'theatre',
+                        foreignField: '_id',
+                        as: 'theatreDetails'
+                    }
+                }
+            ]).sort({ showTime: 1 }).toArray();
+
+            if (shows[0]) {
+                let showsWithDistance = [];
+                shows.forEach(show => {
+                    const url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + coordinates[0] + ',' + coordinates[1] + ';' + show.theatreDetails[0].location.longitude + ',' + show.theatreDetails[0].location.latitude + '?steps=true&geometries=geojson&access_token=' + process.env.MAPBOX_GL_ACCESS_TOKEN;
+
+                    axios.get(url).then((response) => {
+                        const data = response.data.routes[0];
+                        const route = data.geometry.coordinates;
+                        const geojson = {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: route
+                            }
+                        };
+                        data.distance = parseInt(data.distance / 1000);
+                        show.geolocationData = data;
+                        show.geojson = geojson;
+                        showsWithDistance.push(show);
+                    });
+                });
+
+                const refreshInterval = setInterval(() => {
+                    if (showsWithDistance.length === shows.length) {
+                        showsWithDistance.sort((a, b) => {
+                            return a.geolocationData.distance - b.geolocationData.distance;
+                        });
+
+                        let theaters = [];
+                        let uniqueObject = {};
+
+                        for (let i in showsWithDistance) {
+                            objTheatre = showsWithDistance[i]['theatre'];
+                            uniqueObject[objTheatre] = showsWithDistance[i];
+                        }
+
+                        for (i in uniqueObject) {
+                            theaters.push(uniqueObject[i]);
+                        }
+
+                        resolve(theaters);
+                        stopRefresh();
+                    }
+                }, 100);
+
+                const stopRefresh = () => clearInterval(refreshInterval);
+            } else {
+                resolve(shows);
+            }
+        });
+    },
+    getMovieShows: (movieId, theatreId, year, month, day) => {
+        return new Promise(async (resolve, reject) => {
+            month = month < 10 ? `0${month}` : month;
+            day = day < 10 ? `0${day}` : day;
+
+            const date = `${year}-${month}-${day}`;
+
+            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId),
                         'shows.movie': ObjectID(movieId)
                     }
                 }, {
@@ -481,6 +573,62 @@ module.exports = {
                 console.log(error);
                 reject({ status: false, error, errMessage: 'Failed to send ticket.' });
             });
+        });
+    },
+    getTheatreLocations: () => {
+        return new Promise(async (resolve, reject) => {
+            const features = await db.get().collection(collection.THEATRE_COLLECTION).aggregate([
+                {
+                    $project: {
+                        _id: 0,
+                        location: 1,
+                        theatreName: 1,
+                        status: 1
+                    }
+                }
+            ]).toArray();
+            resolve(features);
+        });
+    },
+    getRoutes: (coordinates, features) => {
+        return new Promise((resolve, reject) => {
+            let routes = [];
+
+            features.forEach(feature => {
+                const url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + coordinates[0] + ',' + coordinates[1] + ';' + feature.location.longitude + ',' + feature.location.latitude + '?steps=true&geometries=geojson&access_token=' + process.env.MAPBOX_GL_ACCESS_TOKEN;
+
+                axios.get(url).then((response) => {
+                    const data = response.data.routes[0];
+                    const route = data.geometry.coordinates;
+                    const geojson = {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: route
+                        }
+                    };
+                    feature.geolocationData = data;
+                    feature.geojson = geojson;
+                    routes.push(feature);
+                });
+            });
+
+            const refreshInterval = setInterval(() => {
+                if (routes.length === features.length) {
+                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json?access_token=${process.env.MAPBOX_GL_ACCESS_TOKEN}`
+
+                    axios.get(url).then((response) => {
+                        const place_name = response.data.features[1].place_name;
+                        const userLocation = { coordinates, place_name };
+                        resolve({ routes, userLocation });
+                    });
+
+                    stopRefresh();
+                }
+            }, 100);
+
+            const stopRefresh = () => clearInterval(refreshInterval);
         });
     }
 }
