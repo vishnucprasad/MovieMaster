@@ -72,9 +72,13 @@
                         <h6 class="text-info">{{this.showTime}}</h6>
                     </div>
                     <div class="col-md-3 text-right">
+                        {{#IF this.totalSeats '==' this.reservedSeats}}
+                        <span class="btn btn-warning text-uppercase font-weight-bold btn-sm px-5 rounded-pill" style="width: 80% !important;">House Full</span>
+                        {{else}}
                         <a href="/book-seat?showId={{this.show}}&screenId={{this.screen}}"
-                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill" style="width: 80% !important;">Book
                             Seat</a>
+                        {{/IF}}
                     </div>
                 </div>
                 {{/each}}
@@ -96,9 +100,13 @@
                         <h6 class="text-info">{{this.showTime}}</h6>
                     </div>
                     <div class="col-md-3 text-right">
+                        {{#IF this.totalSeats '==' this.reservedSeats}}
+                        <span class="btn btn-warning text-uppercase font-weight-bold btn-sm px-5 rounded-pill" style="width: 80% !important;">House Full</span>
+                        {{else}}
                         <a href="/book-seat?showId={{this.show}}&screenId={{this.screen}}"
-                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill" style="width: 80% !important;">Book
                             Seat</a>
+                        {{/IF}}
                     </div>
                 </div>
                 {{/each}}
@@ -120,9 +128,13 @@
                         <h6 class="text-info">{{this.showTime}}</h6>
                     </div>
                     <div class="col-md-3 text-right">
+                        {{#IF this.totalSeats '==' this.reservedSeats}}
+                        <span class="btn btn-warning text-uppercase font-weight-bold btn-sm px-5 rounded-pill" style="width: 80% !important;">House Full</span>
+                        {{else}}
                         <a href="/book-seat?showId={{this.show}}&screenId={{this.screen}}"
-                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                            class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill" style="width: 80% !important;">Book
                             Seat</a>
+                        {{/IF}}
                     </div>
                 </div>
                 {{/each}}

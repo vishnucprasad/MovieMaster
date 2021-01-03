@@ -224,6 +224,8 @@ module.exports = {
                         screen: '$_id',
                         screenName: '$screenName',
                         show: '$shows._id',
+                        totalSeats: '$seats',
+                        reservedSeats: '$shows.reservedSeats',
                         movie: '$shows.movie',
                         date: '$shows.date',
                         showTime: '$shows.showTime',
@@ -248,6 +250,9 @@ module.exports = {
                     }
                 }
             ]).sort({ showTime: 1 }).toArray();
+            shows.forEach(show => {
+                show.reservedSeats = show.reservedSeats.length;
+            });
             resolve(shows);
         });
     },
