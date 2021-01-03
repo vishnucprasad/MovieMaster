@@ -333,7 +333,7 @@ module.exports = {
                 totalAmount,
                 paymentMethod,
                 orderDate: new Date(),
-                status: 'pending'
+                status: 'Payment Failed'
             }
 
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObject).then((response) => {
@@ -493,6 +493,16 @@ module.exports = {
     getAllOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
             const orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: ObjectID(userId) }).sort({ orderDate: -1 }).toArray();
+            orders.forEach(order => {
+                const year = order.orderDate.getFullYear();
+                const month = order.orderDate.getMonth() + 1 < 10 ? `0${order.orderDate.getMonth() + 1}` : order.orderDate.getMonth() + 1;
+                const day = order.orderDate.getDate() < 10 ? `0${order.orderDate.getDate()}` : order.orderDate.getDate();
+
+                const hour = order.orderDate.getHours() < 10 ? `0${order.orderDate.getHours()}` : order.orderDate.getHours();
+                const minute = order.orderDate.getMinutes() < 10 ? `0${order.orderDate.getMinutes()}` : order.orderDate.getMinutes();
+
+                order.orderDate = `${year}-${month}-${day} - ${hour} : ${minute}`;
+            });
             resolve(orders);
         });
     },

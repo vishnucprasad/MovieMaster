@@ -1,55 +1,55 @@
 {{#if orders}}
 <section>
     <div class="container my-5 pt-5">
-        <div class="card_shadow">
+        <div>
             <div class="card-body">
-                {{#each orders}}
-                <a href="/view-order?orderId={{this._id}}" class="text-info">
-                    <div class="pill_shadow p-3">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div>
-                                    <h5 class="text-primary mb-3">{{this.movieDetails.movieTitle}}</h5>
-                                    <p>{{this.movieDetails.type}} | {{this.movieDetails.language}}</p>
-                                </div>
-                                <img class="img-fluid" src="/images/movies/posters/{{this.movieDetails._id}}.jpg" alt=""
-                                    style="height: 5rem; object-fit: cover !important;">
-                            </div>
-                            <div class="col-md-4">
-                                <h5 class="text-primary mb-3">{{this.theatreDetails.theatreName}}</h5>
-                                <div class="d-flex" style="height: 80%;">
-                                    <div class="my-auto">
-                                        <div>
-                                            <p><span class="font-weight-bold">Screen :
-                                                </span>{{this.showDetails.screenName}}</p>
-                                            <p><span class="font-weight-bold">Show Date :
-                                                </span>{{this.showDetails.date}}</p>
-                                            <p><span class="font-weight-bold">Show Time :
-                                                </span>{{this.showDetails.showTime}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="d-flex h-100">
-                                    <div class="align-self-center">
-                                        <div>
-                                            <p><span class="font-weight-bold">Seats :
-                                                </span>{{this.seats}}</p>
-                                            <p><span class="font-weight-bold">Total Amount :
-                                                </span>Rs.{{this.totalAmount}}</p>
-                                            <p><span class="font-weight-bold">Payment Method :
-                                                </span>{{this.paymentMethod}}</p>
-                                            <p><span class="font-weight-bold">Status :
-                                                </span><span class="text-capitalize text-primary">{{this.status}}</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="headerhny-title">
+                    <div class="w3l-title-grids">
+                        <div class="headerhny-left">
+                            <h3 class="hny-title">My Orders</h3>
                         </div>
                     </div>
-                </a>
-                {{/each}}
+                </div>
+                <div class="row">
+                    {{#each orders}}
+                    <div class="col-lg-4 col-md-6">
+                        <a href="/view-order?orderId={{this._id}}" class="text-info">
+                            <div class="card_shadow pill_enlarge-lg mb-3 rounded">
+                                <div class="text-white" style="background-color: #ababab;">
+                                    <p class="text-center">{{this.orderDate}}</p>
+                                </div>
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="/images/movies/posters/{{this.movieDetails._id}}.jpg" class="card-img"
+                                            style="height: 100%; object-fit: cover;">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body p-0">
+                                            <h6 class="card-title text-truncate bg-info text-white text-center mb-1 py-1">
+                                                {{this.movieDetails.movieTitle}}</h6>
+                                            <div class="px-3 py-1">
+                                                <p class="card-text text-primary text-truncate mb-2">
+                                                    {{this.theatreDetails.theatreName}} |
+                                                    {{this.showDetails.screenName}}</p>
+                                                <p class="text-truncate"><span class="font-weight-bold">Seats
+                                                        :
+                                                    </span>{{this.seats}}</p>
+                                                <p class="text-truncate"><span class="font-weight-bold">Total
+                                                        Amount :
+                                                    </span>Rs.{{this.totalAmount}}</p>
+                                            </div>
+                                            <p class="{{#IF this.status '==' 'booked'}}bg-secondary{{else}}bg-danger{{/IF}}
+                                                text-center text-white text-truncate"><span
+                                                    class="font-weight-bold"></span>{{this.paymentMethod}} <span
+                                                    class="text-capitalize small">( {{this.status}} )</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {{/each}}
+                </div>
             </div>
         </div>
     </div>

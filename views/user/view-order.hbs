@@ -7,10 +7,12 @@
                         <h6 class="text-primary text-uppercase" style="letter-spacing: 3px;">Order Summary</h6>
                     </div>
                     <form class="form-inline ml-auto" id="sendTicket">
+                        {{#IF order.status '==' "booked"}}
                         <input type="text" name="orderId" value="{{order._id}}" class="form-control mb-xs-2 mr-md-2" hidden>
                         <input type="email" name="email" class="form-control mb-xs-2 mr-md-2" id="inlineFormInputEmail2"
                             placeholder="Type email to send ticket" required>
                         <button type="submit" class="btn btn-shadow px-5 text-white bg-white text-info"><i class="fa fa-paper-plane"></i></button>
+                        {{/IF}}
                         <a href="/my-orders" class="btn btn-shadow px-5 text-white bg-secondary ml-3">My
                             Orders</a>
                     </form>
@@ -106,7 +108,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-footer bg-secondary py-3 px-4">
+        <div class="card-footer {{#IF order.status '==' "booked"}}bg-secondary{{else}}bg-danger{{/IF}} py-3 px-4">
             <div class="row px-3">
                 <h6 class="text-white ml-auto text-uppercase">Status :</h6>
                 <h6 class="mr-auto text-white text-uppercase">&nbsp;{{order.status}}</h6>

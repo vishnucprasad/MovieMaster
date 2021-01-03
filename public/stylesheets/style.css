@@ -100,6 +100,18 @@ select {
   color: var(--primary) !important;
 }
 
+.pill_enlarge-sm:hover {
+  transition: 300ms;
+  transform: scale(1.01);
+  color: var(--primary) !important;
+}
+
+.pill_enlarge-lg:hover {
+  transition: 300ms;
+  transform: scale(1.05);
+  color: var(--primary) !important;
+}
+
 .pill_shadow:hover {
   box-shadow: 3px 2px 8px #888888;
 }
