@@ -41,7 +41,6 @@ router.get('/view-shows', async (req, res) => {
   const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1);
   const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2);
   const latestMovies = await userHelpers.getMovies();
-  console.log(todayShows);
   userHelpers.getMovie(req.query.movieId).then((movie) => {
     res.render('user/view-shows', { title: 'MovieMaster | View Shows', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies, theatreName: req.query.theatreName });
   }).catch((error) => {

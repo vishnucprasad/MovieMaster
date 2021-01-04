@@ -71,7 +71,8 @@
                                 <div class="col-md-8">
                                     <div class="card-body">
                                         <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
-                                        <p class="card-title text-primary text-truncate">{{this.theatreDetails.0.location.place_name}}</p>
+                                        <p class="card-title text-primary text-truncate">
+                                            {{this.theatreDetails.0.location.place_name}}</p>
                                         <p class="card-text">This theatre is <span
                                                 class="text-primary">{{this.geolocationData.distance}}</span> KM away
                                             from your location.</p>
@@ -126,30 +127,30 @@
             <div id="dayAfterTomorrowShows">
                 {{#if dayAfterTomorrowShows}}
                 <div class="row">
-                {{#each dayAfterTomorrowShows}}
-                <div class="col-md-4">
-                    <div class="card pill_shadow mb-3" style="max-width: 540px;">
-                        <div class="row no-gutters">
-                            <div class="col-md-4">
-                                <img src="/assets/images/theatre.png" class="card-img" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
-                                    <p class="card-text">This theatre is <span
-                                            class="text-primary">{{this.geolocationData.distance}}</span> KM away
-                                        from your location.</p>
+                    {{#each dayAfterTomorrowShows}}
+                    <div class="col-md-4">
+                        <div class="card pill_shadow mb-3" style="max-width: 540px;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src="/assets/images/theatre.png" class="card-img" alt="...">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
+                                        <p class="card-text">This theatre is <span
+                                                class="text-primary">{{this.geolocationData.distance}}</span> KM away
+                                            from your location.</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-center mb-3">
-                            <a href=""
-                                class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                                Here</a>
+                            <div class="text-center mb-3">
+                                <a href=""
+                                    class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
+                                    Here</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {{/each}}
+                    {{/each}}
                 </div>
                 {{else}}
                 <h3 class="text-center text-dark">No Shows Available</h3>
@@ -214,4 +215,30 @@
 <script>
     $('#tomorrowShows').hide();
     $('#dayAfterTomorrowShows').hide();
+
+    const onTimeOut = () => {
+        Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-info rounded-pill px-5'
+            },
+            buttonsStyling: false
+        }).fire({
+            icon: 'info',
+            title: 'Payment Timed Out!',
+            text: 'Please try again.',
+            allowOutsideClick: false
+        }).then(response => {
+            if (response.isConfirmed) {
+                Swal.colse();
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        const params = (new URL(document.location)).searchParams;
+        const timeOut = params.get("timeout");
+        if (timeOut) {
+            onTimeOut();
+        }
+    });
 </script>
