@@ -101,15 +101,18 @@
                         </div>
                     </div>
                     <div class="mt-5">
-                        <h6 class="text-center mb-5">Payment Options</h6>
+                        <h6 class="text-center">Payment Options</h6>
+                        <div class="row my-3">
+                            <div id="countDown" class="mx-auto"></div>
+                        </div>
                         <div class="row">
                             {{#with checkoutDetails}}
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <a type="button" onclick="checkoutPaypal(event, '{{screenId}}', '{{showId}}', '{{numberOfSeats}}', '{{seats}}', '{{totalAmount}}' )" class="btn btn-warning btn-paypal rounded py-1">
                                     <img src="/assets/images/Paypal.png" style="width: 80%;" class="my-2" alt="">
                                 </a>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <a type="button" onclick="checkoutRazorpay(event, '{{screenId}}', '{{showId}}', '{{numberOfSeats}}', '{{seats}}', '{{totalAmount}}' )" class="btn btn-warning btn-razorpay rounded py-1">
                                     <img src="/assets/images/Razorpay.png" style="width: 80%;" class="my-2" alt="">
                                 </a>
@@ -122,6 +125,11 @@
         </div>
     </div>
 </div>
+<div id="movieId" hidden>{{show.0.movieDetails.0._id}}</div>
 <script>
+    const movieId = document.getElementById('movieId').innerHTML;
 
+    $(document).ready(function () {
+      checkoutTimeout(movieId);
+    });
 </script>
