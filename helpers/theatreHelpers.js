@@ -159,7 +159,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             const existingMovie = await db.get().collection(collection.MOVIE_COLLECTION).find({ movieTitle: movieDetails.movieTitle }).toArray();
 
-            if (!existingMovie) {
+            if (!existingMovie[0]) {
                 db.get().collection(collection.MOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
                     resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
                 }).catch((error) => {
