@@ -472,7 +472,7 @@ module.exports = {
                 }).then((response) => {
                     if (user.email) {
                         mailer.sendMail({
-                            from: process.env.USER,
+                            from: process.env.USER_EMAIL,
                             to: user.email,
                             subject: 'Ticket Booked Successfully',
                             template: 'templates/ticket',
@@ -576,7 +576,7 @@ module.exports = {
     sendTicket: (order, email) => {
         return new Promise((resolve, reject) => {
             mailer.sendMail({
-                from: process.env.USER,
+                from: process.env.USER_EMAIL,
                 to: email,
                 subject: 'Ticket Booked Successfully',
                 template: 'templates/ticket',

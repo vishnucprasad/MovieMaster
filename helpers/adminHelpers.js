@@ -97,7 +97,7 @@ module.exports = {
                 ownerDetails.status = 'Active';
 
                 mailer.sendMail({
-                    from: process.env.USER,
+                    from: process.env.USER_EMAIL,
                     to: ownerDetails.email,
                     subject: 'Added your theatre to MovieMaster',
                     html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`
@@ -138,7 +138,7 @@ module.exports = {
                 ownerDetails.password = await bcrypt.hash(password, 10);
 
                 mailer.sendMail({
-                    from: process.env.USER,
+                    from: process.env.USER_EMAIL,
                     to: ownerDetails.email,
                     subject: 'Added your theatre to MovieMaster',
                     html: `<h1>Hello ${ownerDetails.ownerName},</h1><p>We added your theatre ${ownerDetails.theatreName} to MovieMaster. You can now login to your theatre panel using the following credentials.</p><h3>EMAIL: ${ownerDetails.email}</h3><h3>PASSWORD: ${password}</h3>`

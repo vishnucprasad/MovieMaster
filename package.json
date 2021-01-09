@@ -31,7 +31,7 @@
     "passport-local": "^1.0.0",
     "paypal-rest-sdk": "^1.8.1",
     "razorpay": "^2.0.6",
-    "twilio": "^3.54.0"
+    "twilio": "^3.54.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
