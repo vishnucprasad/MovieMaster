@@ -251,7 +251,7 @@ module.exports = {
                 }
             ]).sort({ showTime: 1 }).toArray();
             shows.forEach(show => {
-                show.reservedSeats = show.reservedSeats.length;
+                show.reservedSeats = show.reservedSeats ? show.reservedSeats.length : 0;
             });
             resolve(shows);
         });
