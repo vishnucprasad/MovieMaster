@@ -84,7 +84,6 @@ const loadMap = () => {
                             lowestIndex = i;
                         }
                     }
-                    console.log(lowest, lowestIndex);
 
                     const data = features[lowestIndex].geolocationData;
                     const route = data.geometry.coordinates;
@@ -103,7 +102,7 @@ const loadMap = () => {
                                     properties: {},
                                     geometry: {
                                         type: 'LineString',
-                                        coordinates: geojson
+                                        coordinates: geojson.geometry.coordinates
                                     }
                                 }
                             },
