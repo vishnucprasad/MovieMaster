@@ -109,11 +109,10 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-  userHelpers.doSignup(req.body).then((user) => {
-    res.render('user/verify-account', { title: 'Account | Verify Account', mobileNumber: user.mobileNumber });
+  userHelpers.doSignup(req.body).then((response) => {
+    res.json(response);
   }).catch((error) => {
-    req.flash('error', error.errMessage);
-    res.redirect('/signup');
+    res.json(error);
   });
 });
 

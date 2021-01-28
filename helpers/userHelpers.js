@@ -18,22 +18,22 @@ const instance = new Razorpay({
 });
 
 module.exports = {
-    doSignup: ({ name, contryCode, mobile }) => {
+    doSignup: ({ name, email, contryCode, mobile }) => {
         return new Promise(async (resolve, reject) => {
             const mobileNumber = `${contryCode}${mobile}`
             const existingUser = await db.get().collection(collection.USER_COLLECTION).findOne({ mobileNumber });
             if (!existingUser) {
                 sendVerificationToken(mobileNumber).then((verification) => {
-                    db.get().collection(collection.USER_COLLECTION).insertOne({ name, mobileNumber }).then((response) => {
-                        resolve(response.ops[0]);
+                    db.get().collection(collection.USER_COLLECTION).insertOne({ name, email, mobileNumber }).then((response) => {
+                        resolve({ status: true, user: response.ops[0]});
                     }).catch((error) => {
-                        reject({ error, errMessage: 'Signup Failed.' });
+                        reject({ status: false, error, errMessage: 'Signup Failed.' });
                     });
                 }).catch((error) => {
-                    reject({ error, errMessage: 'Failed to send verification code.' });
+                    reject({ status: false, error, errMessage: 'Failed to send verification code.' });
                 });
             } else {
-                reject({ errMessage: 'This number is already registered.' });
+                reject({ status: false, errMessage: 'This number is already registered.' });
             }
         });
     },
@@ -46,10 +46,10 @@ module.exports = {
                 sendVerificationToken(mobileNumber).then((verification) => {
                     resolve({ status: true, user });
                 }).catch((error) => {
-                    reject({ status:false, error, errMessage: 'Failed to send verification code.' });
+                    reject({ status: false, error, errMessage: 'Failed to send verification code.' });
                 })
             } else {
-                reject({ status:false, errMessage: 'Cannot find user.' });
+                reject({ status: false, errMessage: 'Cannot find user.' });
             }
         });
     },
@@ -58,16 +58,16 @@ module.exports = {
             checkVerificationToken({ mobile, OTP }).then((verification_check) => {
                 if (verification_check.status === 'approved') {
                     db.get().collection(collection.USER_COLLECTION).findOne({ mobileNumber: mobile }).then((user) => {
-                        resolve({status:true, user});
+                        resolve({ status: true, user });
                     }).catch((error) => {
-                        reject({ status:false, error, mobile, errMessage: 'Failed to get userDetails.' });
+                        reject({ status: false, error, mobile, errMessage: 'Failed to get userDetails.' });
                     });
                 } else if (verification_check.status === 'pending') {
-                    reject({ status:false, error, mobile, errMessage: 'Invalid verification code.' });
+                    reject({ status: false, error, mobile, errMessage: 'Invalid verification code.' });
                 }
             }).catch((error) => {
                 console.log(error);
-                reject({ status:false, error, mobile, errMessage: 'Failed to check verification code.' });
+                reject({ status: false, error, mobile, errMessage: 'Failed to check verification code.' });
             });
         });
     },

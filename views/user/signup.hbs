@@ -1,45 +1,127 @@
-<section class="container" style="height: 100vh !important;">
-    <div class="row h-100 justify-content-center">
-        <div class="col-md-4 my-auto" id="signupForm">
-            <div class="card card_shadow card_border border-primary-top p-4">
-                <h3 class="text-center text-uppercase text-primary font-weight-bold mb-5">Account Signup</h3>
-                <form action="/signup" method="POST">
-                    <div class="form-group">
-                        <label for="exampleInputName1" class="text-primary">Name</label>
-                        <input type="name" class="form-control border-top-0 border-right-0 border-left-0" name="name"
-                            placeholder="Type your Name" required id="exampleInputname1" aria-describedby="nameHelp">
+<section class="min-vh-100 d-flex bg-primary align-items-center my-5 pt-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6 justify-content-center">
+                <div class="card bg-primary shadow-soft border-light p-4">
+                    <div class="card-header text-center pb-0">
+                        <h2 class="mb-0 h5 text-secondary">Create Account</h2>
                     </div>
-                    <div class="form-group">
-                        <label for="exampleInputMobile1" class="text-primary">Mobile</label>
-                        <div class="row">
-                            <div class="col-3 pr-0">
-                                <input type="text" class="form-control border-0 text-right bg-white"
-                                    value="+91" name="contryCode" readOnly required id="exampleInputMobile1">
+                    <div class="card-body">
+                        <form id="signupForm">
+                            <div class="form-group">
+                                <label for="nameInput">Name</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-user text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control" id="nameInput" placeholder="Type your name" type="text"
+                                        name="name" aria-label="name" required>
+                                </div>
                             </div>
-                            <div class="col-9 pl-0">
-                                <input type="tel" class="form-control border-top-0 border-right-0 border-left-0"
-                                    placeholder="Type your Mobile Number" name="mobile" required
-                                    id="exampleInputMobile1">
+                            <div class="form-group">
+                                <label for="emailInput">Email</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-envelope text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control" id="emailInput" placeholder="Type your email"
+                                        type="text" name="email" aria-label="email" required>
+                                </div>
                             </div>
+                            <div class="form-group">
+                                <label class="my-1 mr-2" for="contrySelection">Country</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-flag text-twitter"></span></span>
+                                    </div>
+                                    <select class="custom-select shadow-none my-1 mr-sm-2" name="contryCode" id="contrySelection"
+                                        required>
+                                        <option selected value="">Choose...</option>
+                                        <option value="+91">India</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="mobileInput">Mobile</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-phone text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control" id="mobileInput" placeholder="Type your mobile number"
+                                        type="text" name="mobile" aria-label="mobile" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-block btn-primary" id="signupSubmit">
+                                <span id="submitBtn">
+                                    Request OTP
+                                </span>
+                                <span id="loadingBtn" hidden>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                </span>
+                            </button>
+                        </form>
+                        <form class="mt-4" id="verificationForm" style="display: none;">
+                            <div class="form-group">
+                                <label for="mobileInput">mobile</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-check text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control" id="verificationMobileInput" type="text" name="mobile"
+                                        aria-label="mobile" required>
+                                </div>
+                                <label for="otpInput">OTP</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-check text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control" id="otpInput" placeholder="Enter OTP" name="OTP" type="text"
+                                        aria-label="otp" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-block btn-primary" id="verificationSubmit">
+                                <span id="verificationSubmitBtn">
+                                    Verify OTP
+                                </span>
+                                <span id="verificationLoadingBtn" hidden>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                </span>
+                            </button>
+                        </form>
+                        <div class="mt-3 mb-4 text-center">
+                            <span class="font-weight-normal">or signup with</span>
+                        </div>
+                        <div class="btn-wrapper my-4 text-center">
+                            <button class="btn btn-primary btn-icon-only text-success mr-2" type="button"
+                                aria-label="google button" title="Signup with Google">
+                                <span aria-hidden="true" class="fa fa-google"></span>
+                            </button>
+                            <button class="btn btn-primary btn-icon-only text-facebook" type="button"
+                                aria-label="facebook button" title="Signup with Facebook">
+                                <span aria-hidden="true" class="fa fa-facebook-f"></span>
+                            </button>
+                        </div>
+                        <div class="d-block d-sm-flex justify-content-center align-items-center mt-4">
+                            <span class="font-weight-normal">
+                                Already have an account?
+                                <a href="/login" class="font-weight-bold text-info">Login here</a>
+                            </span>
                         </div>
                     </div>
-                    {{#if messages.error}}
-                    <div class="text-center pb-2">
-                        <p class="text-danger">{{messages.error}}</p>
-                    </div>
-                    {{/if}}
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 mt-3">Signup</button>
-                    </div>
-                </form>
-                <div class="text-center mt-5 mb-3">
-                    <a class="btn btn-white btn-shadow px-4" onClick="authPopup(event, '/auth/google')"><img src="/assets/images/Google_Icon.png" alt=""
-                            class="img-btn"></a>
-                    <a class="btn btn-white btn-shadow px-4" onClick="authPopup(event, '/auth/facebook')"><img src="/assets/images/Facebook_Icon.png" alt=""
-                            class="img-btn"></a>
-                </div>
-                <div class="mt-4 text-center">
-                    <a href="/login" class="small btn-link">Existing User ? Log in.</a>
                 </div>
             </div>
         </div>

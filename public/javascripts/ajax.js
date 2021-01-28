@@ -171,6 +171,42 @@ $('#loginForm').submit((e) => {
     });
 });
 
+$('#signupForm').submit((e) => {
+    e.preventDefault();
+    $('#submitBtn').attr('hidden', true);
+    $('#loadingBtn').removeAttr('hidden');
+
+    $.ajax({
+        url: '/signup',
+        method: 'post',
+        data: $('#signupForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                $("#signupSubmit").hide();
+                $("#verificationForm").slideDown(500);
+                $("#verificationMobileInput").val(response.user.mobileNumber);
+                iziToast.show({
+                    title: `Sended verification code to ${response.user.mobileNumber}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#loadingBtn').attr('hidden', true);
+                $('#submitBtn').removeAttr('hidden');
+            }
+        }
+    });
+});
+
 $('#verificationForm').submit((e) => {
     e.preventDefault();
     $('#verificationSubmitBtn').attr('hidden', true);
@@ -188,6 +224,7 @@ $('#verificationForm').submit((e) => {
                     icon: 'fa fa-check',
                     iconColor: '#fff',
                     class: 'bg-slack',
+                    timeout: 1000,
                     onClosed: function () {
                         location.href = '/';
                     }
@@ -202,6 +239,8 @@ $('#verificationForm').submit((e) => {
                     iconColor: '#fff',
                     class: 'bg-danger',
                 });
+                $('#verificationLoadingBtn').attr('hidden', true);
+                $('#verificationSubmitBtn').removeAttr('hidden');
             }
         }
     });
