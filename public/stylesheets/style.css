@@ -331,6 +331,12 @@ button,
   font-family: "Open Sans", sans-serif;
 }
 
+.btn-primary:focus {
+  color: #31344b;
+  background-color: #e6e7ee;
+  border-color: #e6e7ee;
+}
+
 a,
 a:hover {
   text-decoration: none;
@@ -5156,7 +5162,7 @@ div.small-dialog iframe {
 .w3l-footer a:hover,
 .w3l-footer ul.columns li a:hover,
 .w3l-footer .sub-two-right ul li a:hover {
-  color: var(--theme-rose);
+  color: #df0e62 !important;
   transition: 0.3s ease;
   text-decoration: underline;
 }
@@ -5520,7 +5526,7 @@ input[type="checkbox"]:checked:before {
   font-size: 18px;
 }
 
-.time-left-label{
+.time-left-label {
   position: absolute;
   width: 10vh;
   height: 10vh;

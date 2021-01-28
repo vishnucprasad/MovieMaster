@@ -135,6 +135,78 @@ $('#search-box').submit((e) => {
     }
 });
 
+$('#loginForm').submit((e) => {
+    e.preventDefault();
+    $('#submitBtn').attr('hidden', true);
+    $('#loadingBtn').removeAttr('hidden');
+
+    $.ajax({
+        url: '/login',
+        method: 'post',
+        data: $('#loginForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                $("#loginSubmit").hide();
+                $("#verificationForm").slideDown(500);
+                $("#verificationMobileInput").val(response.user.mobileNumber);
+                iziToast.show({
+                    title: `Sended verification code to ${response.user.mobileNumber}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#loadingBtn').attr('hidden', true);
+                $('#submitBtn').removeAttr('hidden');
+            }
+        }
+    });
+});
+
+$('#verificationForm').submit((e) => {
+    e.preventDefault();
+    $('#verificationSubmitBtn').attr('hidden', true);
+    $('#verificationLoadingBtn').removeAttr('hidden');
+
+    $.ajax({
+        url: '/verify-account',
+        method: 'post',
+        data: $('#verificationForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                iziToast.show({
+                    title: 'Approved',
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                    onClosed: function () {
+                        location.href = '/';
+                    }
+                });
+                $('#verificationLoadingBtn').attr('hidden', true);
+                $('#verificationSubmitBtn').removeAttr('hidden');
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            }
+        }
+    });
+});
+
 const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
     e.preventDefault();
     swal.fire({

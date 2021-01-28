@@ -44,12 +44,12 @@ module.exports = {
 
             if (user) {
                 sendVerificationToken(mobileNumber).then((verification) => {
-                    resolve(user);
+                    resolve({ status: true, user });
                 }).catch((error) => {
-                    reject({ error, errMessage: 'Failed to send verification code.' });
+                    reject({ status:false, error, errMessage: 'Failed to send verification code.' });
                 })
             } else {
-                reject({ errMessage: 'Cannot find user.' });
+                reject({ status:false, errMessage: 'Cannot find user.' });
             }
         });
     },
@@ -58,16 +58,16 @@ module.exports = {
             checkVerificationToken({ mobile, OTP }).then((verification_check) => {
                 if (verification_check.status === 'approved') {
                     db.get().collection(collection.USER_COLLECTION).findOne({ mobileNumber: mobile }).then((user) => {
-                        resolve(user);
+                        resolve({status:true, user});
                     }).catch((error) => {
-                        reject({ error, mobile, errMessage: 'Failed to get userDetails.' });
+                        reject({ status:false, error, mobile, errMessage: 'Failed to get userDetails.' });
                     });
                 } else if (verification_check.status === 'pending') {
-                    reject({ error, mobile, errMessage: 'Invalid verification code.' });
+                    reject({ status:false, error, mobile, errMessage: 'Invalid verification code.' });
                 }
             }).catch((error) => {
                 console.log(error);
-                reject({ error, mobile, errMessage: 'Failed to check verification code.' });
+                reject({ status:false, error, mobile, errMessage: 'Failed to check verification code.' });
             });
         });
     },

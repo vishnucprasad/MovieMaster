@@ -132,20 +132,18 @@ router.get('/login', (req, res) => {
 
 router.post('/login', (req, res) => {
   userHelpers.doLogin(req.body).then((user) => {
-    res.render('user/verify-account', { title: 'Account | Verify Account', mobileNumber: user.mobileNumber });
+    res.json(user);
   }).catch((error) => {
-    req.flash('error', error.errMessage);
-    res.redirect('/login');
+    res.json(error);
   })
 });
 
 router.post('/verify-account', (req, res) => {
-  userHelpers.verifyAccount(req.body).then((user) => {
+  userHelpers.verifyAccount(req.body).then(({ status, user }) => {
     req.session.passport = { user: { userId: user._id } };
-    res.redirect('/');
+    res.json({ status, user });
   }).catch((error) => {
-    req.flash('error', error.errMessage);
-    res.render('user/verify-account', { title: 'Account | Verify Account', mobileNumber: error.mobile });
+    res.json(error);
   });
 });
 
