@@ -3,7 +3,7 @@
     <div class="companies20-content">
         <div class="owl-one owl-carousel owl-theme">
             {{#each movies}}
-            <div class="item">
+            <div class="item carousel slide shadow-soft border border-light rounded">
                 <li>
                     <div class="slider-info banner-view bg bg2"
                         style="background: url(/images/movies/posters/{{this._id}}.jpg) no-repeat center; background-size: cover;">
@@ -51,52 +51,40 @@
 <section class="w3l-grids">
     <div class="grids-main py-5">
         <div class="container py-lg-3">
-            <div class="headerhny-title">
+            <div class="headerhny-title shadow-soft border-light rounded p-3">
                 <div class="w3l-title-grids">
                     <div class="headerhny-left">
-                        <h3 class="hny-title">Now Showing Movies</h3>
+                        <h3 class="hny-title m-0">Now Showing Movies</h3>
                     </div>
-                    <div class="headerhny-right text-lg-right">
-                        <h4><a class="show-title" href="/now-showing-movies">Show all</a></h4>
+                    <div class="headerhny-right text-right">
+                        <h4><a class="btn btn-primary btn-sm font-weight-bold text-danger border-light px-3"
+                                href="/now-showing-movies">Show all</a></h4>
                     </div>
                 </div>
             </div>
-            <div class="w3l-populohny-grids">
+            <div class="w3l-populohny-grids px-2">
                 {{#each movies}}
-                <div class="item vhny-grid">
-                    <div class="box16">
-                        <figure>
-                            <img class="" src="/images/movies/posters/{{this._id}}.jpg" alt=""
-                                style="height: 25rem; object-fit: cover !important;">
-                        </figure>
-                        <div class="box-content">
-                            <h3 class="title">{{this.movieTitle}}</h3>
-                            <h4>
-                                <span class="post"><span class="fa fa-clock-o"> Run Time : </span>
-                                    {{this.runTime}}</span>
-                            </h4>
-                            <h4>
-                                <span
-                                    class="post bg-warning text-dark font-weight-bold text-truncate rounded px-3">{{this.type}}</span>
-                            </h4>
-                            <div class="row mt-5">
-                                <div class="col text-center">
-                                    <a href="/view-movie?movieId={{this._id}}"
-                                        class="btn btn-info text-uppercase font-weight-bold btn-sm rounded-pill px-5">View</a>
-                                </div>
+                <a href="/view-movie?movieId={{this._id}}" class="animate-up-8">
+                    <div class="item vhny-grid shadow-soft">
+                        <div class="box16">
+                            <figure>
+                                <img class="rounded" src="/images/movies/posters/{{this._id}}.jpg"
+                                    style="height: 25rem; object-fit: cover !important;">
+                            </figure>
+                            <div class="box-content">
+                                <h3 class="title">{{this.movieTitle}}</h3>
+                                <h4>
+                                    <span class="post"><span class="fa fa-clock-o"> Run Time : </span>
+                                        {{this.runTime}}</span>
+                                </h4>
+                                <h4>
+                                    <span
+                                        class="post bg-warning text-dark font-weight-bold text-truncate rounded px-3">{{this.type}}</span>
+                                </h4>
                             </div>
                         </div>
-                        <a href="#small-dialog{{this._id}}" class="popup-with-zoom-anim play-view1">
-                            <span class="fa fa-play video-icon" aria-hidden="true"></span>
-                        </a>
-                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                        <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe src="{{this.trailerLink}}" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </div>
                     </div>
-                </div>
+                </a>
                 {{/each}}
             </div>
         </div>
@@ -140,22 +128,23 @@
 <section class="w3l-grids">
     <div class="grids-main py-5">
         <div class="container py-lg-3">
-            <div class="headerhny-title">
+            <div class="headerhny-title shadow-soft border-light rounded p-3">
                 <div class="w3l-title-grids">
                     <div class="headerhny-left">
-                        <h3 class="hny-title">Upcoming Movies</h3>
+                        <h3 class="hny-title m-0">Upcoming Movies</h3>
                     </div>
                     <div class="headerhny-right text-lg-right">
-                        <h4><a class="show-title" href="/upcoming-movies">Show all</a></h4>
+                        <h4><a class="btn btn-primary btn-sm font-weight-bold border-light text-danger px-3"
+                                href="/upcoming-movies">Show all</a></h4>
                     </div>
                 </div>
             </div>
             <div class="owl-three owl-carousel owl-theme">
                 {{#each upcomingMovies}}
-                <div class="item vhny-grid">
+                <div class="item vhny-grid shadow-soft rounded">
                     <div class="box16 mb-0">
                         <figure>
-                            <img class="img-fluid" src="/images/movies/upcoming-movies/posters/{{this._id}}.jpg"
+                            <img class="img-fluid rounded-top" src="/images/movies/upcoming-movies/posters/{{this._id}}.jpg"
                                 style="height: 10rem; object-fit: cover;" alt="">
                         </figure>
                         <div class="box-content">
@@ -168,21 +157,23 @@
                         </a>
                         <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
                         <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe width="560" height="315" src="{{this.trailerLink}}" frameborder="0"
+                            <iframe width="560" height="315" src="{{this.trailerLink}}"
+                                frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                         </div>
                     </div>
-                    <div style="height: 8rem; overflow-y: auto;">
+                    <div style="height: 8rem; overflow-y: auto;" class="px-2">
                         <h3 class=""> <a class="title-gd" type="button">{{this.movieTitle}}</a></h3>
                         <p class="text-truncate"><span class="font-weight-bold">Cast : </span>{{this.cast}}</p>
-                        <p class="text-truncate"><span class="font-weight-bold">Director : </span>{{this.director}}</p>
+                        <p class="text-truncate"><span class="font-weight-bold">Director : </span>{{this.director}}
+                        </p>
                         <p class="text-truncate"><span class="font-weight-bold">Release Date :
                             </span>{{this.releaseDate}}</p>
                     </div>
-                    <div class="button-center text-center mt-4">
+                    <div class="button-center text-center p-3">
                         <a href="/view-upcoming-movie?movieId={{this._id}}"
-                            class="btn btn-outline-info btn-block text-uppercase">View</a>
+                            class="btn btn-primary btn-block text-secondary text-uppercase">View</a>
                     </div>
                 </div>
                 {{/each}}
