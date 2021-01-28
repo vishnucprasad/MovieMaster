@@ -3,8 +3,8 @@ const logout = (e, url) => {
 
     Swal.mixin({
         customClass: {
-            confirmButton: 'btn btn-danger rounded-pill px-5 m-3',
-            cancelButton: 'btn btn-success rounded-pill px-5 m-3'
+            confirmButton: 'btn btn-danger rounded-pill shadow-none border-0 px-5 m-3',
+            cancelButton: 'btn btn-success rounded-pill shadow-none border-0 px-5 m-3'
         },
         buttonsStyling: false
     }).fire({
