@@ -1,119 +1,129 @@
-<!-- header -->
-<header id="site-header" class="w3l-header fixed-top">
-    <!--/nav-->
-    <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
-        <div class="container">
-            <h1><a class="navbar-brand" href="/"><span class="fa fa-play icon-log" aria-hidden="true"></span>
-                    MovieMaster </a></h1>
-            <!-- if logo is image enable this   
-						<a class="navbar-brand" href="#index.html">
-							<img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
-						</a> -->
-            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
-                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <!-- <span class="navbar-toggler-icon"></span> -->
-                <span class="fa icon-expand fa-bars"></span>
-                <span class="fa icon-close fa-times"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home</a>
+<header>
+    <nav id="navbar-main" aria-label="Primary navigation"
+        class="navbar navbar-main navbar-expand-lg navbar-theme-primary headroom navbar-light">
+        <div class="container position-relative">
+            <a class="navbar-brand shadow-soft py-2 px-3 rounded border border-light mr-lg-4" href="/">
+                <h5 class="m-0 font-weight-bolder">
+                    <span class="fa fa-play icon-log text-warning" aria-hidden="true"></span>
+                    <span class="text-capitalize">MovieMaster</span>
+                </h5>
+            </a>
+            <div class="navbar-collapse collapse" id="navbar_global">
+                <div class="navbar-collapse-header">
+                    <div class="row">
+                        <div class="col-6 collapse-brand">
+                            <a href="/" class="navbar-brand shadow-soft py-2 px-3 rounded border border-light">
+                                <span class="fa fa-play icon-log text-warning" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <div class="col-6 collapse-close">
+                            <a href="#navbar_global" class="fa fa-times" data-toggle="collapse"
+                                data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false"
+                                title="close" aria-label="Toggle navigation"></a>
+                        </div>
+                    </div>
+                </div>
+                <ul class="navbar-nav navbar-nav-hover align-items-lg-center ml-auto">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link font-weight-bold">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Genre</a>
+                        <a href="/" class="nav-link font-weight-bold">Genre</a>
                     </li>
                     {{#if userLocation}}
-                    <li class="nav-item">
-                        <button class="btn btn-info btn-sm rounded dropdown-toggle" type="button" onclick="loadMap()">
-                            {{userLocation.place_name}}
-                        </button>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link" data-toggle="dropdown">
+                            <span class="nav-link-inner-text font-weight-bold">Location</span>
+                            <span class="fa fa-angle-down nav-link-arrow ml-2"></span>
+                        </a>
+                        <ul class="dropdown-menu shadow-soft">
+                            <h5><a class="text-secondary text-truncate font-weight-bold mx-3"
+                                    href="">{{userLocation.place_name}}</a></h5>
+                            <li><a class="dropdown-item" type="button" onclick="loadMap()"><i
+                                        class="fa fa-location-arrow text-secondary mr-2"></i> Pick another
+                                    location</a></li>
+                        </ul>
                     </li>
                     {{/if}}
-                </ul>
-
-                <!--/search-right-->
-                <!--/search-right-->
-                <div class="search-right">
-                    <a href="#search" class="btn btn-sm search-hny mr-lg-3 mt-lg-0 mt-4" title="search">Search <span
-                            class="fa fa-search ml-3" aria-hidden="true"></span></a>
-                    <!-- search popup -->
-                    <div id="search" class="pop-overlay">
-                        <div class="popup">
-                            <form class="search-box" id="search-box">
-                                <input type="search" placeholder="Search your Keyword" name="searchQuery"
-                                    id="searchQuery" onkeyup="searchProducts(event,this.value);" required="required"
-                                    autofocus="" autocomplete="false">
-                                <button type="submit" class="btn"><span class="fa fa-search"
-                                        aria-hidden="true"></span></button>
-                                <div class="bg-white rounded mt-2 py-2" id="results-container" hidden
-                                    style="max-height: 50vh; overflow-y: auto;"></div>
-                            </form>
-                        </div>
-                        <a class="close" href="#close">×</a>
-                    </div>
-                    <!-- /search popup -->
-                    <!--/search-right-->
-                </div>
-
-
-            </div>
-            <!-- toggle switch for light and dark theme -->
-            <div class="mobile-position">
-                <nav class="navigation">
-                    <div class="profile_details">
-                        <ul>
-                            <li class="dropdown profile_details_drop">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdownMenu3"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <div class="profile_img">
-                                        {{#if user.profilePic}}
-                                        <img src="{{user.profilePic}}" alt="" class="rounded-circle" width="1.2em"
-                                            height="1.2em">
-                                        {{else}}
-                                        <img src="/images/user/profile.png" alt="" class="rounded-circle" width="1.2em"
-                                            height="1.2em">
-                                        {{/if}}
-                                    </div>
-                                </a>
-                                <ul class="dropdown-menu drp-mnu" aria-labelledby="dropdownMenu3">
-                                    <li class="user-info">
-                                        {{#if user}}
-                                        <h5 class="user-name">{{user.name}}</h5>
-                                        {{else}}
-                                        <h5 class="user-name">Account</h5>
-                                        {{/if}}
-                                    </li>
-                                    {{#if user}}
-                                    <li class="logout"> <a type="button" onclick="logout(event, '/logout')"><i
-                                                class="fa fa-power-off"></i> Logout</a> </li>
-                                    <li class="logout"> <a href="/my-profile"><i class="fa fa-user"></i> My Profile</a>
-                                    </li>
-                                    <li class="logout"> <a href="/my-orders"><i class="fa fa-ticket"></i> My Orders</a>
-                                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link" data-toggle="dropdown">
+                            <div class="row">
+                                <div class="pill rounded-circle p-1 shadow-inset">
+                                    {{#if user.profilePic}}
+                                    <img src="{{user.profilePic}}" class="profile_img rounded-circle">
                                     {{else}}
-                                    <li class="login"> <a href="/login"><i class="fa fa-sign-in"></i> Login</a> </li>
+                                    <img src="/images/user/profile.png" class="profile_img rounded-circle">
                                     {{/if}}
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="theme-switch-wrapper">
-                        <label class="theme-switch" for="checkbox">
-                            <input type="checkbox" id="checkbox">
-                            <div class="mode-container">
-                                <i class="gg-sun"></i>
-                                <i class="gg-moon mt-1"></i>
+                                </div>
+                                <div class="my-auto">
+                                    <span class="nav-link-inner-text font-weight-bold">Account</span>
+                                    <span class="fa fa-angle-down nav-link-arrow ml-2"></span>
+                                </div>
                             </div>
-                        </label>
-                    </div>
-                </nav>
+                        </a>
+                        <ul class="dropdown-menu shadow-soft">
+                            <h5 class="row px-3">
+                                <div class="col my-auto">
+                                    {{#if user}}
+                                    <a class="text-secondary text-truncate font-weight-bold" href="">{{user.name}}</a>
+                                    {{else}}
+                                    <a class="text-secondary text-truncate font-weight-bold" href="">Account</a>
+                                    {{/if}}
+                                </div>
+                            </h5>
+                            {{#if user}}
+                            <li>
+                                <a class="dropdown-item" type="button" onclick="logout(event, '/logout')">
+                                    <i class="fa fa-power-off text-secondary mr-2"></i>Logout
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/my-profile">
+                                    <i class="fa fa-user text-secondary mr-2"></i>My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/my-orders">
+                                    <i class="fa fa-ticket text-secondary mr-1"></i>My Tickets
+                                </a>
+                            </li>
+                            {{else}}
+                            <li>
+                                <a class="dropdown-item" href="/login">
+                                    <i class="fa fa-sign-in text-secondary mr-2"></i>Login
+                                </a>
+                            </li>
+                            {{/if}}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <div class="search-right">
+                            <a href="#search" class="btn btn-primary btn-sm font-weight-bold px-3" title="search">
+                                Search <span class="fa fa-search ml-3" aria-hidden="true"></span>
+                            </a>
+                            <div id="search" class="pop-overlay">
+                                <div class="popup">
+                                    <form class="search-box" id="search-box">
+                                        <input type="search" placeholder="Search your Keyword" name="searchQuery"
+                                            id="searchQuery" onkeyup="searchProducts(event,this.value);" required="required" autofocus="" autocomplete="false">
+                                        <button type="submit" class="btn btn-primary mx-2"><span class="fa fa-search"
+                                                aria-hidden="true"></span></button>
+                                        <div class="bg-white rounded mt-2 py-2" id="results-container" hidden
+                                            style="max-height: 50vh; overflow-y: auto;"></div>
+                                    </form>
+                                </div>
+                                <a class="close" href="#close">×</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <!-- //toggle switch for light and dark theme -->
+            <div class="d-flex align-items-center">
+                <button class="navbar-toggler ml-2" type="button" data-toggle="collapse" data-target="#navbar_global"
+                    aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
         </div>
     </nav>
-    <!--//nav-->
 </header>
-<!-- //header -->
