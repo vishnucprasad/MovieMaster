@@ -4,6 +4,7 @@ const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
 const isUser = require('../middleware/auth').isUser;
 const fs = require('fs');
+const date = require('date-and-time');
 
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
@@ -23,26 +24,15 @@ router.get('/upcoming-movies', async (req, res) => {
 });
 
 router.get('/view-movie', async (req, res) => {
-  const date = new Date();
-  const todayShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate(), req.session.userLocation.coordinates);
-  const tomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1, req.session.userLocation.coordinates);
-  const dayAfterTomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2, req.session.userLocation.coordinates);
+  const today = new Date();
+  const tomorrow = date.addDays(today, 1);
+  const dayAfterTomorrow = date.addDays(today, 2);
+  const todayShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.format(today, 'YYYY-MM-DD'), req.session.userLocation.coordinates);
+  const tomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.format(tomorrow, 'YYYY-MM-DD'), req.session.userLocation.coordinates);
+  const dayAfterTomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.format(dayAfterTomorrow, 'YYYY-MM-DD'), req.session.userLocation.coordinates);
   const latestMovies = await userHelpers.getMovies();
   userHelpers.getMovie(req.query.movieId).then((movie) => {
     res.render('user/view-movie', { title: 'MovieMaster | View Movie', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
-  }).catch((error) => {
-    res.redirect('/');
-  });
-});
-
-router.get('/view-shows', async (req, res) => {
-  const date = new Date();
-  const todayShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate());
-  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1);
-  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2);
-  const latestMovies = await userHelpers.getMovies();
-  userHelpers.getMovie(req.query.movieId).then((movie) => {
-    res.render('user/view-shows', { title: 'MovieMaster | View Shows', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies, theatreName: req.query.theatreName });
   }).catch((error) => {
     res.redirect('/');
   });
@@ -269,8 +259,8 @@ router.post('/edit-personal-info', isUser, (req, res) => {
 });
 
 router.post('/update-mobile', isUser, (req, res) => {
-  userHelpers.updateMobile(req.body, req.user._id).then((mobileNumber) => {
-    res.json({ mobileNumber });
+  userHelpers.updateMobile(req.body, req.user._id).then((response) => {
+    res.json(response);
   }).catch((error) => {
     res.json(error);
   });

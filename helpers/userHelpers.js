@@ -25,7 +25,7 @@ module.exports = {
             if (!existingUser) {
                 sendVerificationToken(mobileNumber).then((verification) => {
                     db.get().collection(collection.USER_COLLECTION).insertOne({ name, email, mobileNumber }).then((response) => {
-                        resolve({ status: true, user: response.ops[0]});
+                        resolve({ status: true, user: response.ops[0] });
                     }).catch((error) => {
                         reject({ status: false, error, errMessage: 'Signup Failed.' });
                     });
@@ -113,13 +113,8 @@ module.exports = {
             })
         });
     },
-    getTheatersByDistance: (movieId, year, month, day, coordinates) => {
+    getTheatersByDistance: (movieId, date, coordinates) => {
         return new Promise(async (resolve, reject) => {
-            month = month < 10 ? `0${month}` : month;
-            day = day < 10 ? `0${day}` : day;
-
-            const date = `${year}-${month}-${day}`;
-
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
@@ -142,6 +137,26 @@ module.exports = {
                         localField: 'theatre',
                         foreignField: '_id',
                         as: 'theatreDetails'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.SCREEN_COLLECTION,
+                        pipeline: [
+                            {
+                                $match: {
+                                    'shows.movie': ObjectID(movieId),
+                                    'shows.date': date
+                                }
+                            }, {
+                                $unwind: '$shows'
+                            }, {
+                                $match: {
+                                    'shows.movie': ObjectID(movieId),
+                                    'shows.date': date
+                                }
+                            }
+                        ],
+                        as: 'screens'
                     }
                 }
             ]).sort({ showTime: 1 }).toArray();
@@ -196,64 +211,6 @@ module.exports = {
             } else {
                 resolve(shows);
             }
-        });
-    },
-    getMovieShows: (movieId, theatreId, year, month, day) => {
-        return new Promise(async (resolve, reject) => {
-            month = month < 10 ? `0${month}` : month;
-            day = day < 10 ? `0${day}` : day;
-
-            const date = `${year}-${month}-${day}`;
-
-            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
-                {
-                    $match: {
-                        theatre: ObjectID(theatreId),
-                        'shows.movie': ObjectID(movieId)
-                    }
-                }, {
-                    $unwind: '$shows'
-                }, {
-                    $match: {
-                        'shows.movie': ObjectID(movieId),
-                        'shows.date': date
-                    }
-                }, {
-                    $project: {
-                        theatre: '$theatre',
-                        screen: '$_id',
-                        screenName: '$screenName',
-                        show: '$shows._id',
-                        totalSeats: '$seats',
-                        reservedSeats: '$shows.reservedSeats',
-                        movie: '$shows.movie',
-                        date: '$shows.date',
-                        showTime: '$shows.showTime',
-                        vip: '$shows.vip',
-                        premium: '$shows.premium',
-                        executive: '$shows.executive',
-                        normal: '$shows.normal'
-                    }
-                }, {
-                    $lookup: {
-                        from: collection.THEATRE_COLLECTION,
-                        localField: 'theatre',
-                        foreignField: '_id',
-                        as: 'theatreDetails'
-                    }
-                }, {
-                    $lookup: {
-                        from: collection.MOVIE_COLLECTION,
-                        localField: 'movie',
-                        foreignField: '_id',
-                        as: 'movieDetails'
-                    }
-                }
-            ]).sort({ showTime: 1 }).toArray();
-            shows.forEach(show => {
-                show.reservedSeats = show.reservedSeats ? show.reservedSeats.length : 0;
-            });
-            resolve(shows);
         });
     },
     getShow: ({ showId, screenId }) => {
@@ -544,9 +501,9 @@ module.exports = {
             const mobileNumber = mobile.substr(0, 3) === '+91' ? mobile : `${contryCode}${mobile}`;
 
             sendVerificationToken(mobileNumber).then((verification) => {
-                resolve(mobileNumber);
+                resolve({ status: true, mobileNumber });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to send verification code.' });
+                reject({ status: false, error, errMessage: 'Failed to send verification code.' });
             });
         });
     },

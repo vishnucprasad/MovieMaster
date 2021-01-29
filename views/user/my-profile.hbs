@@ -1,144 +1,352 @@
-<div class="container py-5">
-    <div class="row mt-5">
-        <div class="col-md-4 pt-5">
-            <div class="card_shadow rounded" style="height: 25vh;">
-                <div class="overlap mt-5 row">
-                    <div class="img-container rounded-circle mx-auto">
-                        {{#if user.profilePic}}
-                        <img src="{{user.profilePic}}" alt="" id="profile-pic-wrapper"
-                            class="rounded-circle shadow-dark overlay-img">
-                        {{else}}
-                        <img src="/images/user/profile.png" alt="" id="profile-pic-wrapper"
-                            class="rounded-circle shadow-dark overlay-img">
-                        {{/if}}
-                        <div class="img-overlay">
-                            <div class="d-flex align-items-end" style="min-height: 23vh;">
-                                <a type="button" onclick="opnUpdateWindow(event, '{{user.profilePic}}')"
-                                    class="btn btn-info btn-sm text-white rounded-pill px-3">Update</a>
+<section class="min-vh-100 d-flex align-items-center my-5 pt-5">
+    <div class="container row mt-5">
+        <div class="col-lg-4 col-md-6">
+            <div class="profile-card mb-5">
+                <div class="card bg-primary shadow-soft border-light" style="height: 25rem;">
+                    <div class="row">
+                        <div class="col">
+                            <div
+                                class="profile-image bg-primary shadow-inset border border-light rounded p-3 ml-3 mt-n5">
+                                {{#if user.profilePic}}
+                                <img src="{{user.profilePic}}" class="card-img-top rounded" alt="Avatar" id="profilePic"
+                                    style=" height: 100%; object-fit: cover !important;">
+                                {{else}}
+                                <img src="/images/user/profile.png" class="card-img-top rounded" alt="Avatar"
+                                    id="profilePic" style=" height: 100%; object-fit: cover !important;">
+                                {{/if}}
                             </div>
                         </div>
+                        <div class="col-3 text-right my-auto mr-3">
+                            <button class="btn btn-primary btn-sm btn-icon-only mb-3" onclick="removeProfilePic(event)"><span
+                                    class="fa fa-trash text-danger"></span></button>
+                            <br>
+                            <form action="/update-profile-picture" method="POST" enctype="multipart/form-data" id="updateProfilePicForm">
+                                <label class="btn btn-primary btn-sm btn-icon-only" for="my-file-selector"
+                                    id="profilePicUploadBtn">
+                                    <input id="my-file-selector" required type="file" name="profilePicture"
+                                        style="display:none" onchange="onProfilePicChange(event);"><span
+                                        class="fa fa-upload text-info"></span>
+                                </label>
+                                <button type="submit" class="btn btn-primary btn-sm btn-icon-only"
+                                    id="profilePicConfirmBtn" hidden>
+                                    <span class="fa fa-check text-success" id="profilePicSubmitBtn"></span>
+                                    <span id="profilePicLoadingBtn" hidden>
+                                        <span class="spinner-grow spinner-grow-sm" role="status"
+                                            aria-hidden="true"></span>
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body overlap">
-                    <h4 class="text-primary text-center mt-2" id="profileName">{{user.name}} </h4>
-                </div>
-            </div>
-            <div class="card_shadow rounded mt-5">
-                <div class="card-body">
-                    <div class="border-bottom py-2">
-                        <a href="/my-orders" class="text-info">
-                            <h6 class="text-uppercase pill_enlarge px-3 py-1">
-                                <i class="fa fa-ticket mr-3"></i> My Orders
-                            </h6>
-                        </a>
-                    </div>
-                    <div class="border-bottom py-2">
-                        <a type="button" onclick="logout(event, '/logout')" class="text-info">
-                            <h6 class="text-uppercase pill_enlarge px-3 py-1">
-                                <i class="fa fa-power-off mr-3"></i> Logout
-                            </h6>
-                        </a>
+                    <div class="card-body p-3">
+                        <div class="row mt-3">
+                            <div class="col">
+                                <h3 class="h5 pl-2 mb-3 font-weight-bolder text-twitter">{{user.name}}</h3>
+                            </div>
+                            <div class="col-3 text-right">
+                                <a type="button" class="btn btn-primary btn-icon-only btn-sm" data-toggle="modal"
+                                    data-target="#editProfileModal">
+                                    <span class="fa fa-pencil text-info"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog"
+                            aria-labelledby="editProfileModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content shadow-soft">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title mb-0" id="modal-title-default">Edit Profile</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="nav-wrapper position-relative mb-4">
+                                                    <ul class="nav nav-pills nav-fill flex-column flex-md-row"
+                                                        id="tabs-icons-text" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link btn-sm mb-sm-3 mb-md-0 active"
+                                                                id="tabs-icons-text-1-tab" data-toggle="tab"
+                                                                href="#personal_info" role="tab"
+                                                                aria-controls="personal_info" aria-selected="true"><i
+                                                                    class="fa fa-user text-twitter"></i>Personal
+                                                                Info</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link btn-sm mb-sm-3 mb-md-0"
+                                                                id="tabs-icons-text-2-tab" data-toggle="tab"
+                                                                href="#mobileNumber" role="tab"
+                                                                aria-controls="mobileNumber" aria-selected="false"><i
+                                                                    class="fa fa-phone text-twitter"></i>Mobile
+                                                                Number</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="card shadow-inset bg-primary border-light p-4 rounded">
+                                                    <div class="card-body p-0">
+                                                        <div class="tab-content" id="tabcontent2">
+                                                            <div class="tab-pane fade show active" id="personal_info"
+                                                                role="tabpanel" aria-labelledby="personal_info-tab">
+                                                                <form action="" id="editPersonalInfo">
+                                                                    <div class="row">
+                                                                        <div class="col-md-8">
+                                                                            <div class="form-group">
+                                                                                <div
+                                                                                    class="input-group shadow-none mb-4">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span
+                                                                                            class="btn shadow-none border-0"><span
+                                                                                                class="fa fa-user text-twitter"></span></span>
+                                                                                    </div>
+                                                                                    <input
+                                                                                        class="form-control form-control-sm rounded border-0"
+                                                                                        id="nameInput"
+                                                                                        value="{{user.name}}"
+                                                                                        name="name" type="text"
+                                                                                        aria-label="name" required>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <div
+                                                                                    class="input-group shadow-none mb-4">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span
+                                                                                            class="input-group-text border-0"><span
+                                                                                                class="fa fa-venus-mars text-twitter"></span></span>
+                                                                                    </div>
+                                                                                    <select
+                                                                                        class="custom-select custom-select-sm rounded"
+                                                                                        id="genderSelection"
+                                                                                        name="gender" required>
+                                                                                        {{#if user.gender}}
+                                                                                        <option value="{{user.gender}}"
+                                                                                            hidden>{{user.gender}}
+                                                                                        </option>
+                                                                                        <option value="Male">Male
+                                                                                        </option>
+                                                                                        <option value="Female">Female
+                                                                                        </option>
+                                                                                        {{else}}
+                                                                                        <option value="" hidden>Gender
+                                                                                        </option>
+                                                                                        <option value="Male">Male
+                                                                                        </option>
+                                                                                        <option value="Female">Female
+                                                                                        </option>
+                                                                                        {{/if}}
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <div class="input-group shadow-none mb-4">
+                                                                            <div class="input-group-prepend">
+                                                                                <span
+                                                                                    class="input-group-text border-0"><span
+                                                                                        class="fa fa-envelope text-twitter"></span></span>
+                                                                            </div>
+                                                                            <input
+                                                                                class="form-control form-control-sm rounded border-0"
+                                                                                id="emailInput" value="{{user.email}}"
+                                                                                name="email" type="text"
+                                                                                aria-label="email" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-block btn-primary"
+                                                                        id="editPersonalInfoSubmit">
+                                                                        <span id="editPersonalInfoSubmitBtn">
+                                                                            Save
+                                                                        </span>
+                                                                        <span id="editPersonalInfoLoadingBtn" hidden>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                        </span>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="mobileNumber" role="tabpanel"
+                                                                aria-labelledby="mobileNumber-tab">
+                                                                <form class="mt-4" id="editMobile">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group">
+                                                                                <div
+                                                                                    class="input-group shadow-none mb-4">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span
+                                                                                            class="input-group-text border-0"><span
+                                                                                                class="fa fa-flag text-twitter"></span></span>
+                                                                                    </div>
+                                                                                    <select
+                                                                                        class="custom-select custom-select-sm rounded"
+                                                                                        id="contrySelection" name="contryCode" required>
+                                                                                        <option value="+91">India
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-8">
+                                                                            <div class="form-group">
+                                                                                <div class="input-group mb-4">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span
+                                                                                            class="input-group-text"><span
+                                                                                                class="fa fa-phone text-twitter"></span></span>
+                                                                                    </div>
+                                                                                    <input class="form-control"
+                                                                                        id="mobileInput"
+                                                                                        type="text"
+                                                                                        value="{{user.mobileNumber}}"
+                                                                                        name="mobile"
+                                                                                        aria-label="mobile" required>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-block btn-primary"
+                                                                        id="editMobileSubmit">
+                                                                        <span id="editMobileSubmitBtn">
+                                                                            Save
+                                                                        </span>
+                                                                        <span id="editMobileLoadingBtn" hidden>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                        </span>
+                                                                    </button>
+                                                                </form>
+                                                                <form class="mt-4" id="verificationForm"
+                                                                    style="display: none;">
+                                                                    <div class="form-group" hidden>
+                                                                        <label for="mobileInput">mobile</label>
+                                                                        <div class="input-group mb-4">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text"><span
+                                                                                        class="fa fa-check text-twitter"></span></span>
+                                                                            </div>
+                                                                            <input class="form-control"
+                                                                                id="verificationMobileInput" type="text"
+                                                                                name="mobile" aria-label="mobile"
+                                                                                required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="otpInput">OTP</label>
+                                                                        <div class="input-group mb-4">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text"><span
+                                                                                        class="fa fa-check text-twitter"></span></span>
+                                                                            </div>
+                                                                            <input class="form-control" id="otpInput"
+                                                                                placeholder="Enter OTP" name="OTP"
+                                                                                type="text" aria-label="otp" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-block btn-primary"
+                                                                        id="verificationSubmit">
+                                                                        <span id="verificationSubmitBtn">
+                                                                            Verify OTP
+                                                                        </span>
+                                                                        <span id="verificationLoadingBtn" hidden>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                            <span class="spinner-grow spinner-grow-sm"
+                                                                                role="status" aria-hidden="true"></span>
+                                                                        </span>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- End of Tab Content -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <a href="/my-orders" class="btn btn-primary btn-block text-left font-weight-bolder mb-3"><span
+                                    class="fa fa-ticket text-twitter"></span> My Tickets</a>
+                            <a type="button" onclick="logout(event, '/logout')" class="btn btn-primary btn-block text-left font-weight-bolder"><span
+                                    class="fa fa-power-off text-twitter"></span> Logout</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="card_shadow rounded">
-                <div class="card-body" id="personal-info">
-                    <div>
-                        <div class="row">
-                            <h5 class="ml-3">Personal Information</h5>
-                            <a role="button" id="edit-personal-info"
-                                class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
-                            <a role="button" id="cancel-personal-info" hidden
-                                class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
-                        </div>
-                        <div class="py-3 mb-3 border-bottom">
-                            <form class="form-inline" id="editPersonalInfo">
-                                <input id="input-personal-info" class="form-control form-control-sm mr-sm-2" type="text"
-                                    value="{{user.name}}" name="name" required readonly>
-                                <select id="selectGender" name="gender" class="custom-select custom-select-sm mr-sm-2"
-                                    disabled>
-                                    {{#if user.gender}}
-                                    <option value="{{user.gender}}" hidden>{{user.gender}}</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    {{else}}
-                                    <option value="" hidden>Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    {{/if}}
-                                </select>
-                                <button id="save-personal-info"
-                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
-                                    hidden>Save</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="row">
-                            <h5 class="ml-3">Email Address</h5>
-                            <a role="button" id="edit-email"
-                                class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
-                            <a role="button" id="cancel-email" hidden
-                                class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
-                        </div>
-                        <div class="py-3 mb-3 border-bottom">
-                            <form class="form-inline" id="editEmail">
-                                <input id="input-email" class="form-control form-control-sm mr-sm-2" type="email"
-                                    value="{{user.email}}" name="email" required readonly>
-                                <button id="save-email"
-                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
-                                    hidden>Save</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="row">
-                            <h5 class="ml-3">Mobile Number</h5>
-                            <a role="button" id="edit-mobile"
-                                class="text-decoration-none text-info font-weight-bold ml-4">Edit</a>
-                            <a role="button" id="cancel-mobile" hidden
-                                class="text-decoration-none text-info font-weight-bold ml-4">Cancel</a>
-                        </div>
-                        <div class="py-3 mb-3 border-bottom">
-                            <form class="form-inline" id="editMobile">
-                                <input type="text" class="form-control form-control-sm text-right mr-sm-2" value="+91"
-                                    name="contryCode" readOnly required style="width: 4rem;" hidden>
-                                <input id="input-mobile" class="form-control form-control-sm mr-sm-2" type="text"
-                                    value="{{user.mobileNumber}}" name="mobile" required readonly>
-                                <button id="save-mobile"
-                                    class="btn btn btn-outline-info btn-sm rounded-pill px-5 my-2 my-sm-0" type="submit"
-                                    hidden>Save</button>
-                            </form>
-                        </div>
-                        <div>
-                            <h5 class="mb-3">FAQs</h5>
-                            <div>
-                                <h6 class="mb-2">What happens when I update my email address (or mobile number)?</h6>
-                                <p>Your login mobile number changes, likewise. You'll receive all
-                                    your
-                                    account related communication on your updated email address (or mobile
-                                    number).
-                                </p>
-                                <h6 class="my-2">When will my MovieMaster account be updated with the new mobile number
-                                    ?</h6>
-                                <p>It happens as soon as you confirm the verification code sent to your email
-                                    (or
-                                    mobile) and save the changes.</p>
-                                <h6 class="my-2">What happens to my existing MovieMaster account when I update my email
-                                    address
-                                    (or
-                                    mobile number)?</h6>
-                                <p>Updating your email address (or mobile number) doesn't invalidate your
-                                    account.
-                                    Your account remains fully functional. You'll continue seeing your Order
-                                    history, saved information and personal details.</p>
+        <div class="col-lg-4 col-md-6">
+            <div class="card bg-primary shadow-soft border-light mb-5" style="height: 25rem;">
+                <div class="card-body p-5">
+                    <h3 class="h5 card-title font-weight-bolder text-twitter mb-3">Refferal</h3>
+                    <div class="row h-100">
+                        <div class="col-12 my-auto">
+                            <p class="card-text mt-4">Give your friend a 50 Rs and get credit 100 Rs on his / her
+                                first
+                                booking.</p>
+                            <div class="form-group mt-5">
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-link text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control form-control-sm" id="refferalLink"
+                                        value="https://moviemaster.live" type="url" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary btn-sm" onclick="copyRefferalLink(event)"><span
+                                                class="fa fa-copy text-twitter"></span></button>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <div class="card bg-primary shadow-soft border-light" style="height: 25rem;">
+                <div class="card-body p-5 mb-5">
+                    <h3 class="h5 card-title font-weight-bolder text-twitter mb-3">Wallet</h3>
+                    <div class="row h-100">
+                        <div class="col-12 my-auto text-center">
+                            <span>Balance</span>
+                            <h1 style="font-size: 5rem;">0</h1>
+                            <span>Rs</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
