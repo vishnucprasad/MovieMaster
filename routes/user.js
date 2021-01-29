@@ -269,8 +269,8 @@ router.post('/edit-personal-info', isUser, (req, res) => {
 });
 
 router.post('/update-mobile', isUser, (req, res) => {
-  userHelpers.updateMobile(req.body, req.user._id).then((mobileNumber) => {
-    res.json({ mobileNumber });
+  userHelpers.updateMobile(req.body, req.user._id).then((response) => {
+    res.json(response);
   }).catch((error) => {
     res.json(error);
   });

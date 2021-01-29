@@ -48,7 +48,7 @@
 
                         </form>
                         <form class="mt-4" id="verificationForm" style="display: none;">
-                            <div class="form-group">
+                            <div class="form-group" hidden>
                                 <label for="mobileInput">mobile</label>
                                 <div class="input-group mb-4">
                                     <div class="input-group-prepend">
@@ -58,14 +58,16 @@
                                     <input class="form-control" id="verificationMobileInput" type="text" name="mobile"
                                         aria-label="mobile" required>
                                 </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="otpInput">OTP</label>
                                 <div class="input-group mb-4">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span
                                                 class="fa fa-check text-twitter"></span></span>
                                     </div>
-                                    <input class="form-control" id="otpInput" placeholder="Enter OTP" name="OTP" type="text"
-                                        aria-label="otp" required>
+                                    <input class="form-control" id="otpInput" placeholder="Enter OTP" name="OTP"
+                                        type="text" aria-label="otp" required>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-block btn-primary" id="verificationSubmit">
@@ -86,11 +88,13 @@
                         </div>
                         <div class="btn-wrapper my-4 text-center">
                             <button class="btn btn-primary btn-icon-only text-success mr-2" type="button"
-                                aria-label="google button" title="Login with Google" onClick="authPopup(event, '/auth/google')">
+                                aria-label="google button" title="Login with Google"
+                                onClick="authPopup(event, '/auth/google')">
                                 <span aria-hidden="true" class="fa fa-google"></span>
                             </button>
                             <button class="btn btn-primary btn-icon-only text-facebook" type="button"
-                                aria-label="facebook button" title="Login with Facebook" onClick="authPopup(event, '/auth/facebook')">
+                                aria-label="facebook button" title="Login with Facebook"
+                                onClick="authPopup(event, '/auth/facebook')">
                                 <span aria-hidden="true" class="fa fa-facebook-f"></span>
                             </button>
                         </div>

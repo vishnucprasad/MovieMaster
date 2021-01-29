@@ -25,7 +25,7 @@ module.exports = {
             if (!existingUser) {
                 sendVerificationToken(mobileNumber).then((verification) => {
                     db.get().collection(collection.USER_COLLECTION).insertOne({ name, email, mobileNumber }).then((response) => {
-                        resolve({ status: true, user: response.ops[0]});
+                        resolve({ status: true, user: response.ops[0] });
                     }).catch((error) => {
                         reject({ status: false, error, errMessage: 'Signup Failed.' });
                     });
@@ -544,9 +544,9 @@ module.exports = {
             const mobileNumber = mobile.substr(0, 3) === '+91' ? mobile : `${contryCode}${mobile}`;
 
             sendVerificationToken(mobileNumber).then((verification) => {
-                resolve(mobileNumber);
+                resolve({ status: true, mobileNumber });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to send verification code.' });
+                reject({ status: false, error, errMessage: 'Failed to send verification code.' });
             });
         });
     },
