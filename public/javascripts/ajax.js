@@ -1,28 +1,20 @@
 const logout = (e, url) => {
     e.preventDefault();
 
-    Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-danger rounded-pill shadow-none border-0 px-5 m-3',
-            cancelButton: 'btn btn-success rounded-pill shadow-none border-0 px-5 m-3'
-        },
-        buttonsStyling: false
-    }).fire({
-        text: "Are you sure you want to logout ?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Logout'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url,
-                method: 'get',
-                success: (response) => {
-                    if (response.status) {
-                        location.reload();
+    vex.dialog.confirm({
+        message: 'Are you sure you want to logout ?',
+        callback: function (value) {
+            if (value) {
+                $.ajax({
+                    url,
+                    method: 'get',
+                    success: (response) => {
+                        if (response.status) {
+                            location.reload();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     });
 }
