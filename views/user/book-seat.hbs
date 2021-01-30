@@ -1,0 +1,247 @@
+{{#with show}}
+<section class="py-5">
+    <div class="container">
+        <div class="header text-center my-5">
+            <h1 class="wthree">Select Seats</h1>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-10 col-lg-8">
+                <div class="profile-card my-3">
+                    <div class="card bg-primary shadow-soft bg-primary border-light">
+                        <div class="row">
+                            <div class="ml-4">
+                                <div
+                                    class="profile-image bg-primary shadow-inset border border-light rounded p-3 ml-3 mt-n5">
+                                    <img src="/images/movies/posters/{{0.movieDetails.0._id}}.jpg" class="card-img-top rounded"
+                                        alt="Avatar" id="profilePic"
+                                        style=" height: 100%; object-fit: cover !important;">
+                                </div>
+                            </div>
+                            <div class="ml-5 my-3">
+                                <h5 class="text-twitter font-weight-bold">{{0.movieDetails.0.movieTitle}}</h5>
+                                <h5 class="text-facebook font-weight-bold">{{0.theatreDetails.0.theatreName}}</h5>
+                                <h6>{{0.screenName}} | {{0.date}} | {{0.showTime}}</h6>
+                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="w3ls-reg">
+                                <!-- seat availabilty list -->
+                                <ul class="seat_w3ls text-center">
+                                    <li class="smallBox greenBox text-dark">Selected Seat</li>
+
+                                    <li class="smallBox redBox text-dark">Reserved Seat</li>
+
+                                    <li class="smallBox emptyBox text-dark">Empty Seat</li>
+                                </ul>
+                                <!-- seat availabilty list -->
+                                <!-- seat layout -->
+                                <div class="seatStructure">
+                                    <div class="d-md-flex justify-content-center table-responsive">
+                                        <table id="seatsBlock">
+
+                                        </table>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mt-5">
+                                        <div class="screen">
+                                            <img src="/images/movies/posters/{{0.movieDetails.0._id}}.jpg" class="screenImage" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center mb-3">
+                                        <h2 class="wthree text-center bg-warning screenText">Screen</h2>
+                                    </div>
+                                    <div id="reservedSeats" hidden>{{0.reservedSeats}}</div>
+                                    <div class="text-center">
+                                        <button onclick="confirmSelection()"
+                                            class="btn btn-primary text-left font-weight-bolder">Confirm
+                                            Selection</button>
+                                    </div>
+                                </div>
+                                <!-- //seat layout -->
+                            </div>
+                            <div class="checkout-sidebar-wrapper" id="sidebarWrapper">
+                                <div class="checkout-sidebar bg-gradient-primary" id="checkoutSidebar">
+                                    <button
+                                        class="btn btn-primary btn-icon-only rounded-circle text-danger btn-sm ml-n3 mt-n3 sidebar-close"
+                                        onclick="closeSidebar()" id="sidebarClose">
+                                        <span class="fa fa-close"></span>
+                                    </button>
+                                    <div class="sidebar-body py-3 px-4" id="sidebarBody">
+                                        <div class="card bg-primary shadow-soft border-light">
+                                            <div class="card-body pb-0">
+                                                <h3 class="wthree text-danger mb-3">Booking Summary</h3>
+                                                <div>
+                                                    <h6 class="text-dark font-weight-bold">Movie Title</h6>
+                                                    <div class="my-3">
+                                                        <p class="text-small">Genre</p>
+                                                        <p class="text-small">Language</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row px-3 pb-1">
+                                                    <h6 class="text-twitter font-weight-bold text-uppercase mx-auto">
+                                                        Grand Opera</h6>
+                                                </div>
+                                                <div class="row px-3 pb-1">
+                                                    <h6 class="text-dark text-medium">Screen-1
+                                                        <span class="font-weight-normal text-dark">(<span
+                                                                id="totalSeats"></span> Seats)</span>
+                                                    </h6>
+                                                    <h6 class="ml-auto text-dark text-medium">Rs.<span
+                                                            id="totalPrice"></span></h6>
+                                                </div>
+                                                <div class="row px-3 pb-1">
+                                                    <h6 class="text-dark text-medium">Seats</h6>
+                                                    <h6 class="ml-auto text-dark" style="overflow-x: auto;"
+                                                        id="seatsDisplay">
+
+                                                    </h6>
+                                                </div>
+                                                <div class="row px-3 pb-1">
+                                                    <h6 class="text-dark text-medium">Date</h6>
+                                                    <h6 class="ml-auto text-dark text-medium" style="overflow-x: auto;">
+                                                        23-01-2021
+                                                    </h6>
+                                                </div>
+                                                <div class="row px-3 pb-1">
+                                                    <h6 class="text-dark text-medium">Time</h6>
+                                                    <h6 class="ml-auto text-dark text-medium" style="overflow-x: auto;">
+                                                        09:00
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer bg-twitter py-2 px-4">
+                                                <div class="row px-3">
+                                                    <h6 class="text-white text-medium">Amount Payable</h6>
+                                                    <h6 class="ml-auto text-white text-medium">Rs.<spam
+                                                            id="payableAmount"></spam>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <h6 class="text-center">Payment Options</h6>
+                                            <div class="row my-3">
+                                                <div id="countDown" class="mx-auto"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <a type="button"
+                                                        onclick="checkoutPaypal(event, '{{0.screen}}', '{{0.show}}')"
+                                                        class="btn btn-warning btn-sm btn-block rounded py-1">
+                                                        <span class="fa fa-paypal text-secondary"> PayPal</span>
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <a type="button"
+                                                        onclick="checkoutRazorpay(event, '{{0.screen}}', '{{0.show}}')"
+                                                        class="btn btn-warning btn-sm btn-block rounded py-1">
+                                                        <span class="fa fa-credit-card text-secondary"> RazorPay</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/with}}
+
+<script>
+    const totalSeats = parseInt({{ show.0.seatArrangement.totalSeats }});
+    const totalColumns = parseInt({{ show.0.seatArrangement.columns }});
+    const totalRows = parseInt(parseInt(totalSeats) / totalColumns);
+    const vipRows = parseInt({{ show.0.seatArrangement.vipRows }});
+    const premiumRows = parseInt({{ show.0.seatArrangement.premiumRows }});
+    const executiveRows = parseInt({{ show.0.seatArrangement.executiveRows }});
+    const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    for (i = 0; i <= totalRows + 1; i++) {
+        let price = i <= vipRows ? {{show.0.vip}} : (i <= (vipRows + premiumRows) ? {{show.0.premium}} : (i <= (vipRows + premiumRows + executiveRows) ? {{show.0.executive}} : {{show.0.normal}}));
+
+        if (i === totalRows + 1) {
+            if ((totalSeats - totalRows * totalColumns) > 0) {
+                const row = document.createElement("tr");
+                row.setAttribute('id', `row${i}`);
+                document.getElementById('seatsBlock').appendChild(row)
+                for (j = 0; j <= totalColumns; j++) {
+                    if (i !== 0 && j === 0) {
+                        const seatsNumber = document.createElement("td");
+                        seatsNumber.innerText = alphabets.charAt(i - 1);
+                        document.getElementById(`row${i}`).appendChild(seatsNumber)
+                    } else if (j <= (totalColumns - (totalSeats - totalRows * totalColumns)) / 2 || j > (totalColumns - (totalColumns - (totalSeats - totalRows * totalColumns)) / 2)) {
+                        const seat = document.createElement("td");
+                        seat.setAttribute('id', `seat${j}`);
+                        document.getElementById(`row${i}`).appendChild(seat)
+                    } else if (i !== 0 && j !== 0) {
+                        if (j === parseInt(totalColumns / 4) + 1 || j === (totalColumns - parseInt(totalColumns / 4)) + 1) {
+                            const seatGap = document.createElement("td");
+                            seatGap.setAttribute('class', 'seatGap');
+                            document.getElementById(`row${i}`).appendChild(seatGap)
+                        }
+                        const seat = document.createElement("td");
+                        seat.setAttribute('id', `seat${j}`);
+                        seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}" id="${alphabets.charAt(i - 1)}${j}" data-price="${price}">`
+                        document.getElementById(`row${i}`).appendChild(seat)
+                    }
+                }
+            }
+
+            const normalSection = document.createElement("tr");
+            normalSection.setAttribute('class', `seatVGap`);
+            normalSection.innerHTML = `<td></td><td colspan="${totalColumns + 2}" style="width: 100%;"><div class="bg-twitter text-white font-weight-bold sections">NORMAL | Rs.{{show.0.normal}}</div></td colspan="2">`
+            document.getElementById('seatsBlock').appendChild(normalSection)
+        } else if (i !== totalRows + 1) {
+            if (i === vipRows + 1 || i === (vipRows + premiumRows + 1) || i === (vipRows + premiumRows + executiveRows + 1)) {
+                let section = i === vipRows + 1 ? `VIP | {{show.0.vip}}` : (i === (vipRows + premiumRows + 1) ? `PREMIUM | {{show.0.premium}}` : `EXECUTIVE | {{show.0.executive}}`);
+
+                const row = document.createElement("tr");
+                row.setAttribute('class', `seatVGap`);
+                row.innerHTML = `<td></td><td colspan="${totalColumns + 2}" style="width: 100%;"><div class="bg-twitter text-white font-weight-bold mb-3 mt-1 sections">${section}</div></td colspan="2">`
+                document.getElementById('seatsBlock').appendChild(row)
+            }
+            const row = document.createElement("tr");
+            row.setAttribute('id', `row${i}`);
+            document.getElementById('seatsBlock').appendChild(row)
+            for (j = 0; j <= totalColumns; j++) {
+                if (i === 0 && j === 0) {
+                    const seatsNumber = document.createElement("td");
+                    document.getElementById(`row${i}`).appendChild(seatsNumber)
+                } else if (i === 0 && j !== 0) {
+                    if (j === parseInt(totalColumns / 4) + 1 || j === (totalColumns - parseInt(totalColumns / 4)) + 1) {
+                        const seatsNumber = document.createElement("td");
+                        document.getElementById(`row${i}`).appendChild(seatsNumber)
+                    }
+                    const seatsNumber = document.createElement("td");
+                    seatsNumber.innerText = j
+                    document.getElementById(`row${i}`).appendChild(seatsNumber)
+                } else if (i !== 0 && j === 0) {
+                    const seatsNumber = document.createElement("td");
+                    seatsNumber.innerText = alphabets.charAt(i - 1);
+                    document.getElementById(`row${i}`).appendChild(seatsNumber)
+                } else if (i !== 0 && j !== 0) {
+                    if (j === parseInt(totalColumns / 4) + 1 || j === (totalColumns - parseInt(totalColumns / 4)) + 1) {
+                        const seatGap = document.createElement("td");
+                        seatGap.setAttribute('class', 'seatGap');
+                        document.getElementById(`row${i}`).appendChild(seatGap)
+                    }
+                    const seat = document.createElement("td");
+                    seat.setAttribute('id', `seat${j}`);
+                    seat.innerHTML = `<input type="checkbox" class="seats" value="${alphabets.charAt(i - 1)}${j}" id="${alphabets.charAt(i - 1)}${j}" data-price="${price}">`
+                    document.getElementById(`row${i}`).appendChild(seat)
+                }
+            }
+        }
+    }
+
+    const reservedSeats = document.getElementById('reservedSeats').innerHTML.split(',');
+    reservedSeats.forEach((seat) => {
+        document.getElementById(`${seat}`).disabled = true;
+        document.getElementById(`${seat}`).classList.add("reservedSeat");
+    });
+</script>

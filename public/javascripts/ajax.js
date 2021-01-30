@@ -287,15 +287,41 @@ $('#verificationForm').submit((e) => {
     });
 });
 
-const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
+const checkoutRazorpay = (e, screenId, showId) => {
     e.preventDefault();
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
+
+    $('#sidebarBody').fadeOut(1000);
+    $('#sidebarClose').slideUp(600);
+    setTimeout(() => {
+        $('#sidebarWrapper').fadeOut()
+        $('#checkoutSidebar').animate({ width: "0" }, 'slow', 'swing', () => sidebarOpened = false);
+    }, 1000);
+
+    let totalAmount = parseInt(document.getElementById('payableAmount').innerHTML);
+    let seats = document.getElementById('seatsDisplay').innerHTML;
+    let numberOfSeats = parseInt(document.getElementById('totalSeats').innerHTML);
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
     $.ajax({
         url: '/checkoutRazorpay',
@@ -308,14 +334,15 @@ const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount
             totalAmount
         },
         success: (response) => {
-            swal.close();
+            vex.closeTop();
             console.log(response);
             if (response.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong! Please try again.'
-                })
+                vex.dialog.confirm({
+                    message: 'Something went wrong! Please try again.',
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             } else {
                 razorpayPayment(response);
             }
@@ -352,13 +379,27 @@ const razorpayPayment = (order) => {
 }
 
 const verifyPayment = (payment, order) => {
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
     $.ajax({
         url: '/verify-razorpay-payment',
@@ -368,31 +409,59 @@ const verifyPayment = (payment, order) => {
         },
         method: 'post',
         success: (response) => {
-            swal.close();
+            vex.closeTop();
             if (response.status) {
                 console.log(order.receipt);
                 location.href = `/view-order?orderId=${order.receipt}`
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: response.errMessage
-                })
+                vex.dialog.confirm({
+                    message: response.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             }
         }
     });
 }
 
-const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
+const checkoutPaypal = (e, screenId, showId) => {
     e.preventDefault();
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
+
+    $('#sidebarBody').fadeOut(1000);
+    $('#sidebarClose').slideUp(600);
+    setTimeout(() => {
+        $('#sidebarWrapper').fadeOut()
+        $('#checkoutSidebar').animate({ width: "0" }, 'slow', 'swing', () => sidebarOpened = false);
+    }, 1000);
+
+    let totalAmount = parseInt(document.getElementById('payableAmount').innerHTML);
+    let seats = document.getElementById('seatsDisplay').innerHTML;
+    let numberOfSeats = parseInt(document.getElementById('totalSeats').innerHTML);
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
+
     $.ajax({
         url: '/checkoutPaypal',
         method: 'post',
@@ -404,24 +473,39 @@ const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) 
             totalAmount
         },
         success: (response) => {
-            swal.close();
-            swal.fire({
-                title: 'Redirecting...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                onOpen: () => {
-                    swal.showLoading();
-                }
+            vex.closeTop();
+            vex.dialog.open({
+                input: [
+                    `<div class="text-center">
+                        <h6>Redirecting</h6>
+                        <span id="loadingBtn">
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                        </span>
+                    </div>`
+                ].join(''),
+                buttons: [],
+                escapeButtonCloses: false,
+                overlayClosesOnClick: false
             });
             console.log(response);
             if (response.approvalLink) {
                 location.href = response.approvalLink;
             } else if (response.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: response.error.errMessage
-                })
+                vex.dialog.confirm({
+                    message: response.error.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             }
         }
     });

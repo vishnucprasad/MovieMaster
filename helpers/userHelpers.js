@@ -290,9 +290,9 @@ module.exports = {
                 },
                 theatreDetails: show[0].theatreDetails[0],
                 movieDetails: show[0].movieDetails[0],
-                numberOfSeats,
+                numberOfSeats: parseInt(numberOfSeats),
                 seats: seats.split(','),
-                totalAmount,
+                totalAmount: parseInt(totalAmount),
                 paymentMethod,
                 orderDate: new Date(),
                 status: 'Payment Failed'
@@ -350,7 +350,7 @@ module.exports = {
             }
         });
     },
-    createPaypal: (show, order) => {
+    createPaypal: (order) => {
         return new Promise((resolve, reject) => {
             const create_payment_json = {
                 "intent": "ORDER",

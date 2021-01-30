@@ -143,12 +143,7 @@ router.get('/logout', (req, res) => {
 
 router.get('/book-seat', isUser, async (req, res) => {
   const show = await userHelpers.getShow(req.query);
-  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', user: req.user, userLocation: req.session.userLocation, show });
-});
-
-router.get('/checkout', isUser, async (req, res) => {
-  const show = await userHelpers.getShow(req.query);
-  res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, userLocation: req.session.userLocation, show, checkoutDetails: req.query });
+  res.render('user/book-seat', { title: 'MovieMaster | Book Seat', user: req.user, userLocation: req.session.userLocation, show });
 });
 
 router.post('/checkoutRazorpay', isUser, async (req, res) => {
@@ -177,8 +172,7 @@ router.post('/verify-razorpay-payment', (req, res) => {
 router.post('/checkoutPaypal', async (req, res) => {
   const show = await userHelpers.getShow({ showId: req.body.showId, screenId: req.body.screenId });
   userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'PayPal' }).then(async (order) => {
-    const show = await userHelpers.getShow({ showId: order.showId, screenId: order.screenId });
-    userHelpers.createPaypal(show, order).then((approvalLink) => {
+    userHelpers.createPaypal(order).then((approvalLink) => {
       res.json({ approvalLink });
     });
   }).catch((error) => {

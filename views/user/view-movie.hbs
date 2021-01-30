@@ -119,11 +119,11 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tomorrow" role="tabpanel" aria-labelledby="tomorrow-tab">
-                                <div class="accordion shadow-soft rounded">
+                                <div class="accordion">
                                     {{#if tomorrowShows}}
                                     <div class="row">
                                         {{#each tomorrowShows}}
-                                        <div class="card card-sm card-body bg-primary border-light mb-0 mx-3">
+                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
                                             <a href="#panel-TOM-{{this._id}}" data-target="#panel-TOM-{{this._id}}"
                                                 class="accordion-panel-header" data-toggle="collapse" role="button"
                                                 aria-expanded="false">
@@ -167,11 +167,11 @@
                             </div>
                             <div class="tab-pane fade" id="dayAfterTomorrow" role="tabpanel"
                                 aria-labelledby="dayAfterTomorrow-tab">
-                                <div class="accordion shadow-soft rounded">
+                                <div class="accordion">
                                     {{#if dayAfterTomorrowShows}}
                                     <div class="row">
                                         {{#each dayAfterTomorrowShows}}
-                                        <div class="card card-sm card-body bg-primary border-light mb-0 mx-3">
+                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
                                             <a href="#panel-DAT-{{this._id}}" data-target="#panel-DAT-{{this._id}}"
                                                 class="accordion-panel-header" data-toggle="collapse" role="button"
                                                 aria-expanded="false">

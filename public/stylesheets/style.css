@@ -109,14 +109,6 @@ body {
   max-height: 4rem;
 }
 
-#NumberDisplay,
-#PriceDisplay,
-#seatsDisplay {
-  background-color: rgb(54 70 93 / 99%);
-  color: #ffffff;
-  border-color: #ffffff;
-}
-
 .reservedSeat::before {
   background-color: #ff0000 !important;
   cursor: not-allowed;
@@ -5249,7 +5241,7 @@ ul.seat_w3ls {
 
 .screen {
   height: 50px;
-  width: 80%;
+  width: 100%;
   clip-path: polygon(25% -20%, 0% 100%, 100% 100%, 80% 0%);
 }
 
@@ -5260,7 +5252,7 @@ ul.seat_w3ls {
 }
 
 .screenText {
-  width: 80%;
+  width: 100%;
 }
 
 h1.wthree {
