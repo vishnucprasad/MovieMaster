@@ -4,6 +4,7 @@ const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
 const isUser = require('../middleware/auth').isUser;
 const fs = require('fs');
+const date = require('date-and-time');
 
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
@@ -23,26 +24,15 @@ router.get('/upcoming-movies', async (req, res) => {
 });
 
 router.get('/view-movie', async (req, res) => {
-  const date = new Date();
-  const todayShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate(), req.session.userLocation.coordinates);
-  const tomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1, req.session.userLocation.coordinates);
-  const dayAfterTomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2, req.session.userLocation.coordinates);
+  const today = new Date();
+  const tomorrow = date.addDays(today, 1);
+  const dayAfterTomorrow = date.addDays(today, 2);
+  const todayShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.format(today, 'YYYY-MM-DD'), req.session.userLocation.coordinates);
+  const tomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.format(tomorrow, 'YYYY-MM-DD'), req.session.userLocation.coordinates);
+  const dayAfterTomorrowShows = await userHelpers.getTheatersByDistance(req.query.movieId, date.format(dayAfterTomorrow, 'YYYY-MM-DD'), req.session.userLocation.coordinates);
   const latestMovies = await userHelpers.getMovies();
   userHelpers.getMovie(req.query.movieId).then((movie) => {
     res.render('user/view-movie', { title: 'MovieMaster | View Movie', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies });
-  }).catch((error) => {
-    res.redirect('/');
-  });
-});
-
-router.get('/view-shows', async (req, res) => {
-  const date = new Date();
-  const todayShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate());
-  const tomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 1);
-  const dayAfterTomorrowShows = await userHelpers.getMovieShows(req.query.movieId, req.query.theatreId, date.getFullYear(), date.getMonth() + 1, date.getDate() + 2);
-  const latestMovies = await userHelpers.getMovies();
-  userHelpers.getMovie(req.query.movieId).then((movie) => {
-    res.render('user/view-shows', { title: 'MovieMaster | View Shows', user: req.user, userLocation: req.session.userLocation, movie, todayShows, tomorrowShows, dayAfterTomorrowShows, latestMovies, theatreName: req.query.theatreName });
   }).catch((error) => {
     res.redirect('/');
   });
@@ -109,11 +99,10 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-  userHelpers.doSignup(req.body).then((user) => {
-    res.render('user/verify-account', { title: 'Account | Verify Account', mobileNumber: user.mobileNumber });
+  userHelpers.doSignup(req.body).then((response) => {
+    res.json(response);
   }).catch((error) => {
-    req.flash('error', error.errMessage);
-    res.redirect('/signup');
+    res.json(error);
   });
 });
 
@@ -132,20 +121,18 @@ router.get('/login', (req, res) => {
 
 router.post('/login', (req, res) => {
   userHelpers.doLogin(req.body).then((user) => {
-    res.render('user/verify-account', { title: 'Account | Verify Account', mobileNumber: user.mobileNumber });
+    res.json(user);
   }).catch((error) => {
-    req.flash('error', error.errMessage);
-    res.redirect('/login');
+    res.json(error);
   })
 });
 
 router.post('/verify-account', (req, res) => {
-  userHelpers.verifyAccount(req.body).then((user) => {
+  userHelpers.verifyAccount(req.body).then(({ status, user }) => {
     req.session.passport = { user: { userId: user._id } };
-    res.redirect('/');
+    res.json({ status, user });
   }).catch((error) => {
-    req.flash('error', error.errMessage);
-    res.render('user/verify-account', { title: 'Account | Verify Account', mobileNumber: error.mobile });
+    res.json(error);
   });
 });
 
@@ -156,12 +143,7 @@ router.get('/logout', (req, res) => {
 
 router.get('/book-seat', isUser, async (req, res) => {
   const show = await userHelpers.getShow(req.query);
-  res.render('user/seat-selection', { title: 'MovieMaster | Select Seat', user: req.user, userLocation: req.session.userLocation, show });
-});
-
-router.get('/checkout', isUser, async (req, res) => {
-  const show = await userHelpers.getShow(req.query);
-  res.render('user/checkout', { title: 'MovieMaster | checkout', user: req.user, userLocation: req.session.userLocation, show, checkoutDetails: req.query });
+  res.render('user/book-seat', { title: 'MovieMaster | Book Seat', user: req.user, userLocation: req.session.userLocation, show });
 });
 
 router.post('/checkoutRazorpay', isUser, async (req, res) => {
@@ -190,8 +172,7 @@ router.post('/verify-razorpay-payment', (req, res) => {
 router.post('/checkoutPaypal', async (req, res) => {
   const show = await userHelpers.getShow({ showId: req.body.showId, screenId: req.body.screenId });
   userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'PayPal' }).then(async (order) => {
-    const show = await userHelpers.getShow({ showId: order.showId, screenId: order.screenId });
-    userHelpers.createPaypal(show, order).then((approvalLink) => {
+    userHelpers.createPaypal(order).then((approvalLink) => {
       res.json({ approvalLink });
     });
   }).catch((error) => {
@@ -272,8 +253,8 @@ router.post('/edit-personal-info', isUser, (req, res) => {
 });
 
 router.post('/update-mobile', isUser, (req, res) => {
-  userHelpers.updateMobile(req.body, req.user._id).then((mobileNumber) => {
-    res.json({ mobileNumber });
+  userHelpers.updateMobile(req.body, req.user._id).then((response) => {
+    res.json(response);
   }).catch((error) => {
     res.json(error);
   });

@@ -18,22 +18,22 @@ const instance = new Razorpay({
 });
 
 module.exports = {
-    doSignup: ({ name, contryCode, mobile }) => {
+    doSignup: ({ name, email, contryCode, mobile }) => {
         return new Promise(async (resolve, reject) => {
             const mobileNumber = `${contryCode}${mobile}`
             const existingUser = await db.get().collection(collection.USER_COLLECTION).findOne({ mobileNumber });
             if (!existingUser) {
                 sendVerificationToken(mobileNumber).then((verification) => {
-                    db.get().collection(collection.USER_COLLECTION).insertOne({ name, mobileNumber }).then((response) => {
-                        resolve(response.ops[0]);
+                    db.get().collection(collection.USER_COLLECTION).insertOne({ name, email, mobileNumber }).then((response) => {
+                        resolve({ status: true, user: response.ops[0] });
                     }).catch((error) => {
-                        reject({ error, errMessage: 'Signup Failed.' });
+                        reject({ status: false, error, errMessage: 'Signup Failed.' });
                     });
                 }).catch((error) => {
-                    reject({ error, errMessage: 'Failed to send verification code.' });
+                    reject({ status: false, error, errMessage: 'Failed to send verification code.' });
                 });
             } else {
-                reject({ errMessage: 'This number is already registered.' });
+                reject({ status: false, errMessage: 'This number is already registered.' });
             }
         });
     },
@@ -44,12 +44,12 @@ module.exports = {
 
             if (user) {
                 sendVerificationToken(mobileNumber).then((verification) => {
-                    resolve(user);
+                    resolve({ status: true, user });
                 }).catch((error) => {
-                    reject({ error, errMessage: 'Failed to send verification code.' });
+                    reject({ status: false, error, errMessage: 'Failed to send verification code.' });
                 })
             } else {
-                reject({ errMessage: 'Cannot find user.' });
+                reject({ status: false, errMessage: 'Cannot find user.' });
             }
         });
     },
@@ -58,16 +58,16 @@ module.exports = {
             checkVerificationToken({ mobile, OTP }).then((verification_check) => {
                 if (verification_check.status === 'approved') {
                     db.get().collection(collection.USER_COLLECTION).findOne({ mobileNumber: mobile }).then((user) => {
-                        resolve(user);
+                        resolve({ status: true, user });
                     }).catch((error) => {
-                        reject({ error, mobile, errMessage: 'Failed to get userDetails.' });
+                        reject({ status: false, error, mobile, errMessage: 'Failed to get userDetails.' });
                     });
                 } else if (verification_check.status === 'pending') {
-                    reject({ error, mobile, errMessage: 'Invalid verification code.' });
+                    reject({ status: false, error, mobile, errMessage: 'Invalid verification code.' });
                 }
             }).catch((error) => {
                 console.log(error);
-                reject({ error, mobile, errMessage: 'Failed to check verification code.' });
+                reject({ status: false, error, mobile, errMessage: 'Failed to check verification code.' });
             });
         });
     },
@@ -113,13 +113,8 @@ module.exports = {
             })
         });
     },
-    getTheatersByDistance: (movieId, year, month, day, coordinates) => {
+    getTheatersByDistance: (movieId, date, coordinates) => {
         return new Promise(async (resolve, reject) => {
-            month = month < 10 ? `0${month}` : month;
-            day = day < 10 ? `0${day}` : day;
-
-            const date = `${year}-${month}-${day}`;
-
             const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
@@ -142,6 +137,26 @@ module.exports = {
                         localField: 'theatre',
                         foreignField: '_id',
                         as: 'theatreDetails'
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.SCREEN_COLLECTION,
+                        pipeline: [
+                            {
+                                $match: {
+                                    'shows.movie': ObjectID(movieId),
+                                    'shows.date': date
+                                }
+                            }, {
+                                $unwind: '$shows'
+                            }, {
+                                $match: {
+                                    'shows.movie': ObjectID(movieId),
+                                    'shows.date': date
+                                }
+                            }
+                        ],
+                        as: 'screens'
                     }
                 }
             ]).sort({ showTime: 1 }).toArray();
@@ -196,64 +211,6 @@ module.exports = {
             } else {
                 resolve(shows);
             }
-        });
-    },
-    getMovieShows: (movieId, theatreId, year, month, day) => {
-        return new Promise(async (resolve, reject) => {
-            month = month < 10 ? `0${month}` : month;
-            day = day < 10 ? `0${day}` : day;
-
-            const date = `${year}-${month}-${day}`;
-
-            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
-                {
-                    $match: {
-                        theatre: ObjectID(theatreId),
-                        'shows.movie': ObjectID(movieId)
-                    }
-                }, {
-                    $unwind: '$shows'
-                }, {
-                    $match: {
-                        'shows.movie': ObjectID(movieId),
-                        'shows.date': date
-                    }
-                }, {
-                    $project: {
-                        theatre: '$theatre',
-                        screen: '$_id',
-                        screenName: '$screenName',
-                        show: '$shows._id',
-                        totalSeats: '$seats',
-                        reservedSeats: '$shows.reservedSeats',
-                        movie: '$shows.movie',
-                        date: '$shows.date',
-                        showTime: '$shows.showTime',
-                        vip: '$shows.vip',
-                        premium: '$shows.premium',
-                        executive: '$shows.executive',
-                        normal: '$shows.normal'
-                    }
-                }, {
-                    $lookup: {
-                        from: collection.THEATRE_COLLECTION,
-                        localField: 'theatre',
-                        foreignField: '_id',
-                        as: 'theatreDetails'
-                    }
-                }, {
-                    $lookup: {
-                        from: collection.MOVIE_COLLECTION,
-                        localField: 'movie',
-                        foreignField: '_id',
-                        as: 'movieDetails'
-                    }
-                }
-            ]).sort({ showTime: 1 }).toArray();
-            shows.forEach(show => {
-                show.reservedSeats = show.reservedSeats ? show.reservedSeats.length : 0;
-            });
-            resolve(shows);
         });
     },
     getShow: ({ showId, screenId }) => {
@@ -333,9 +290,9 @@ module.exports = {
                 },
                 theatreDetails: show[0].theatreDetails[0],
                 movieDetails: show[0].movieDetails[0],
-                numberOfSeats,
+                numberOfSeats: parseInt(numberOfSeats),
                 seats: seats.split(','),
-                totalAmount,
+                totalAmount: parseInt(totalAmount),
                 paymentMethod,
                 orderDate: new Date(),
                 status: 'Payment Failed'
@@ -393,7 +350,7 @@ module.exports = {
             }
         });
     },
-    createPaypal: (show, order) => {
+    createPaypal: (order) => {
         return new Promise((resolve, reject) => {
             const create_payment_json = {
                 "intent": "ORDER",
@@ -503,10 +460,7 @@ module.exports = {
                 const month = order.orderDate.getMonth() + 1 < 10 ? `0${order.orderDate.getMonth() + 1}` : order.orderDate.getMonth() + 1;
                 const day = order.orderDate.getDate() < 10 ? `0${order.orderDate.getDate()}` : order.orderDate.getDate();
 
-                const hour = order.orderDate.getHours() < 10 ? `0${order.orderDate.getHours()}` : order.orderDate.getHours();
-                const minute = order.orderDate.getMinutes() < 10 ? `0${order.orderDate.getMinutes()}` : order.orderDate.getMinutes();
-
-                order.orderDate = `${year}-${month}-${day} - ${hour} : ${minute}`;
+                order.orderDate = `${year}-${month}-${day}`;
             });
             resolve(orders);
         });
@@ -544,9 +498,9 @@ module.exports = {
             const mobileNumber = mobile.substr(0, 3) === '+91' ? mobile : `${contryCode}${mobile}`;
 
             sendVerificationToken(mobileNumber).then((verification) => {
-                resolve(mobileNumber);
+                resolve({ status: true, mobileNumber });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to send verification code.' });
+                reject({ status: false, error, errMessage: 'Failed to send verification code.' });
             });
         });
     },

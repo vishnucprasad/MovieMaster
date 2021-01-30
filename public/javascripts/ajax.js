@@ -1,28 +1,20 @@
 const logout = (e, url) => {
     e.preventDefault();
 
-    Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-danger rounded-pill px-5 m-3',
-            cancelButton: 'btn btn-success rounded-pill px-5 m-3'
-        },
-        buttonsStyling: false
-    }).fire({
-        text: "Are you sure you want to logout ?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Logout'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url,
-                method: 'get',
-                success: (response) => {
-                    if (response.status) {
-                        location.reload();
+    vex.dialog.confirm({
+        message: 'Are you sure you want to logout ?',
+        callback: function (value) {
+            if (value) {
+                $.ajax({
+                    url,
+                    method: 'get',
+                    success: (response) => {
+                        if (response.status) {
+                            location.reload();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     });
 }
@@ -135,15 +127,193 @@ $('#search-box').submit((e) => {
     }
 });
 
-const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
+$('#loginForm').submit((e) => {
     e.preventDefault();
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
+    $('#submitBtn').attr('hidden', true);
+    $('#loadingBtn').removeAttr('hidden');
+
+    $.ajax({
+        url: '/login',
+        method: 'post',
+        data: $('#loginForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                $("#loginSubmit").hide();
+                $("#verificationForm").slideDown(500);
+                $("#verificationMobileInput").val(response.user.mobileNumber);
+                iziToast.show({
+                    title: `Sended verification code to ${response.user.mobileNumber}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#loadingBtn').attr('hidden', true);
+                $('#submitBtn').removeAttr('hidden');
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+            $('#loadingBtn').attr('hidden', true);
+            $('#submitBtn').removeAttr('hidden');
         }
+    });
+});
+
+$('#signupForm').submit((e) => {
+    e.preventDefault();
+    $('#submitBtn').attr('hidden', true);
+    $('#loadingBtn').removeAttr('hidden');
+
+    $.ajax({
+        url: '/signup',
+        method: 'post',
+        data: $('#signupForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                $("#signupSubmit").hide();
+                $("#verificationForm").slideDown(500);
+                $("#verificationMobileInput").val(response.user.mobileNumber);
+                iziToast.show({
+                    title: `Sended verification code to ${response.user.mobileNumber}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#loadingBtn').attr('hidden', true);
+                $('#submitBtn').removeAttr('hidden');
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+            $('#loadingBtn').attr('hidden', true);
+            $('#submitBtn').removeAttr('hidden');
+        }
+    });
+});
+
+$('#verificationForm').submit((e) => {
+    e.preventDefault();
+    $('#verificationSubmitBtn').attr('hidden', true);
+    $('#verificationLoadingBtn').removeAttr('hidden');
+
+    $.ajax({
+        url: '/verify-account',
+        method: 'post',
+        data: $('#verificationForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                iziToast.show({
+                    title: 'Approved',
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                    timeout: 1000,
+                    onClosed: function () {
+                        if (window.location.pathname !== '/my-profile') {
+                            location.href = '/';
+                        } else {
+                            $('#editMobileLoadingBtn').attr('hidden', true);
+                            $('#editMobileSubmitBtn').removeAttr('hidden');
+                            $("#editMobileSubmit").slideDown(500);
+                            $("#verificationForm").hide();
+                            $("#verificationMobileInput").val('');
+                        }
+                    }
+                });
+                $('#verificationLoadingBtn').attr('hidden', true);
+                $('#verificationSubmitBtn').removeAttr('hidden');
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#verificationLoadingBtn').attr('hidden', true);
+                $('#verificationSubmitBtn').removeAttr('hidden');
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+            $('#verificationLoadingBtn').attr('hidden', true);
+            $('#verificationSubmitBtn').removeAttr('hidden');
+        }
+    });
+});
+
+const checkoutRazorpay = (e, screenId, showId) => {
+    e.preventDefault();
+
+    $('#sidebarBody').fadeOut(1000);
+    $('#sidebarClose').slideUp(600);
+    setTimeout(() => {
+        $('#sidebarWrapper').fadeOut()
+        $('#checkoutSidebar').animate({ width: "0" }, 'slow', 'swing', () => sidebarOpened = false);
+    }, 1000);
+
+    let totalAmount = parseInt(document.getElementById('payableAmount').innerHTML);
+    let seats = document.getElementById('seatsDisplay').innerHTML;
+    let numberOfSeats = parseInt(document.getElementById('totalSeats').innerHTML);
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
     $.ajax({
         url: '/checkoutRazorpay',
@@ -156,14 +326,15 @@ const checkoutRazorpay = (e, screenId, showId, numberOfSeats, seats, totalAmount
             totalAmount
         },
         success: (response) => {
-            swal.close();
+            vex.closeTop();
             console.log(response);
             if (response.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong! Please try again.'
-                })
+                vex.dialog.confirm({
+                    message: 'Something went wrong! Please try again.',
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             } else {
                 razorpayPayment(response);
             }
@@ -200,13 +371,27 @@ const razorpayPayment = (order) => {
 }
 
 const verifyPayment = (payment, order) => {
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
     $.ajax({
         url: '/verify-razorpay-payment',
@@ -216,31 +401,59 @@ const verifyPayment = (payment, order) => {
         },
         method: 'post',
         success: (response) => {
-            swal.close();
+            vex.closeTop();
             if (response.status) {
                 console.log(order.receipt);
                 location.href = `/view-order?orderId=${order.receipt}`
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: response.errMessage
-                })
+                vex.dialog.confirm({
+                    message: response.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             }
         }
     });
 }
 
-const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) => {
+const checkoutPaypal = (e, screenId, showId) => {
     e.preventDefault();
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
+
+    $('#sidebarBody').fadeOut(1000);
+    $('#sidebarClose').slideUp(600);
+    setTimeout(() => {
+        $('#sidebarWrapper').fadeOut()
+        $('#checkoutSidebar').animate({ width: "0" }, 'slow', 'swing', () => sidebarOpened = false);
+    }, 1000);
+
+    let totalAmount = parseInt(document.getElementById('payableAmount').innerHTML);
+    let seats = document.getElementById('seatsDisplay').innerHTML;
+    let numberOfSeats = parseInt(document.getElementById('totalSeats').innerHTML);
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
+
     $.ajax({
         url: '/checkoutPaypal',
         method: 'post',
@@ -252,24 +465,39 @@ const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) 
             totalAmount
         },
         success: (response) => {
-            swal.close();
-            swal.fire({
-                title: 'Redirecting...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                onOpen: () => {
-                    swal.showLoading();
-                }
+            vex.closeTop();
+            vex.dialog.open({
+                input: [
+                    `<div class="text-center">
+                        <h6>Redirecting</h6>
+                        <span id="loadingBtn">
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                        </span>
+                    </div>`
+                ].join(''),
+                buttons: [],
+                escapeButtonCloses: false,
+                overlayClosesOnClick: false
             });
             console.log(response);
             if (response.approvalLink) {
                 location.href = response.approvalLink;
             } else if (response.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: response.error.errMessage
-                })
+                vex.dialog.confirm({
+                    message: response.error.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             }
         }
     });
@@ -277,190 +505,187 @@ const checkoutPaypal = (e, screenId, showId, numberOfSeats, seats, totalAmount) 
 
 $("#editPersonalInfo").submit((e) => {
     e.preventDefault();
+    $('#editPersonalInfoSubmitBtn').attr('hidden', true);
+    $('#editPersonalInfoLoadingBtn').removeAttr('hidden');
+
     $.ajax({
         url: '/edit-personal-info',
         method: 'post',
         data: $("#editPersonalInfo").serialize(),
         success: (response) => {
             if (response.status) {
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                $('#successAlert').hide();
-                $('#successAlert').slideDown();
-                $("#input-personal-info").attr("readonly", "true");
-                $("#save-personal-info").attr("hidden", "true");
-                $("#selectGender").attr("disabled", "true");
-                $("#cancel-personal-info").attr("hidden", "true");
-                $("#edit-personal-info").removeAttr("hidden");
-                $("#profileName").html($("#input-personal-info").val());
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
+                iziToast.show({
+                    title: `Saved successfully.`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+                $('#editPersonalInfoLoadingBtn').attr('hidden', true);
+                $('#editPersonalInfoSubmitBtn').removeAttr('hidden');
             } else {
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#editPersonalInfoLoadingBtn').attr('hidden', true);
+                $('#editPersonalInfoSubmitBtn').removeAttr('hidden');
             }
         },
         error: (err) => {
-            $('#errorAlertBody').html("Can't connect to the server.");
-            $('#errorAlert').removeAttr('hidden');
-            setTimeout(() => {
-                $('#errorAlert').slideUp();
-            }, 5000);
-        }
-    });
-});
-
-$("#editEmail").submit((e) => {
-    e.preventDefault();
-    $.ajax({
-        url: '/edit-personal-info',
-        method: 'post',
-        data: $("#editEmail").serialize(),
-        success: (response) => {
-            if (response.status) {
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                $('#successAlert').hide();
-                $('#successAlert').slideDown();
-                $("#input-email").attr("readonly", "true");
-                $("#save-email").attr("hidden", "true");
-                $("#cancel-email").attr("hidden", "true");
-                $("#edit-email").removeAttr("hidden");
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
-            } else {
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
-            }
-        },
-        error: (err) => {
-            $('#errorAlertBody').html("Can't connect to the server.");
-            $('#errorAlert').removeAttr('hidden');
-            setTimeout(() => {
-                $('#errorAlert').slideUp();
-            }, 5000);
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+            $('#editPersonalInfoLoadingBtn').attr('hidden', true);
+            $('#editPersonalInfoSubmitBtn').removeAttr('hidden');
         }
     });
 });
 
 $("#editMobile").submit((e) => {
     e.preventDefault();
-    swal.fire({
-        title: 'Processing...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
-    });
+    $('#editMobileSubmitBtn').attr('hidden', true);
+    $('#editMobileLoadingBtn').removeAttr('hidden');
+
     $.ajax({
         url: '/update-mobile',
         method: 'post',
         data: $("#editMobile").serialize(),
         success: (response) => {
-            console.log(response);
-            if (response.mobileNumber) {
-                Swal.fire({
-                    title: 'Number Verification',
-                    html:
-                        '<form class="mt-5" id="numberVerification">' +
-                        '<div class="form-group" hidden >' +
-                        '<label for="mobileNumber" class="text-white">Mobile</label>' +
-                        `<input type="tel" class="form-control border-top-0 border-right-0 border-left-0" value="${response.mobileNumber}" name="mobile" required id="mobileNumber">` +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<label for="verificationCode" class="text-white text-center">Enter OTP</label>' +
-                        '<input type="text" class="form-control border-top-0 border-right-0 border-left-0" placeholder="Type your Verification code" name="OTP" required id="verificationCode">' +
-                        '</div>' +
-                        '<div class="text-center">' +
-                        '<button type="submit" id="verifyButton" onclick="numberVerification(event)" class="btn btn-primary rounded-pill px-5 mt-3">Verify</button>' +
-                        '</div>' +
-                        '</form >',
-                    showConfirmButton: false,
-                    allowOutsideClick: false
+            if (response.status) {
+                $("#editMobileSubmit").hide();
+                $("#verificationForm").slideDown(500);
+                $("#verificationMobileInput").val(response.mobileNumber);
+                iziToast.show({
+                    title: `Sended verification code to ${response.mobileNumber}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: `${response.errMessage}`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+                $('#editMobileLoadingBtn').attr('hidden', true);
+                $('#editMobileSubmitBtn').removeAttr('hidden');
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+            $('#editMobileLoadingBtn').attr('hidden', true);
+            $('#editMobileSubmitBtn').removeAttr('hidden');
+        }
+    });
+});
+
+const sendTicket = (e, orderId) => {
+    e.preventDefault();
+    vex.dialog.prompt({
+        message: 'Enter email to get ticket to your inbox',
+        placeholder: 'Email',
+        buttons: [
+            $.extend({}, vex.dialog.buttons.YES, { text: 'Send' }),
+            $.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+        ],
+        callback: function (email) {
+            if (email === false) {
+                iziToast.show({
+                    title: `Cancelled`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-close',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            } else if (!email) {
+                vex.dialog.open({
+                    input: [
+                        '<h3 class="text-center"><span class="fa fa-info text-twitter"></span></h3>',
+                        '<p class="text-center font-weight-bold">You must provide an email to send ticket</p>'
+                    ].join(''),
+                    buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, { text: 'Ok' })
+                    ],
+                    callback: function () {
+                        iziToast.show({
+                            title: `Cancelled`,
+                            titleColor: '#fff',
+                            icon: 'fa fa-close',
+                            iconColor: '#fff',
+                            class: 'bg-danger',
+                        });
+                    }
+                });
+            } else {
+                vex.dialog.open({
+                    input: [
+                        `<div class="text-center">
+                            <h6>Sending ticket to <span class="text-danger">${email}</span></h6>
+                            <span id="loadingBtn">
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                            </span>
+                        </div>`
+                    ].join(''),
+                    buttons: []
+                });
+                $.ajax({
+                    url: '/sendTicket',
+                    method: 'post',
+                    data: {
+                        email,
+                        orderId
+                    },
+                    success: (response) => {
+                        console.log(response);
+                        swal.close();
+                        if (response.status) {
+                            vex.closeTop();
+                            iziToast.show({
+                                title: response.alertMessage,
+                                titleColor: '#fff',
+                                icon: 'fa fa-check',
+                                iconColor: '#fff',
+                                class: 'bg-slack',
+                            });
+                        } else {
+                            vex.closeTop();
+                            iziToast.show({
+                                title: response.errMessage,
+                                titleColor: '#fff',
+                                icon: 'fa fa-check',
+                                iconColor: '#fff',
+                                class: 'bg-danger',
+                            });
+                        }
+                    }
                 });
             }
         }
     });
-});
-
-const numberVerification = (e) => {
-    e.preventDefault();
-    $('#verifyButton').html('Checking...');
-    $.ajax({
-        url: '/verify-mobile',
-        method: 'post',
-        data: $('#numberVerification').serialize(),
-        success: (response) => {
-            console.log(response);
-            if (response.status) {
-                Swal.close();
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                $('#successAlert').hide();
-                $('#successAlert').slideDown();
-                $("#input-mobile").attr("readonly", "true");
-                $("#save-mobile").attr("hidden", "true");
-                $("#cancel-mobile").attr("hidden", "true");
-                $("#edit-mobile").removeAttr("hidden");
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
-            } else {
-                $('#verifyButton').html('Verify');
-                $('#verificationCode').val('');
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
-            }
-        }
-    });
 }
-
-$('#sendTicket').submit((e) => {
-    e.preventDefault();
-    swal.fire({
-        title: 'Sending...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
-    });
-    $.ajax({
-        url: '/sendTicket',
-        method: 'post',
-        data: $('#sendTicket').serialize(),
-        success: (response) => {
-            console.log(response);
-            swal.close();
-            if (response.status) {
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                $('#successAlert').hide();
-                $('#successAlert').slideDown();
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
-            } else {
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                $('#errorAlert').hide();
-                $('#errorAlert').slideDown();
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
-            }
-        }
-    });
-});

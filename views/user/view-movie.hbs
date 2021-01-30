@@ -1,10 +1,10 @@
-<section class="w3l-main-slider position-relative">
-    <div class="companies20-content">
-        <div class="item">
+<section class="pb-5">
+    <section class="w3l-main-slider position-relative" id="home">
+        <div class="item carousel slide">
             <li>
-                <div class="slider-info banner-view bg bg2"
-                    style="background: url(/images/movies/posters/{{movie._id}}.jpg) no-repeat center; background-size: cover; border-radius: 0;">
-                    <div class="banner-info">
+                <div class="slider-info banner-view bg bg2 rounded-0"
+                    style="background: url(/images/movies/posters/{{movie._id}}.jpg) no-repeat center; background-size: cover;">
+                    <div class="banner-info poster-info">
                         <p class="text-truncate mb-3">
                             <span class="bg-warning font-weight-bold text-truncate rounded px-3 py-1">
                                 {{movie.type}}
@@ -13,9 +13,8 @@
                                 {{movie.language}}
                             </span>
                         </p>
-                        <h3>{{movie.movieTitle}}</h3>
-                        <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Cast :
-                            </span>{{movie.cast}}</p>
+                        <h3>{{movie.title}}</h3>
+                        <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">{{movie.cast}}</p>
                         <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Director :
                             </span>{{movie.director}}</p>
                         <p class="text-truncate mb-0  mt-1"><span class="font-weight-bold">Run Time :
@@ -38,207 +37,242 @@
                 </div>
             </li>
         </div>
-    </div>
-</section>
-<section class="w3l-grids mt-5">
-    <div class="grids-main pt-5">
-        <div class="container card_shadow py-lg-3">
-            <div class="headerhny-title">
-                <div class="w3l-title-grids">
-                    <div class="headerhny-left">
-                        <h3 class="hny-title">Now Showing Theaters</h3>
-                    </div>
-                    <div class="headerhny-right text-lg-right text-dark">
-                        <a class="btn btn-outline-info btn-info text-white" id="today"
-                            onclick="getShows('today','todayShows')">Today</a>
-                        <a class="btn btn-outline-info" id="tomorrow"
-                            onclick="getShows('tomorrow','tomorrowShows')">Tomorrow</a>
-                        <a class="btn btn-outline-info" id="dayAfterTomorrow"
-                            onclick="getShows('dayAfterTomorrow', 'dayAfterTomorrowShows')">Day After Tomorrow</a>
+    </section>
+    <section class="w3l-grids mt-5">
+        <div class="grids-main">
+            <div class="container py-lg-3">
+                <div class="headerhny-title">
+                    <div class="w3l-title-grids">
+                        <div class="headerhny-left">
+                            <h3 class="hny-title m-0">Available Shows</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div id="todayShows">
-                {{#if todayShows}}
-                <div class="row">
-                    {{#each todayShows}}
-                    <div class="col-md-4">
-                        <div class="card pill_shadow mb-3" style="max-width: 540px;">
-                            <div class="row no-gutters">
-                                <div class="col-md-4">
-                                    <img src="/assets/images/theatre.png" class="card-img" alt="...">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
-                                        <p class="card-title text-primary text-truncate">
-                                            {{this.theatreDetails.0.location.place_name}}</p>
-                                        <p class="card-text">This theatre is <span
-                                                class="text-primary">{{this.geolocationData.distance}}</span> KM away
-                                            from your location.</p>
+                <div class="nav-wrapper position-relative mb-4">
+                    <ul class="nav nav-pills flex-column flex-sm-row" id="tabs-text" role="tablist">
+                        <li class="nav-item mr-sm-3 mr-md-0">
+                            <a class="nav-link mb-sm-3 mb-md-0 active font-weight-bold text-center" id="today-tab" data-toggle="tab" href="#today"
+                                role="tab" aria-controls="today" aria-selected="true">...</a>
+                        </li>
+                        <li class="nav-item mr-sm-3 mr-md-0">
+                            <a class="nav-link mb-sm-3 mb-md-0 font-weight-bold text-center" id="tomorrow-tab" data-toggle="tab" href="#tomorrow"
+                                role="tab" aria-controls="tomorrow" aria-selected="false">...</a>
+                        </li>
+                        <li class="nav-item mr-sm-3 mr-md-0">
+                            <a class="nav-link mb-sm-3 mb-md-0 font-weight-bold text-center" id="dayAfterTomorrow-tab" data-toggle="tab"
+                                href="#dayAfterTomorrow" role="tab" aria-controls="dayAfterTomorrow"
+                                aria-selected="false">...</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End of Tab Nav -->
+                <!-- Tab Content -->
+                <div class="card shadow-inset bg-primary border-light p-4 rounded">
+                    <div class="card-body p-0">
+                        <div class="tab-content" id="tabcontent1">
+                            <div class="tab-pane fade show active" id="today" role="tabpanel"
+                                aria-labelledby="today-tab">
+                                <div class="accordion">
+                                    {{#if todayShows}}
+                                    <div class="row">
+                                        {{#each todayShows}}
+                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
+                                            <a href="#panel-TOD-{{this._id}}" data-target="#panel-TOD-{{this._id}}"
+                                                class="accordion-panel-header" data-toggle="collapse" role="button"
+                                                aria-expanded="false">
+                                                <span class="icon-title h6 mb-0 font-weight-bold"><span
+                                                        class="fa fa-file-movie-o"></span>{{this.theatreDetails.0.theatreName}}</span>
+                                                <span
+                                                    class="icon-title h6 mb-0 font-weight-bold small d-none d-md-block">{{this.theatreDetails.0.location.place_name}}</span>
+                                                <span class="icon-title h6 mb-0 font-weight-bold small d-flex">
+                                                    <span class="d-none d-md-block mr-1">This theatre is</span>
+                                                    <span class="text-danger mr-1"> {{this.geolocationData.distance}} KM
+                                                    </span>
+                                                    <span class="d-none d-md-block">away from your location.</span>
+                                                </span>
+                                                <span class="icon"><span class="fa fa-ticket"></span></span>
+                                            </a>
+                                            <div class="collapse" id="panel-TOD-{{this._id}}">
+                                                <div class="pt-3">
+                                                    <div class="shadow-inset rounded p-3">
+                                                        <div class="row">
+                                                            {{#each this.screens}}
+                                                            <div class="col-md-4 col-lg-2">
+                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
+                                                                    <span
+                                                                        class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
+                                                                    <span class="small">{{this.shows.date}} <br>
+                                                                        {{this.shows.showTime}}</span>
+                                                                </a>
+                                                            </div>
+                                                            {{/each}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{/each}}
                                     </div>
+                                    {{else}}
+                                    <h3 class="text-center text-dark">No Shows Available</h3>
+                                    {{/if}}
                                 </div>
                             </div>
-                            <div class="text-center mb-3">
-                                <a href="/view-shows?movieId={{../movie._id}}&theatreId={{this.theatreDetails.0._id}}&theatreName={{this.theatreDetails.0.theatreName}}"
-                                    class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                                    Here</a>
+                            <div class="tab-pane fade" id="tomorrow" role="tabpanel" aria-labelledby="tomorrow-tab">
+                                <div class="accordion">
+                                    {{#if tomorrowShows}}
+                                    <div class="row">
+                                        {{#each tomorrowShows}}
+                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
+                                            <a href="#panel-TOM-{{this._id}}" data-target="#panel-TOM-{{this._id}}"
+                                                class="accordion-panel-header" data-toggle="collapse" role="button"
+                                                aria-expanded="false">
+                                                <span class="icon-title h6 mb-0 font-weight-bold"><span
+                                                        class="fa fa-file-movie-o"></span>{{this.theatreDetails.0.theatreName}}</span>
+                                                <span
+                                                    class="icon-title h6 mb-0 font-weight-bold small d-none d-md-block">{{this.theatreDetails.0.location.place_name}}</span>
+                                                <span class="icon-title h6 mb-0 font-weight-bold small d-flex">
+                                                    <span class="d-none d-md-block mr-1">This theatre is</span>
+                                                    <span class="text-danger mr-1"> {{this.geolocationData.distance}} KM
+                                                    </span>
+                                                    <span class="d-none d-md-block">away from your location.</span>
+                                                </span>
+                                                <span class="icon"><span class="fa fa-ticket"></span></span>
+                                            </a>
+                                            <div class="collapse" id="panel-TOM-{{this._id}}">
+                                                <div class="pt-3">
+                                                    <div class="shadow-inset rounded p-3">
+                                                        <div class="row">
+                                                            {{#each this.screens}}
+                                                            <div class="col-md-4 col-lg-2">
+                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
+                                                                    <span
+                                                                        class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
+                                                                    <span class="small">{{this.shows.date}} <br>
+                                                                        {{this.shows.showTime}}</span>
+                                                                </a>
+                                                            </div>
+                                                            {{/each}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                    {{else}}
+                                    <h3 class="text-center text-dark">No Shows Available</h3>
+                                    {{/if}}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="dayAfterTomorrow" role="tabpanel"
+                                aria-labelledby="dayAfterTomorrow-tab">
+                                <div class="accordion">
+                                    {{#if dayAfterTomorrowShows}}
+                                    <div class="row">
+                                        {{#each dayAfterTomorrowShows}}
+                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
+                                            <a href="#panel-DAT-{{this._id}}" data-target="#panel-DAT-{{this._id}}"
+                                                class="accordion-panel-header" data-toggle="collapse" role="button"
+                                                aria-expanded="false">
+                                                <span class="icon-title h6 mb-0 font-weight-bold"><span
+                                                        class="fa fa-file-movie-o"></span>{{this.theatreDetails.0.theatreName}}</span>
+                                                <span
+                                                    class="icon-title h6 mb-0 font-weight-bold small d-none d-md-block">{{this.theatreDetails.0.location.place_name}}</span>
+                                                <span class="icon-title h6 mb-0 font-weight-bold small d-flex">
+                                                    <span class="d-none d-md-block mr-1">This theatre is</span>
+                                                    <span class="text-danger mr-1"> {{this.geolocationData.distance}} KM
+                                                    </span>
+                                                    <span class="d-none d-md-block">away from your location.</span>
+                                                </span>
+                                                <span class="icon"><span class="fa fa-ticket"></span></span>
+                                            </a>
+                                            <div class="collapse" id="panel-DAT-{{this._id}}">
+                                                <div class="pt-3">
+                                                    <div class="shadow-inset rounded p-3">
+                                                        <div class="row">
+                                                            {{#each this.screens}}
+                                                            <div class="col-md-4 col-lg-2">
+                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
+                                                                    <span
+                                                                        class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
+                                                                    <span class="small">{{this.shows.date}} <br>
+                                                                        {{this.shows.showTime}}</span>
+                                                                </a>
+                                                            </div>
+                                                            {{/each}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                    {{else}}
+                                    <h3 class="text-center text-dark">No Shows Available</h3>
+                                    {{/if}}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {{/each}}
                 </div>
-                {{else}}
-                <h3 class="text-center text-dark">No Shows Available</h3>
-                {{/if}}
-            </div>
-            <div id="tomorrowShows">
-                {{#if tomorrowShows}}
-                <div class="row">
-                    {{#each tomorrowShows}}
-                    <div class="col-md-4">
-                        <div class="card pill_shadow mb-3" style="max-width: 540px;">
-                            <div class="row no-gutters">
-                                <div class="col-md-4">
-                                    <img src="/assets/images/theatre.png" class="card-img" alt="...">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
-                                        <p class="card-text">This theatre is <span
-                                                class="text-primary">{{this.geolocationData.distance}}</span> KM away
-                                            from your location.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-center mb-3">
-                                <a href="/view-shows?movieId={{../movie._id}}&theatreId={{this.theatreDetails.0._id}}&theatreName={{this.theatreDetails.0.theatreName}}"
-                                    class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                                    Here</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{/each}}
-                </div>
-                {{else}}
-                <h3 class="text-center text-dark">No Shows Available</h3>
-                {{/if}}
-            </div>
-            <div id="dayAfterTomorrowShows">
-                {{#if dayAfterTomorrowShows}}
-                <div class="row">
-                    {{#each dayAfterTomorrowShows}}
-                    <div class="col-md-4">
-                        <div class="card pill_shadow mb-3" style="max-width: 540px;">
-                            <div class="row no-gutters">
-                                <div class="col-md-4">
-                                    <img src="/assets/images/theatre.png" class="card-img" alt="...">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary">{{this.theatreDetails.0.theatreName}}</h5>
-                                        <p class="card-text">This theatre is <span
-                                                class="text-primary">{{this.geolocationData.distance}}</span> KM away
-                                            from your location.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-center mb-3">
-                                <a href="/view-shows?movieId={{../movie._id}}&theatreId={{this.theatreDetails.0._id}}&theatreName={{this.theatreDetails.0.theatreName}}"
-                                    class="btn btn-outline-primary text-uppercase font-weight-bold btn-sm px-5 rounded-pill">Book
-                                    Here</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{/each}}
-                </div>
-                {{else}}
-                <h3 class="text-center text-dark">No Shows Available</h3>
-                {{/if}}
             </div>
         </div>
-    </div>
-</section>
-{{#if latestMovies}}
-<section class="w3l-grids mt-5">
-    <div class="grids-main py-5">
-        <div class="container py-lg-3">
-            <div class="headerhny-title">
-                <div class="w3l-title-grids">
-                    <div class="headerhny-left">
-                        <h3 class="hny-title">New Releases</h3>
+    </section>
+    {{#if latestMovies}}
+    <section class="w3l-grids pt-5">
+        <div class="grids-main">
+            <div class="container py-lg-3">
+                <div class="headerhny-title shadow-soft border-light rounded p-3">
+                    <div class="w3l-title-grids">
+                        <div class="headerhny-left">
+                            <h3 class="hny-title m-0">Now Showing Movies</h3>
+                        </div>
+                        <div class="headerhny-right text-right">
+                            <h4><a class="btn btn-primary btn-sm font-weight-bold text-danger border-light px-3"
+                                    href="/now-showing-movies">Show all</a></h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="w3l-populohny-grids">
-                {{#each latestMovies}}
-                <div class="item vhny-grid">
-                    <div class="box16">
-                        <figure>
-                            <img class="" src="/images/movies/posters/{{this._id}}.jpg" alt=""
-                                style="height: 25rem; object-fit: cover !important;">
-                        </figure>
-                        <div class="box-content">
-                            <h3 class="title">{{this.movieTitle}}</h3>
-                            <h4>
-                                <span class="post"><span class="fa fa-clock-o"> Run Time : </span>
-                                    {{this.runTime}}</span>
-                            </h4>
-                            <h4>
-                                <span
-                                    class="post bg-warning text-dark font-weight-bold text-truncate rounded px-3">{{this.type}}</span>
-                            </h4>
-                            <div class="row mt-5">
-                                <div class="col text-center">
-                                    <a href="/view-movie?movieId={{this._id}}"
-                                        class="btn btn-info text-uppercase font-weight-bold btn-sm rounded-pill px-5">View</a>
+                <div class="w3l-populohny-grids px-2">
+                    {{#each latestMovies}}
+                    <a href="/view-movie?movieId={{this._id}}" class="animate-up-8">
+                        <div class="item vhny-grid shadow-soft">
+                            <div class="box16">
+                                <figure>
+                                    <img class="rounded" src="/images/movies/posters/{{this._id}}.jpg"
+                                        style="height: 25rem; object-fit: cover !important;">
+                                </figure>
+                                <div class="box-content">
+                                    <h3 class="title">{{this.movieTitle}}</h3>
+                                    <h4>
+                                        <span class="post"><span class="fa fa-clock-o"> Run Time : </span>
+                                            {{this.runTime}}</span>
+                                    </h4>
+                                    <h4>
+                                        <span
+                                            class="post bg-warning text-dark font-weight-bold text-truncate rounded px-3">Genre</span>
+                                    </h4>
                                 </div>
                             </div>
                         </div>
-                        <a href="#small-dialog{{this._id}}" class="popup-with-zoom-anim play-view1">
-                            <span class="fa fa-play video-icon" aria-hidden="true"></span>
-                        </a>
-                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                        <div id="small-dialog{{this._id}}" class="zoom-anim-dialog mfp-hide small-dialog">
-                            <iframe src="{{this.trailerLink}}" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    </a>
+                    {{/each}}
                 </div>
-                {{/each}}
             </div>
         </div>
-    </div>
+    </section>
+    {{/if}}
 </section>
-{{/if}}
+<script src="/assets/js/date-and-time.min.js"></script>
 <script>
-    $('#tomorrowShows').hide();
-    $('#dayAfterTomorrowShows').hide();
+    $(document).ready(() => {
+        const today = new Date();
+        const tomorrow = date.addDays(today, 1);
+        const dayAfterTomorrow = date.addDays(today, 2);
 
-    const onTimeOut = () => {
-        Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-info rounded-pill px-5'
-            },
-            buttonsStyling: false
-        }).fire({
-            icon: 'info',
-            title: 'Payment Timed Out!',
-            text: 'Please try again.',
-            allowOutsideClick: false
-        }).then(response => {
-            if (response.isConfirmed) {
-                Swal.colse();
-            }
-        })
-    }
-
-    $(document).ready(function () {
-        const params = (new URL(document.location)).searchParams;
-        const timeOut = params.get("timeout");
-        if (timeOut) {
-            onTimeOut();
-        }
+        $('#today-tab').html(`<span class="text-danger">${date.format(today, 'DD')}</span><br><span class="small text-uppercase">${date.format(today, 'ddd')}</span>`)
+        $('#tomorrow-tab').html(`<span class="text-danger">${date.format(tomorrow, 'DD')}</span><br><span class="small text-uppercase">${date.format(tomorrow, 'ddd')}</span>`)
+        $('#dayAfterTomorrow-tab').html(`<span class="text-danger">${date.format(dayAfterTomorrow, 'DD')}</span><br><span class="small text-uppercase">${date.format(dayAfterTomorrow, 'ddd')}</span>`)
     });
 </script>

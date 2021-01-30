@@ -14,47 +14,43 @@
 
   <!-- Template CSS -->
   {{#if admin}}
-  <link rel="stylesheet" href="/assets/css/style-admin.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
   {{else if adminStyle}}
-  <link rel="stylesheet" href="/assets/css/style-admin.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
   {{else if theatre}}
-  <link rel="stylesheet" href="/assets/css/style-theatre.css">
+  <link rel="stylesheet" href="/assets/css/theatre.css">
   {{else if theatreStyle}}
-  <link rel="stylesheet" href="/assets/css/style-theatre.css">
+  <link rel="stylesheet" href="/assets/css/theatre.css">
   {{else}}
-  <link rel="stylesheet" href="/assets/css/style-user.css">
+  <link rel="stylesheet" href="/assets/css/neumorphism.css">
+  <link rel="stylesheet" href="/assets/css/iziToast.css">
+  <link rel="stylesheet" href="/assets/css/fontawesome.css">
+  <link rel="stylesheet" href="/assets/css/vex.css">
+  <link rel="stylesheet" href="/assets/css/vex-theme-os.css">
   {{/if}}
 
-  <!-- google fonts -->
   <link href="//fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" type="text/css"
     href="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.css" />
-
   <link rel="stylesheet" href="/stylesheets/style.css">
-
   <link rel="stylesheet" href="/assets/css/borderless.css">
-
-
-  <script src="/assets/js/jquery-3.3.1.min.js"></script>
-  <script src="/assets/js/jquery-1.10.2.min.js"></script>
-
-  <!-- Sweet Alert -->
-  <script src="/assets/js/sweetalert2.min.js"></script>
-  <!-- /Sweet Alert -->
-
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
   <link rel="stylesheet"
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
     type="text/css" />
+  <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+    type="text/css" />
+
+
+  <script src="/assets/js/jquery-1.10.2.min.js"></script>
+  <script src="/assets/js/sweetalert2.min.js"></script>
+
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
   <script
     src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
   <script
     src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
-  <link rel="stylesheet"
-    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
-    type="text/css" />
   <script src="/javascripts/mapbox.js"></script>
 </head>
 
@@ -120,28 +116,23 @@
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+  <script type="text/javascript"
+    src="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.js"></script>
   <script>
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function () {
-      scrollFunction()
-    };
-
-    function scrollFunction() {
-      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("movetop").style.display = "block";
-      } else {
-        document.getElementById("movetop").style.display = "none";
-      }
-    }
-
-    // When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    }
+    $(document).ready(function () {
+      $('#data-table').DataTable();
+    });
   </script>
-  <!-- /move top -->
 
+  <script src="/assets/js/jquery.counterup.min.js"></script>
+  <script src="/assets/js/jquery.countdown.min.js"></script>
+  <script src="/assets/js/popper.min.js"></script>
+  <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+  <script src="/assets/js/owl.carousel.js"></script>
+  <script src="/assets/js/owl.config.js"></script>
+  <script src="/assets/js/neumorphism.js"></script>
+  <script src="/assets/js/iziToast.js"></script>
+  <script src="/assets/js/vex.combined.js"></script>
   <script src="/assets/js/jquery.nicescroll.js"></script>
   <script src="/assets/js/scripts.js"></script>
 
@@ -158,10 +149,6 @@
   </script>
   <!-- //close script -->
 
-  <!-- disable body scroll when navbar is in active -->
-
-  <!-- disable body scroll when navbar is in active -->
-
   <!-- loading-gif Js -->
   <script src="/assets/js/modernizr.js"></script>
   <script>
@@ -174,14 +161,6 @@
 
   <!-- Bootstrap Core JavaScript -->
   <script src="/assets/js/bootstrap.min.js"></script>
-
-  <script type="text/javascript"
-    src="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $('#data-table').DataTable();
-    });
-  </script>
 
   <script src="assets/js/easyResponsiveTabs.js"></script>
   <script type="text/javascript">
@@ -202,194 +181,6 @@
       });
     });
   </script>
-  <!-- //responsive tabs -->
-  <!--/theme-change-->
-  <script src="assets/js/theme-change.js"></script>
-  <!-- //theme-change-->
-  <script src="assets/js/owl.carousel.js"></script>
-  <!-- script for banner slider-->
-  <script>
-    $(document).ready(function () {
-      $('.owl-one').owlCarousel({
-        stagePadding: 280,
-        loop: true,
-        margin: 20,
-        nav: true,
-        responsiveClass: true,
-        autoplay: true,
-        autoplayTimeout: 5000,
-        autoplaySpeed: 1000,
-        autoplayHoverPause: false,
-        responsive: {
-          0: {
-            items: 1,
-            stagePadding: 40,
-            nav: false
-          },
-          480: {
-            items: 1,
-            stagePadding: 60,
-            nav: true
-          },
-          667: {
-            items: 1,
-            stagePadding: 80,
-            nav: true
-          },
-          1000: {
-            items: 1,
-            nav: true
-          }
-        }
-      })
-    })
-  </script>
-  <!-- //script -->
-  <script>
-    $(document).ready(function () {
-      $('.owl-three').owlCarousel({
-        loop: true,
-        margin: 20,
-        nav: false,
-        responsiveClass: true,
-        autoplay: true,
-        autoplayTimeout: 5000,
-        autoplaySpeed: 1000,
-        autoplayHoverPause: false,
-        responsive: {
-          0: {
-            items: 2,
-            nav: false
-          },
-          480: {
-            items: 2,
-            nav: true
-          },
-          667: {
-            items: 3,
-            nav: true
-          },
-          1000: {
-            items: 5,
-            nav: true
-          }
-        }
-      })
-    })
-  </script>
-  <!-- //script -->
-  <!-- /mid-script -->
-  <script>
-    $(document).ready(function () {
-      $('.owl-mid').owlCarousel({
-        loop: true,
-        margin: 0,
-        nav: false,
-        responsiveClass: true,
-        autoplay: true,
-        autoplayTimeout: 5000,
-        autoplaySpeed: 1000,
-        autoplayHoverPause: false,
-        responsive: {
-          0: {
-            items: 1,
-            nav: false
-          },
-          480: {
-            items: 1,
-            nav: false
-          },
-          667: {
-            items: 1,
-            nav: true
-          },
-          1000: {
-            items: 1,
-            nav: true
-          }
-        }
-      })
-    })
-  </script>
-  <!-- //mid-script -->
-
-  <!-- script for owlcarousel -->
-  <!-- Template JavaScript -->
-  <script src="assets/js/jquery.magnific-popup.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $('.popup-with-zoom-anim').magnificPopup({
-        type: 'inline',
-
-        fixedContentPos: false,
-        fixedBgPos: true,
-
-        overflowY: 'auto',
-
-        closeBtnInside: true,
-        preloader: false,
-
-        midClick: true,
-        removalDelay: 300,
-        mainClass: 'my-mfp-zoom-in'
-      });
-
-      $('.popup-with-move-anim').magnificPopup({
-        type: 'inline',
-
-        fixedContentPos: false,
-        fixedBgPos: true,
-
-        overflowY: 'auto',
-
-        closeBtnInside: true,
-        preloader: false,
-
-        midClick: true,
-        removalDelay: 300,
-        mainClass: 'my-mfp-slide-bottom'
-      });
-    });
-  </script>
-  <!--//-->
-  <!-- disable body scroll which navbar is in active -->
-  <script>
-    $(function () {
-      $('.navbar-toggler').click(function () {
-        $('body').toggleClass('noscroll');
-      })
-    });
-  </script>
-  <!-- disable body scroll which navbar is in active -->
-
-  <!--/MENU-JS-->
-  <script>
-    $(window).on("scroll", function () {
-      var scroll = $(window).scrollTop();
-
-      if (scroll >= 80) {
-        $("#site-header").addClass("nav-fixed");
-      } else {
-        $("#site-header").removeClass("nav-fixed");
-      }
-    });
-
-    //Main navigation Active Class Add Remove
-    $(".navbar-toggler").on("click", function () {
-      $("header").toggleClass("active");
-    });
-    $(document).on("ready", function () {
-      if ($(window).width() > 991) {
-        $("header").removeClass("active");
-      }
-      $(window).on("resize", function () {
-        if ($(window).width() > 991) {
-          $("header").removeClass("active");
-        }
-      });
-    });
-  </script>
-  <!--//MENU-JS-->
 
   <script src="/javascripts/script.js"></script>
   <script src="/javascripts/ajax.js"></script>

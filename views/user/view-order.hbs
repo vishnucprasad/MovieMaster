@@ -1,118 +1,133 @@
-<div class="container my-5 pt-5">
-    <div class="card_shadow rounded">
-        <div class="p-4">
-            <div class="header">
-                <div class="row">
-                    <div class="col">
-                        <h6 class="text-primary text-uppercase" style="letter-spacing: 3px;">Order Summary</h6>
-                    </div>
-                    <form class="form-inline ml-auto" id="sendTicket">
-                        {{#IF order.status '==' "booked"}}
-                        <input type="text" name="orderId" value="{{order._id}}" class="form-control mb-xs-2 mr-md-2" hidden>
-                        <input type="email" name="email" class="form-control mb-xs-2 mr-md-2" id="inlineFormInputEmail2"
-                            placeholder="Type email to send ticket" required>
-                        <button type="submit" class="btn btn-shadow px-5 text-white bg-white text-info"><i class="fa fa-paper-plane"></i></button>
-                        {{/IF}}
-                        <a href="/my-orders" class="btn btn-shadow px-5 text-white bg-secondary ml-3">My
-                            Orders</a>
-                    </form>
-                </div>
-            </div>
-            <div class="card-body border-bottom p-0 mt-4">
-                <div class="row px-3 pb-3">
-                    <h6 class="text-secondary text-uppercase mx-auto">Order Details</h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Total amount</h6>
-                    <h6 class="ml-auto text-dark">Rs.{{order.totalAmount}}</h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Pyment method</h6>
-                    <h6 class="ml-auto text-dark">{{order.paymentMethod}}</h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Seats
-                        <span class="font-weight-normal text-dark">({{order.numberOfSeats}})</span>
-                    </h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.seats}}
-                    </h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Booked on</h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.orderDate}}
-                    </h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-secondary text-uppercase mx-auto">Movie Details</h6>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <h6 class="text-dark">{{order.movieDetails.movieTitle}}</h6>
-                        <div class="my-3">
-                            <p>{{order.movieDetails.type}}</p>
-                            <p><span class="text-dark font-weight-bold">Language :
-                                </span>{{order.movieDetails.language}}</p>
-                            <p><span class="text-dark font-weight-bold">Runtime : </span>{{order.movieDetails.runTime}}
-                            </p>
-                            <p><span class="text-dark font-weight-bold">Releasedate :
-                                </span>{{order.movieDetails.releaseDate}}</p>
-                            <p><span class="text-dark font-weight-bold">Cast : </span>{{order.movieDetails.cast}}</p>
+<section class="min-vh-100 d-flex align-items-center mt-2 pt-5">
+    <div class="container mt-5">
+        <div class="mb-5">
+            <div class="card bg-primary shadow-soft border-light">
+                <div class="card-body p-3">
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col">
+                                <h2 class="wthree text-danger m-0">Booking Summary</h2>
+                            </div>
+                            <div class="ml-3 ml-md-auto mt-3 mt-md-0">
+                                {{#IF order.status '==' "booked"}}
+                                <button onclick="sendTicket(event, '{{order._id}}')"
+                                    class="btn btn-primary btn-icon-only text-twitter mr-3"><i
+                                        class="fa fa-paper-plane"></i></button>
+                                {{/IF}}
+                                <a href="/my-orders" class="btn btn-primary text-twitter">My Tickets</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <section class="w3l-grids">
-                            <div class="grids-main">
-                                <div class="item vhny-grid">
-                                    <div class="box16">
-                                        <figure>
-                                            <img class="" src="/images/movies/posters/{{order.movieDetails._id}}.jpg"
-                                                alt="" style="height: 15rem; object-fit: cover !important;">
-                                        </figure>
-                                        <a href="#small-dialog{{order.movieDetails._id}}"
-                                            class="popup-with-zoom-anim play-view1">
-                                            <span class="fa fa-play video-icon" aria-hidden="true"></span>
-                                        </a>
-                                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
-                                        <div id="small-dialog{{order.movieDetails._id}}"
-                                            class="zoom-anim-dialog mfp-hide small-dialog">
-                                            <iframe src="{{order.movieDetails.trailerLink}}" frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen></iframe>
+                    <div class="p-4">
+                        <div class="mb-4 p-2 text-center">
+                            <h3 class="text-uppercase wthree text-purple m-0">Booking Details</h3>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Total amount</h4>
+                            <h4 class="ml-auto text-dark text-medium">Rs.{{order.totalAmount}}</h4>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Pyment method</h4>
+                            <h4 class="ml-auto text-dark text-medium">{{order.paymentMethod}}</h4>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Seats
+                                <span class="font-weight-normal text-dark wthree">(3)</span>
+                            </h4>
+                            <h4 class="ml-auto text-dark text-medium" style="overflow-x: auto;">{{order.seats}}
+                            </h4>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Booked on</h4>
+                            <h4 class="ml-auto text-dark text-medium" style="overflow-x: auto;">{{order.orderDate}}
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-4 p-2 text-center">
+                            <h3 class="text-uppercase wthree text-purple m-0">Movie Details</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="text-dark wthree">{{order.movieDetails.movieTitle}}</h3>
+                                <div>
+                                    <span class="shadow-inset px-3 py-1 text-medium rounded"
+                                        style="width: fit-content;">{{order.movieDetails.type}}</span>
+                                </div>
+                                <div class="my-3">
+                                    <p><span
+                                            class="text-dark text-monospace text-small text-uppercase font-weight-bold">Language
+                                            : </span>{{order.movieDetails.language}}</p>
+                                    <p><span
+                                            class="text-dark text-monospace text-small text-uppercase font-weight-bold">Runtime
+                                            : </span>{{order.movieDetails.runTime}}</p>
+                                    <p><span
+                                            class="text-dark text-monospace text-small text-uppercase font-weight-bold">Releasedate
+                                            : </span>{{order.movieDetails.releaseDate}}</p>
+                                    <p><span
+                                            class="text-dark text-monospace text-small text-uppercase font-weight-bold">Cast
+                                            : </span>{{order.movieDetails.cast}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="w3l-grids">
+                                    <div class="grids-main">
+                                        <div class="item vhny-grid">
+                                            <div class="box16">
+                                                <figure>
+                                                    <img class=""
+                                                        src="/images/movies/posters/{{order.movieDetails._id}}.jpg"
+                                                        alt="" style="height: 15rem; object-fit: cover !important;">
+                                                </figure>
+                                                <a href="#small-dialog{{order.movieDetails._id}}"
+                                                    class="popup-with-zoom-anim play-view1">
+                                                    <span class="fa fa-play video-icon" aria-hidden="true"></span>
+                                                </a>
+                                                <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
+                                                <div id="small-dialog{{order.movieDetails._id}}"
+                                                    class="zoom-anim-dialog mfp-hide small-dialog">
+                                                    <iframe src="{{order.movieDetails.trailerLink}}" frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-4 p-2 text-center">
+                            <h3 class="text-uppercase wthree text-purple m-0">Theatre and Show Details</h3>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Theatre</h4>
+                            <h4 class="ml-auto text-dark text-medium">{{order.theatreDetails.theatreName}}</h4>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Screen</h4>
+                            <h4 class="ml-auto text-dark text-medium">{{order.showDetails.screenName}}</h4>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Date</h4>
+                            <h4 class="ml-auto text-dark text-medium" style="overflow-x: auto;">{{order.showDetails.date}}
+                            </h4>
+                        </div>
+                        <div class="row px-3 pb-3">
+                            <h4 class="text-dark wthree">Time</h4>
+                            <h4 class="ml-auto text-dark text-medium" style="overflow-x: auto;">{{order.showDetails.showTime}}
+                            </h4>
+                        </div>
                     </div>
                 </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-secondary text-uppercase mx-auto">Theatre and Show Details</h6>
+                <div class="card-footer {{#IF order.status '==' "booked"}}bg-twitter{{else}}bg-danger{{/IF}} py-3 px-4">
+                    <div class="row px-3">
+                        <h3 class="text-white ml-auto wthree m-0">Status :</h3>
+                        <h3 class="mr-auto wthree text-white  m-0">&nbsp;{{order.status}}</h3>
+                    </div>
                 </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Theatre</h6>
-                    <h6 class="ml-auto text-dark">{{order.theatreDetails.theatreName}}</h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Screen</h6>
-                    <h6 class="ml-auto text-dark">{{order.showDetails.screenName}}</h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Date</h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.showDetails.date}}
-                    </h6>
-                </div>
-                <div class="row px-3 pb-3">
-                    <h6 class="text-dark">Time</h6>
-                    <h6 class="ml-auto text-dark" style="overflow-x: auto;">{{order.showDetails.showTime}}
-                    </h6>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer {{#IF order.status '==' "booked"}}bg-secondary{{else}}bg-danger{{/IF}} py-3 px-4">
-            <div class="row px-3">
-                <h6 class="text-white ml-auto text-uppercase">Status :</h6>
-                <h6 class="mr-auto text-white text-uppercase">&nbsp;{{order.status}}</h6>
             </div>
         </div>
     </div>
-</div>
+</section>
