@@ -460,10 +460,7 @@ module.exports = {
                 const month = order.orderDate.getMonth() + 1 < 10 ? `0${order.orderDate.getMonth() + 1}` : order.orderDate.getMonth() + 1;
                 const day = order.orderDate.getDate() < 10 ? `0${order.orderDate.getDate()}` : order.orderDate.getDate();
 
-                const hour = order.orderDate.getHours() < 10 ? `0${order.orderDate.getHours()}` : order.orderDate.getHours();
-                const minute = order.orderDate.getMinutes() < 10 ? `0${order.orderDate.getMinutes()}` : order.orderDate.getMinutes();
-
-                order.orderDate = `${year}-${month}-${day} - ${hour} : ${minute}`;
+                order.orderDate = `${year}-${month}-${day}`;
             });
             resolve(orders);
         });
