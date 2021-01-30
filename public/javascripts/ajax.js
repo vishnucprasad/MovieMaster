@@ -604,40 +604,96 @@ $("#editMobile").submit((e) => {
     });
 });
 
-$('#sendTicket').submit((e) => {
+const sendTicket = (e, orderId) => {
     e.preventDefault();
-    swal.fire({
-        title: 'Sending...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        onOpen: () => {
-            swal.showLoading();
-        }
-    });
-    $.ajax({
-        url: '/sendTicket',
-        method: 'post',
-        data: $('#sendTicket').serialize(),
-        success: (response) => {
-            console.log(response);
-            swal.close();
-            if (response.status) {
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                $('#successAlert').hide();
-                $('#successAlert').slideDown();
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
+    vex.dialog.prompt({
+        message: 'Enter email to get ticket to your inbox',
+        placeholder: 'Email',
+        buttons: [
+            $.extend({}, vex.dialog.buttons.YES, { text: 'Send' }),
+            $.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+        ],
+        callback: function (email) {
+            if (email === false) {
+                iziToast.show({
+                    title: `Cancelled`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-close',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            } else if (!email) {
+                vex.dialog.open({
+                    input: [
+                        '<h3 class="text-center"><span class="fa fa-info text-twitter"></span></h3>',
+                        '<p class="text-center font-weight-bold">You must provide an email to send ticket</p>'
+                    ].join(''),
+                    buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, { text: 'Ok' })
+                    ],
+                    callback: function () {
+                        iziToast.show({
+                            title: `Cancelled`,
+                            titleColor: '#fff',
+                            icon: 'fa fa-close',
+                            iconColor: '#fff',
+                            class: 'bg-danger',
+                        });
+                    }
+                });
             } else {
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                $('#errorAlert').hide();
-                $('#errorAlert').slideDown();
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
+                vex.dialog.open({
+                    input: [
+                        `<div class="text-center">
+                            <h6>Sending ticket to <span class="text-danger">${email}</span></h6>
+                            <span id="loadingBtn">
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    aria-hidden="true"></span>
+                            </span>
+                        </div>`
+                    ].join(''),
+                    buttons: []
+                });
+                $.ajax({
+                    url: '/sendTicket',
+                    method: 'post',
+                    data: {
+                        email,
+                        orderId
+                    },
+                    success: (response) => {
+                        console.log(response);
+                        swal.close();
+                        if (response.status) {
+                            vex.closeTop();
+                            iziToast.show({
+                                title: response.alertMessage,
+                                titleColor: '#fff',
+                                icon: 'fa fa-check',
+                                iconColor: '#fff',
+                                class: 'bg-slack',
+                            });
+                        } else {
+                            vex.closeTop();
+                            iziToast.show({
+                                title: response.errMessage,
+                                titleColor: '#fff',
+                                icon: 'fa fa-check',
+                                iconColor: '#fff',
+                                class: 'bg-danger',
+                            });
+                        }
+                    }
+                });
             }
         }
     });
-});
+}
