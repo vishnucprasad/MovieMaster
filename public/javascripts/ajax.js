@@ -662,8 +662,6 @@ const sendTicket = (e, orderId) => {
                         orderId
                     },
                     success: (response) => {
-                        console.log(response);
-                        swal.close();
                         if (response.status) {
                             vex.closeTop();
                             iziToast.show({
