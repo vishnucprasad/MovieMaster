@@ -1,19 +1,23 @@
-<div class="row justify-content-center m-0">
-    <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-        <div class="alert {{#if user}}bg-success text-white{{else}}alert-success{{/if}} alert-dismissible fade show m-0 mt-5" id="alert" role="alert">
-            {{#if messages.info}}
-            {{messages.info}}
-            {{else}}
-            {{alertMessage}}
-            {{/if}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    </div>
-</div>
+{{#if messages.info}}
+<div id="info" hidden>{{messages.info}}</div>
 <script>
-    setTimeout(() => {
-        $('#alert').slideUp();
-    }, 5000);
+    iziToast.show({
+        title: document.getElementById('info').innerHTML,
+        titleColor: '#fff',
+        icon: 'fa fa-check',
+        iconColor: '#fff',
+        class: 'bg-slack',
+    });
 </script>
+{{else}}
+<div id="alertMessage" hidden>{{alertMessage}}</div>
+<script>
+    iziToast.show({
+        title: document.getElementById('alertMessage').innerHTML,
+        titleColor: '#fff',
+        icon: 'fa fa-check',
+        iconColor: '#fff',
+        class: 'bg-slack',
+    });
+</script>
+{{/if}}

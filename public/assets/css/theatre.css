@@ -4810,6 +4810,10 @@ button.bg-light:focus {
 .bg-dark {
   background-color: #343a40 !important; }
 
+.bg-slack {
+  background-color: #3aaf85 !important;
+}
+
 a.bg-dark:hover, a.bg-dark:focus,
 button.bg-dark:hover,
 button.bg-dark:focus {
