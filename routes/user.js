@@ -294,7 +294,7 @@ router.post('/get-routes', async (req, res) => {
   const features = await userHelpers.getTheatreLocations();
   userHelpers.getRoutes(req.body['start[]'], features).then((response) => {
     req.session.userLocation = response.userLocation;
-    res.json(response.routes);
+    res.json(response);
   });
 });
 

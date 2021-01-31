@@ -23,17 +23,16 @@
   <link rel="stylesheet" href="/assets/css/theatre.css">
   {{else}}
   <link rel="stylesheet" href="/assets/css/neumorphism.css">
-  <link rel="stylesheet" href="/assets/css/iziToast.css">
   <link rel="stylesheet" href="/assets/css/fontawesome.css">
-  <link rel="stylesheet" href="/assets/css/vex.css">
-  <link rel="stylesheet" href="/assets/css/vex-theme-os.css">
   {{/if}}
 
   <link href="//fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css"
     href="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.css" />
   <link rel="stylesheet" href="/stylesheets/style.css">
-  <link rel="stylesheet" href="/assets/css/borderless.css">
+  <link rel="stylesheet" href="/assets/css/vex.css">
+  <link rel="stylesheet" href="/assets/css/vex-theme-os.css">
+  <link rel="stylesheet" href="/assets/css/iziToast.css">
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
   <link rel="stylesheet"
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
@@ -44,7 +43,7 @@
 
 
   <script src="/assets/js/jquery-1.10.2.min.js"></script>
-  <script src="/assets/js/sweetalert2.min.js"></script>
+  <script src="/assets/js/iziToast.js"></script>
 
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
   <script
@@ -80,30 +79,6 @@
   {{else if messages.info}}
   {{>success-alert}}
   {{/if}}
-  <div class="row justify-content-center m-0">
-    <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-      <div
-        class="alert {{#if user}}bg-success text-white{{else}}alert-success{{/if}} alert-dismissible fade show m-0 mt-5"
-        id="successAlert" role="alert" hidden>
-        <div id="successAlertBody"></div>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="row justify-content-center m-0">
-    <div class="col-md-4 m-0" id="{{#if user}}userAlertBox{{else}}alertBox{{/if}}">
-      <div
-        class="alert {{#if user}}bg-danger text-white{{else}}alert-danger{{/if}} alert-dismissible fade show m-0 mt-5"
-        id="errorAlert" role="alert" hidden>
-        <div id="errorAlertBody"></div>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
-  </div>
   {{{body}}}
 
   {{#if admin}}
@@ -131,7 +106,6 @@
   <script src="/assets/js/owl.carousel.js"></script>
   <script src="/assets/js/owl.config.js"></script>
   <script src="/assets/js/neumorphism.js"></script>
-  <script src="/assets/js/iziToast.js"></script>
   <script src="/assets/js/vex.combined.js"></script>
   <script src="/assets/js/jquery.nicescroll.js"></script>
   <script src="/assets/js/scripts.js"></script>

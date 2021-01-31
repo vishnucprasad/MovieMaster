@@ -31,27 +31,33 @@ const deleteItem = (e, id, url) => {
             if (response.status) {
                 $(`#${id}`).remove();
                 $(`#deleteModal${id}`).modal('hide');
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
+                iziToast.show({
+                    title: response.alertMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
             } else {
                 $(`#deleteModal${id}`).modal('hide');
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
+                iziToast.show({
+                    title: response.errMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
             }
         },
         error: (err) => {
             $(`#deleteModal${id}`).modal('hide');
-            $('#errorAlertBody').html("Can't connect to the server.");
-            $('#errorAlert').removeAttr('hidden');
-            setTimeout(() => {
-                $('#errorAlert').slideUp();
-            }, 5000);
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
         }
     });
 }
@@ -69,27 +75,33 @@ const deleteShow = (e, screenId, showId) => {
             if (response.status) {
                 $(`#${showId}`).remove();
                 $(`#deleteModal${showId}`).modal('hide');
-                $('#successAlertBody').html(response.alertMessage);
-                $('#successAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#successAlert').slideUp();
-                }, 5000);
+                iziToast.show({
+                    title: response.alertMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
             } else {
                 $(`#deleteModal${showId}`).modal('hide');
-                $('#errorAlertBody').html(response.errMessage);
-                $('#errorAlert').removeAttr('hidden');
-                setTimeout(() => {
-                    $('#errorAlert').slideUp();
-                }, 5000);
+                iziToast.show({
+                    title: response.errMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
             }
         },
         error: (err) => {
             $(`#deleteModal${showId}`).modal('hide');
-            $('#errorAlertBody').html("Can't connect to the server.");
-            $('#errorAlert').removeAttr('hidden');
-            setTimeout(() => {
-                $('#errorAlert').slideUp();
-            }, 5000);
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
         }
     });
 }
@@ -662,8 +674,6 @@ const sendTicket = (e, orderId) => {
                         orderId
                     },
                     success: (response) => {
-                        console.log(response);
-                        swal.close();
                         if (response.status) {
                             vex.closeTop();
                             iziToast.show({
