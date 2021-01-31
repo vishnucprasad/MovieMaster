@@ -1,13 +1,20 @@
 const loadMap = () => {
-    Swal.fire({
-        title: '',
-        html: '<div class="text-center text-uppercase" id="mapTitle"><h2>Select Location</h2></div>' +
-            '<div id="map"></div>' +
-            '<div id="instructions"></div>' +
-            '<button class="btn btn-shadow bg-white text-dark px-5 mt-4 rounded-pill text-center" onclick="Swal.close(); location.reload();" hidden id="confirmBtn">Confirm</button>',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        showConfirmButton: false
+    vex.dialog.open({
+        input: [
+            `<div id="map-wrapper">
+             <div class="text-center text-uppercase" id="mapTitle">
+             <h2 class="text-white wthree">Select Location</h2>
+             </div>
+             <div id="map"></div>
+             <div class="text-center bg-white" id="instructions"></div>
+             <div class="text-center bg-white py-3" id="mapConfirmWrapper" hidden>
+             <button class="btn btn-white px-5 mt-4 text-center font-weight bold" onclick="vex.closeTop();" id="mapConfirmBtn">Confirm</button>
+             </div>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
     });
 
     if (document.getElementById('map')) {
@@ -65,7 +72,20 @@ const loadMap = () => {
         // create a function to make a directions request
         function getRoute(start) {
             const instructions = document.getElementById('instructions');
-            instructions.innerHTML = 'Finding nearest theatre......';
+            instructions.innerHTML = `
+            <p>Finding nearest theatre</p>
+            <span id="loadingBtn">
+                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+            </span>`;
 
             $.ajax({
                 url: '/get-routes',
@@ -73,7 +93,9 @@ const loadMap = () => {
                 data: {
                     start
                 },
-                success: (features) => {
+                success: (response) => {
+                    const features = response.routes;
+
                     let lowest = Number.POSITIVE_INFINITY;
                     let lowestIndex = 0;
                     let tmp;
@@ -119,8 +141,9 @@ const loadMap = () => {
                     }
                     // add turn instructions here at the end
 
-                    instructions.innerHTML = `The nearest theatre is <span class="text-primary">${features[lowestIndex].theatreName}</span> and it is <span class="text-primary">${Math.floor(data.distance / 1000)} KM</span> away from your location.`
-                    document.getElementById('confirmBtn').removeAttribute('hidden');
+                    instructions.innerHTML = `Nearest theatre is <span class="text-danger">${features[lowestIndex].theatreName}</span>, <span class="text-danger">${Math.floor(data.distance / 1000)} KM</span> from your location.`
+                    document.getElementById('mapConfirmWrapper').removeAttribute('hidden');
+                    document.getElementById('userLocation').innerHTML=response.userLocation.place_name;
                 }
             });
         }
