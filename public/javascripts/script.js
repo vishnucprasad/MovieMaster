@@ -319,3 +319,22 @@ const removeProfilePic = (e) => {
         }
     });
 }
+
+const copyRefferalLink = (e) => {
+    e.preventDefault();
+
+    const copyText = document.getElementById('refferalLink');
+
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+
+    document.execCommand("copy");
+
+    iziToast.show({
+        title: 'Successfully copied to the clipboard',
+        titleColor: '#fff',
+        icon: 'fa fa-check',
+        iconColor: '#fff',
+        class: 'bg-slack',
+    });
+}

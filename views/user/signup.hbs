@@ -8,6 +8,19 @@
                     </div>
                     <div class="card-body">
                         <form id="signupForm">
+                            {{#if refferer}}
+                            <div class="form-group" hidden>
+                                <label for="reffererInput">Refferer</label>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span
+                                                class="fa fa-user text-twitter"></span></span>
+                                    </div>
+                                    <input class="form-control" id="reffererInput" placeholder="Type your refferer" type="text"
+                                        name="refferer" value="{{refferer}}" aria-label="refferer" required>
+                                </div>
+                            </div>
+                            {{/if}}
                             <div class="form-group">
                                 <label for="nameInput">Name</label>
                                 <div class="input-group mb-4">
@@ -104,6 +117,8 @@
                                 </span>
                             </button>
                         </form>
+                        {{#if refferer}}
+                        {{else}}
                         <div class="mt-3 mb-4 text-center">
                             <span class="font-weight-normal">or signup with</span>
                         </div>
@@ -117,6 +132,7 @@
                                 <span aria-hidden="true" class="fa fa-facebook-f"></span>
                             </button>
                         </div>
+                        {{/if}}
                         <div class="d-block d-sm-flex justify-content-center align-items-center mt-4">
                             <span class="font-weight-normal">
                                 Already have an account?
