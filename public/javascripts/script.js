@@ -1,5 +1,3 @@
-vex.defaultOptions.className = 'vex-theme-os';
-
 const loadImage = (e) => {
     document.getElementById('viewImage').src = URL.createObjectURL(e.target.files[0]);
 }
