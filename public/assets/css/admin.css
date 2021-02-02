@@ -10678,7 +10678,7 @@ li.menu-list.nav-active .lnr-chevron-right {
   color: #f7f7f7;
   background-color: #3b4e9c; }
 
-.profile_img i {
+.accountPic i {
   float: right;
   margin: .5em 0 0;
   color: #00BCD4; }
@@ -11633,7 +11633,7 @@ ul.dropdown-menu.drp-mnu li a i {
   line-height: 25px;
   color: var(--primary); }
 
-.profile_img span {
+.accountPic span {
   float: left;
   display: block;
   width: 45px;
@@ -11660,11 +11660,11 @@ li.dropdown span.badge {
 .span_4 {
   padding: 0; }
 
-.profile_img img {
+.accountPic img {
   width: 40px;
   height: 40px; }
 
-.profile_img {
+.accountPic {
   margin: 0px 10px; }
 
 .user-active span {
