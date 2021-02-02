@@ -45,7 +45,7 @@
                         </ul>
                     </li>
                     {{/if}}
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown d-none d-lg-block">
                         <a href="#" class="nav-link" data-toggle="dropdown">
                             <div class="row">
                                 <div class="pill rounded-circle p-1 shadow-inset">
@@ -116,6 +116,57 @@
                             </div>
                         </div>
                     </li>
+                </ul>
+            </div>
+            <div class="nav-item dropdown dropleft d-block d-lg-none ml-auto">
+                <a href="#" class="nav-link" data-toggle="dropdown">
+                    <div class="row">
+                        <div class="pill rounded-circle p-1 shadow-inset">
+                            {{#if user.profilePic}}
+                            <img src="{{user.profilePic}}" class="profile_img rounded-circle">
+                            {{else}}
+                            <img src="/images/user/profile.png" class="profile_img rounded-circle">
+                            {{/if}}
+                        </div>
+                        <div class="my-auto d-none d-md-block">
+                            <span class="nav-link-inner-text font-weight-bold">Account</span>
+                            <span class="fa fa-angle-down nav-link-arrow ml-2"></span>
+                        </div>
+                    </div>
+                </a>
+                <ul class="dropdown-menu shadow-soft">
+                    <h5 class="row px-3">
+                        <div class="col my-auto">
+                            {{#if user}}
+                            <a class="text-secondary text-truncate font-weight-bold" href="">{{user.name}}</a>
+                            {{else}}
+                            <a class="text-secondary text-truncate font-weight-bold" href="">Account</a>
+                            {{/if}}
+                        </div>
+                    </h5>
+                    {{#if user}}
+                    <li>
+                        <a class="dropdown-item" type="button" onclick="logout(event, '/logout')">
+                            <i class="fa fa-power-off text-secondary mr-2"></i>Logout
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/my-profile">
+                            <i class="fa fa-user text-secondary mr-2"></i>My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/my-orders">
+                            <i class="fa fa-ticket text-secondary mr-1"></i>My Tickets
+                        </a>
+                    </li>
+                    {{else}}
+                    <li>
+                        <a class="dropdown-item" href="/login">
+                            <i class="fa fa-sign-in text-secondary mr-2"></i>Login
+                        </a>
+                    </li>
+                    {{/if}}
                 </ul>
             </div>
             <div class="d-flex align-items-center">
