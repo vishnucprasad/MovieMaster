@@ -89,11 +89,13 @@ router.get('/signup', (req, res) => {
   if (req.isAuthenticated() && !req.user.theatre && !req.user.admin) {
     res.redirect('/');
   } else {
+    const refferer = req.query.refferer ? req.query.refferer : false;
+
     if (req.session.messages) {
-      res.render('user/signup', { title: 'Account | Signup', messages: req.session.messages });
+      res.render('user/signup', { title: 'Account | Signup', messages: req.session.messages, refferer });
       req.session.messages = false;
     } else {
-      res.render('user/signup', { title: 'Account | Signup' });
+      res.render('user/signup', { title: 'Account | Signup', refferer });
     }
   }
 });

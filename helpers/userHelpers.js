@@ -18,13 +18,25 @@ const instance = new Razorpay({
 });
 
 module.exports = {
-    doSignup: ({ name, email, contryCode, mobile }) => {
+    doSignup: ({ refferer, name, email, contryCode, mobile }) => {
         return new Promise(async (resolve, reject) => {
             const mobileNumber = `${contryCode}${mobile}`
             const existingUser = await db.get().collection(collection.USER_COLLECTION).findOne({ mobileNumber });
             if (!existingUser) {
                 sendVerificationToken(mobileNumber).then((verification) => {
-                    db.get().collection(collection.USER_COLLECTION).insertOne({ name, email, mobileNumber }).then((response) => {
+                    const userObject = refferer ? {
+                        name,
+                        email,
+                        mobileNumber,
+                        refferer,
+                        wallet: 50
+                    } : {
+                        name,
+                        email,
+                        mobileNumber
+                    }
+
+                    db.get().collection(collection.USER_COLLECTION).insertOne(userObject).then((response) => {
                         resolve({ status: true, user: response.ops[0] });
                     }).catch((error) => {
                         reject({ status: false, error, errMessage: 'Signup Failed.' });
@@ -450,6 +462,22 @@ module.exports = {
             }).catch((error) => {
                 reject(error);
             });
+
+            if (user.refferer) {
+                db.get().collection(collection.USER_COLLECTION).updateOne({
+                    _id: ObjectID(user.refferer)
+                }, {
+                    $inc: {
+                        wallet: 100
+                    }
+                }).then((response) => {
+                    db.get().collection(collection.USER_COLLECTION).updateOne({
+                        $unset: {
+                            refferer: ''
+                        }
+                    });
+                });
+            }
         });
     },
     getAllOrders: (userId) => {

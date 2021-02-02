@@ -322,7 +322,7 @@
                                                 class="fa fa-link text-twitter"></span></span>
                                     </div>
                                     <input class="form-control form-control-sm" id="refferalLink"
-                                        value="https://moviemaster.live" type="url" readonly>
+                                        value="https://moviemaster.live/signup?refferer={{user._id}}" type="url" readonly>
                                     <div class="input-group-append">
                                         <button class="btn btn-primary btn-sm" onclick="copyRefferalLink(event)"><span
                                                 class="fa fa-copy text-twitter"></span></button>
@@ -341,7 +341,7 @@
                     <div class="row h-100">
                         <div class="col-12 my-auto text-center">
                             <span>Balance</span>
-                            <h1 style="font-size: 5rem;">0</h1>
+                            <h1 style="font-size: 5rem;">{{#if user.wallet}}{{user.wallet}}{{else}}0{{/if}}</h1>
                             <span>Rs</span>
                         </div>
                     </div>
