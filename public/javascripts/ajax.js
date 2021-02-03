@@ -515,6 +515,70 @@ const checkoutPaypal = (e, screenId, showId) => {
     });
 }
 
+checkoutWithWallet = (e, screenId, showId) => {
+    e.preventDefault();
+
+    $('#sidebarBody').fadeOut(1000);
+    $('#sidebarClose').slideUp(600);
+    setTimeout(() => {
+        $('#sidebarWrapper').fadeOut()
+        $('#checkoutSidebar').animate({ width: "0" }, 'slow', 'swing', () => sidebarOpened = false);
+    }, 1000);
+
+    let totalAmount = parseInt(document.getElementById('payableAmount').innerHTML);
+    let seats = document.getElementById('seatsDisplay').innerHTML;
+    let numberOfSeats = parseInt(document.getElementById('totalSeats').innerHTML);
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
+    });
+
+    $.ajax({
+        url: '/checkoutWithWallet',
+        method: 'post',
+        data: {
+            screenId,
+            showId,
+            numberOfSeats,
+            seats,
+            totalAmount
+        },
+        success: (response) => {
+            vex.closeTop();
+
+            if (response.status) {
+                location.href = response.redirectUrl;
+            } else {
+                vex.dialog.confirm({
+                    message: response.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
+            }
+        }
+    });
+}
+
 $("#editPersonalInfo").submit((e) => {
     e.preventDefault();
     $('#editPersonalInfoSubmitBtn').attr('hidden', true);

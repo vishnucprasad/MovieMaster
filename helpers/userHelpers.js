@@ -31,10 +31,10 @@ module.exports = {
                         refferer,
                         wallet: 50
                     } : {
-                        name,
-                        email,
-                        mobileNumber
-                    }
+                            name,
+                            email,
+                            mobileNumber
+                        }
 
                     db.get().collection(collection.USER_COLLECTION).insertOne(userObject).then((response) => {
                         resolve({ status: true, user: response.ops[0] });
@@ -429,6 +429,29 @@ module.exports = {
             }).catch((error) => {
                 reject(error);
             });
+        });
+    },
+    checkoutWithWallet: (order, user) => {
+        return new Promise((resolve, reject) => {
+            if (user.wallet) {
+                if (user.wallet >= order.totalAmount) {
+                    db.get().collection(collection.USER_COLLECTION).updateOne({
+                        _id: ObjectID(user._id)
+                    }, {
+                        $inc: {
+                            wallet: order.totalAmount * -1
+                        }
+                    }).then((response) => {
+                        resolve({ status: true });
+                    }).catch((error) => {
+                        reject({ status: false, errMessage: "Unable to pay using wallet." });
+                    });
+                } else {
+                    reject({ status: false, errMessage: "Not enough money in your wallet." });
+                }
+            } else {
+                reject({ status: false, errMessage: "Your wallet is empty." });
+            }
         });
     },
     confirmOrder: (orderId, user) => {
