@@ -166,6 +166,17 @@ module.exports = {
                                     'shows.movie': ObjectID(movieId),
                                     'shows.date': date
                                 }
+                            }, {
+                                $project: {
+                                    _id: 1,
+                                    thetre: 1,
+                                    screenName: 1,
+                                    seats: 1,
+                                    shows: 1,
+                                    totalReservedSeats: {
+                                        $size: '$shows.reservedSeats'
+                                    }
+                                }
                             }
                         ],
                         as: 'screens'
