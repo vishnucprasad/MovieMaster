@@ -199,7 +199,7 @@ router.post('/checkoutWithWallet', isUser, async (req, res) => {
   userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'MovieMaster Wallet' }).then(async (order) => {
     userHelpers.checkoutWithWallet(order, req.user).then((response) => {
       userHelpers.confirmOrder(order._id, req.user).then((response) => {
-        res.json({ status: true, redirectUrl: `/view-order?orderId=${order._id}`});
+        res.json({ status: true, redirectUrl: `/view-order?orderId=${order._id}` });
       });
     }).catch((error) => {
       res.json(error);
@@ -231,9 +231,9 @@ router.get('/my-profile', isUser, (req, res) => {
 router.post('/update-profile-picture', isUser, (req, res) => {
   if (req.files.profilePicture) {
     userHelpers.updateProfilePicture(req.user._id, `/images/user/profile/${req.user._id}.jpg`).then((response) => {
-      
+
       let image = req.files.profilePicture;
-      
+
       image.mv(`./public/images/user/profile/${req.user._id}.jpg`, (err, done) => {
         if (err) {
           console.log(err);
@@ -315,7 +315,7 @@ router.post('/get-routes', async (req, res) => {
   });
 });
 
-router.post('/addToWalletRazorpay', isUser, async (req, res) => {
+router.post('/addtowallet-razorpay', isUser, async (req, res) => {
   userHelpers.generateRazorpay(req.user._id, parseInt(req.body.amount)).then((response) => {
     res.json(response);
   }).catch((error) => {
@@ -331,6 +331,22 @@ router.post('/verify-addtowallet-razorpay-payment', (req, res) => {
   }).catch((error) => {
     res.json(error);
   });
+});
+
+router.post('/addtowallet-paypal', isUser, async (req, res) => {
+  userHelpers.createPaypalForAddToWallet(req.body.amount).then((approvalLink) => {
+    res.json({ approvalLink });
+  });
+});
+
+router.get('/success-Paypal-addtowallet', (req, res) => {
+  userHelpers.addToWallet(parseInt(req.query.amount) * 100, req.user._id).then((response) => {
+    res.redirect('/my-profile');
+  });
+});
+
+router.get('/cancel-Paypal-addtowallet', (req, res) => {
+  res.redirect('/my-profile');
 });
 
 module.exports = router;

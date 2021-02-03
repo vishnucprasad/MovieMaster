@@ -790,7 +790,7 @@ const addToWalletRazorpay = (e) => {
         overlayClosesOnClick: false
     });
     $.ajax({
-        url: '/addToWalletRazorpay',
+        url: '/addtowallet-razorpay',
         method: 'post',
         data: $('#addToWalletForm').serialize(),
         success: (response) => {
@@ -874,6 +874,75 @@ const verifyAddToWalletPayment = (payment, order) => {
                 });
             } else {
                 vex.dialog.alert(response.errMessage);
+            }
+        }
+    });
+}
+
+const addToWalletPaypal = (e) => {
+    e.preventDefault();
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+            <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        </span>
+                        </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
+    });
+
+    $.ajax({
+        url: '/addtowallet-paypal',
+        method: 'post',
+        data: $('#addToWalletForm').serialize(),
+        success: (response) => {
+            vex.closeTop();
+            vex.dialog.open({
+                input: [
+                    `<div class="text-center">
+                    <h6>Redirecting</h6>
+                    <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            </span>
+                            </div>`
+                ].join(''),
+                buttons: [],
+                escapeButtonCloses: false,
+                overlayClosesOnClick: false
+            });
+            console.log(response);
+            if (response.approvalLink) {
+                location.href = response.approvalLink;
+            } else if (response.error) {
+                vex.dialog.confirm({
+                    message: response.error.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
             }
         }
     });

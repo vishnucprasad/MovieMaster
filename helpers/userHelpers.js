@@ -662,6 +662,45 @@ module.exports = {
             const stopRefresh = () => clearInterval(refreshInterval);
         });
     },
+    createPaypalForAddToWallet: (amount) => {
+        return new Promise((resolve, reject) => {
+            const create_payment_json = {
+                "intent": "ORDER",
+                "payer": {
+                    "payment_method": "paypal"
+                },
+                "redirect_urls": {
+                    "return_url": `${process.env.PAYPAL_RETURN_URL}-addtowallet?amount=${amount}`,
+                    "cancel_url": `${process.env.PAYPAL_CANCEL_URL}-addtowallet`
+                },
+                "transactions": [{
+                    "item_list": {
+                        "items": [{
+                            "name": "item",
+                            "sku": "001",
+                            "price": amount,
+                            "currency": "INR",
+                            "quantity": 1
+                        }]
+                    },
+                    "amount": {
+                        "currency": "INR",
+                        "total": amount
+                    },
+                    "description": "MovieMaster add to wallet."
+                }]
+            };
+
+            paypal.payment.create(create_payment_json, function (error, payment) {
+                if (error) {
+                    reject({ error, errMessage: 'Unable to make payment. Please Try again.' });
+                } else {
+                    const approvalLink = payment.links.filter(link => link.rel === 'approval_url');
+                    resolve(approvalLink[0].href);
+                }
+            });
+        });
+    },
     addToWallet: (amount, userId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.USER_COLLECTION).updateOne({
