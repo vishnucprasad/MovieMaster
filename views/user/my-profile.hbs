@@ -17,10 +17,11 @@
                             </div>
                         </div>
                         <div class="col-3 text-right my-auto mr-3">
-                            <button class="btn btn-primary btn-sm btn-icon-only mb-3" onclick="removeProfilePic(event)"><span
-                                    class="fa fa-trash text-danger"></span></button>
+                            <button class="btn btn-primary btn-sm btn-icon-only mb-3"
+                                onclick="removeProfilePic(event)"><span class="fa fa-trash text-danger"></span></button>
                             <br>
-                            <form action="/update-profile-picture" method="POST" enctype="multipart/form-data" id="updateProfilePicForm">
+                            <form action="/update-profile-picture" method="POST" enctype="multipart/form-data"
+                                id="updateProfilePicForm">
                                 <label class="btn btn-primary btn-sm btn-icon-only" for="my-file-selector"
                                     id="profilePicUploadBtn">
                                     <input id="my-file-selector" required type="file" name="profilePicture"
@@ -193,7 +194,8 @@
                                                                                     </div>
                                                                                     <select
                                                                                         class="custom-select custom-select-sm rounded"
-                                                                                        id="contrySelection" name="contryCode" required>
+                                                                                        id="contrySelection"
+                                                                                        name="contryCode" required>
                                                                                         <option value="+91">India
                                                                                         </option>
                                                                                     </select>
@@ -209,8 +211,7 @@
                                                                                                 class="fa fa-phone text-twitter"></span></span>
                                                                                     </div>
                                                                                     <input class="form-control"
-                                                                                        id="mobileInput"
-                                                                                        type="text"
+                                                                                        id="mobileInput" type="text"
                                                                                         value="{{user.mobileNumber}}"
                                                                                         name="mobile"
                                                                                         aria-label="mobile" required>
@@ -297,9 +298,11 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <a href="/my-orders" class="btn btn-primary btn-block text-left font-weight-bolder mb-3"><span
+                            <a href="/my-orders"
+                                class="btn btn-primary btn-block text-left font-weight-bolder mb-3"><span
                                     class="fa fa-ticket text-twitter"></span> My Tickets</a>
-                            <a type="button" onclick="logout(event, '/logout')" class="btn btn-primary btn-block text-left font-weight-bolder"><span
+                            <a type="button" onclick="logout(event, '/logout')"
+                                class="btn btn-primary btn-block text-left font-weight-bolder"><span
                                     class="fa fa-power-off text-twitter"></span> Logout</a>
                         </div>
                     </div>
@@ -322,7 +325,8 @@
                                                 class="fa fa-link text-twitter"></span></span>
                                     </div>
                                     <input class="form-control form-control-sm" id="refferalLink"
-                                        value="https://moviemaster.live/signup?refferer={{user._id}}" type="url" readonly>
+                                        value="https://moviemaster.live/signup?refferer={{user._id}}" type="url"
+                                        readonly>
                                     <div class="input-group-append">
                                         <button class="btn btn-primary btn-sm" onclick="copyRefferalLink(event)"><span
                                                 class="fa fa-copy text-twitter"></span></button>
@@ -343,6 +347,48 @@
                             <span>Balance</span>
                             <h1 style="font-size: 5rem;">{{#if user.wallet}}{{user.wallet}}{{else}}0{{/if}}</h1>
                             <span>Rs</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary btn-sm px-5 rounded" data-toggle="modal"
+                            data-target="#addMoneyModal">Add Money</button>
+                        <div class="modal fade" id="addMoneyModal" tabindex="-1" role="dialog"
+                            aria-labelledby="addMoneyModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content shadow-soft">
+                                    <div class="modal-body p-5">
+                                        <form id="addToWalletForm">
+                                            <div class="form-group">
+                                                <div class="input-group mb-4">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><span
+                                                                class="fa fa-rupee text-twitter"></span></span>
+                                                    </div>
+                                                    <input class="form-control" id="amountAddToWallet"
+                                                        placeholder="Amount" name="amount" type="text"
+                                                        aria-label="Amountt">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a type="button"
+                                                        onclick="addToWalletPaypal(event);"
+                                                        class="btn btn-warning btn-sm btn-block rounded py-1">
+                                                        <span class="fa fa-paypal text-secondary"> PayPal</span>
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a type="button"
+                                                        onclick="addToWalletRazorpay(event);"
+                                                        class="btn btn-warning btn-sm btn-block rounded py-1">
+                                                        <span class="fa fa-credit-card text-secondary"> RazorPay</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

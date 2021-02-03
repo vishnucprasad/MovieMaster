@@ -231,9 +231,9 @@ router.get('/my-profile', isUser, (req, res) => {
 router.post('/update-profile-picture', isUser, (req, res) => {
   if (req.files.profilePicture) {
     userHelpers.updateProfilePicture(req.user._id, `/images/user/profile/${req.user._id}.jpg`).then((response) => {
-
+      
       let image = req.files.profilePicture;
-
+      
       image.mv(`./public/images/user/profile/${req.user._id}.jpg`, (err, done) => {
         if (err) {
           console.log(err);
@@ -312,6 +312,24 @@ router.post('/get-routes', async (req, res) => {
   userHelpers.getRoutes(req.body['start[]'], features).then((response) => {
     req.session.userLocation = response.userLocation;
     res.json(response);
+  });
+});
+
+router.post('/addToWalletRazorpay', isUser, async (req, res) => {
+  userHelpers.generateRazorpay(req.user._id, parseInt(req.body.amount)).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/verify-addtowallet-razorpay-payment', (req, res) => {
+  userHelpers.verifyRazorpayPayment(req.body).then((response) => {
+    userHelpers.addToWallet(parseInt(req.body['order[amount]']), req.user._id).then((response) => {
+      res.json(response);
+    });
+  }).catch((error) => {
+    res.json(error);
   });
 });
 

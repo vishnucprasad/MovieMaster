@@ -661,5 +661,18 @@ module.exports = {
 
             const stopRefresh = () => clearInterval(refreshInterval);
         });
+    },
+    addToWallet: (amount, userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({
+                _id: ObjectID(userId)
+            }, {
+                $inc: {
+                    wallet: amount / 100
+                }
+            }).then((response) => {
+                resolve({ status: true, amount: amount / 100 });
+            });
+        });
     }
 }
