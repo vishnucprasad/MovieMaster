@@ -31,10 +31,10 @@ module.exports = {
                         refferer,
                         wallet: 50
                     } : {
-                        name,
-                        email,
-                        mobileNumber
-                    }
+                            name,
+                            email,
+                            mobileNumber
+                        }
 
                     db.get().collection(collection.USER_COLLECTION).insertOne(userObject).then((response) => {
                         resolve({ status: true, user: response.ops[0] });
@@ -165,6 +165,17 @@ module.exports = {
                                 $match: {
                                     'shows.movie': ObjectID(movieId),
                                     'shows.date': date
+                                }
+                            }, {
+                                $project: {
+                                    _id: 1,
+                                    thetre: 1,
+                                    screenName: 1,
+                                    seats: 1,
+                                    shows: 1,
+                                    totalReservedSeats: {
+                                        $size: '$shows.reservedSeats'
+                                    }
                                 }
                             }
                         ],
@@ -420,6 +431,29 @@ module.exports = {
             });
         });
     },
+    checkoutWithWallet: (order, user) => {
+        return new Promise((resolve, reject) => {
+            if (user.wallet) {
+                if (user.wallet >= order.totalAmount) {
+                    db.get().collection(collection.USER_COLLECTION).updateOne({
+                        _id: ObjectID(user._id)
+                    }, {
+                        $inc: {
+                            wallet: order.totalAmount * -1
+                        }
+                    }).then((response) => {
+                        resolve({ status: true });
+                    }).catch((error) => {
+                        reject({ status: false, errMessage: "Unable to pay using wallet." });
+                    });
+                } else {
+                    reject({ status: false, errMessage: "Not enough money in your wallet." });
+                }
+            } else {
+                reject({ status: false, errMessage: "Your wallet is empty." });
+            }
+        });
+    },
     confirmOrder: (orderId, user) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ORDER_COLLECTION).updateOne({
@@ -626,6 +660,58 @@ module.exports = {
             }, 100);
 
             const stopRefresh = () => clearInterval(refreshInterval);
+        });
+    },
+    createPaypalForAddToWallet: (amount) => {
+        return new Promise((resolve, reject) => {
+            const create_payment_json = {
+                "intent": "ORDER",
+                "payer": {
+                    "payment_method": "paypal"
+                },
+                "redirect_urls": {
+                    "return_url": `${process.env.PAYPAL_RETURN_URL}-addtowallet?amount=${amount}`,
+                    "cancel_url": `${process.env.PAYPAL_CANCEL_URL}-addtowallet`
+                },
+                "transactions": [{
+                    "item_list": {
+                        "items": [{
+                            "name": "item",
+                            "sku": "001",
+                            "price": amount,
+                            "currency": "INR",
+                            "quantity": 1
+                        }]
+                    },
+                    "amount": {
+                        "currency": "INR",
+                        "total": amount
+                    },
+                    "description": "MovieMaster add to wallet."
+                }]
+            };
+
+            paypal.payment.create(create_payment_json, function (error, payment) {
+                if (error) {
+                    reject({ error, errMessage: 'Unable to make payment. Please Try again.' });
+                } else {
+                    const approvalLink = payment.links.filter(link => link.rel === 'approval_url');
+                    resolve(approvalLink[0].href);
+                }
+            });
+        });
+    },
+    addToWallet: (amount, userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({
+                _id: ObjectID(userId)
+            }, {
+                $inc: {
+                    wallet: amount / 100
+                }
+            }).then((response) => {
+                resolve({ status: true, amount: amount / 100 });
+            });
         });
     }
 }

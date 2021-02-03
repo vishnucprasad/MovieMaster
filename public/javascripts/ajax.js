@@ -386,20 +386,20 @@ const verifyPayment = (payment, order) => {
     vex.dialog.open({
         input: [
             `<div class="text-center">
-                <h6>Processing</h6>
+            <h6>Processing</h6>
                 <span id="loadingBtn">
                     <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
                         aria-hidden="true"></span>
                     <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
                         aria-hidden="true"></span>
-                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                        aria-hidden="true"></span>
-                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                        aria-hidden="true"></span>
-                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
                         aria-hidden="true"></span>
                 </span>
-            </div>`
+                </div>`
         ].join(''),
         buttons: [],
         escapeButtonCloses: false,
@@ -446,20 +446,20 @@ const checkoutPaypal = (e, screenId, showId) => {
     vex.dialog.open({
         input: [
             `<div class="text-center">
-                <h6>Processing</h6>
+            <h6>Processing</h6>
                 <span id="loadingBtn">
                     <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                        aria-hidden="true"></span>
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
                     <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
                         aria-hidden="true"></span>
-                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                        aria-hidden="true"></span>
-                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                        aria-hidden="true"></span>
-                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                        aria-hidden="true"></span>
-                </span>
-            </div>`
+                        </span>
+                        </div>`
         ].join(''),
         buttons: [],
         escapeButtonCloses: false,
@@ -481,20 +481,20 @@ const checkoutPaypal = (e, screenId, showId) => {
             vex.dialog.open({
                 input: [
                     `<div class="text-center">
-                        <h6>Redirecting</h6>
-                        <span id="loadingBtn">
+                    <h6>Redirecting</h6>
+                    <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
                             <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                aria-hidden="true"></span>
+                            aria-hidden="true"></span>
                             <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                aria-hidden="true"></span>
+                            aria-hidden="true"></span>
                             <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                aria-hidden="true"></span>
+                            aria-hidden="true"></span>
                             <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                aria-hidden="true"></span>
-                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                aria-hidden="true"></span>
-                        </span>
-                    </div>`
+                            aria-hidden="true"></span>
+                            </span>
+                            </div>`
                 ].join(''),
                 buttons: [],
                 escapeButtonCloses: false,
@@ -506,6 +506,70 @@ const checkoutPaypal = (e, screenId, showId) => {
             } else if (response.error) {
                 vex.dialog.confirm({
                     message: response.error.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
+                    }
+                });
+            }
+        }
+    });
+}
+
+checkoutWithWallet = (e, screenId, showId) => {
+    e.preventDefault();
+
+    $('#sidebarBody').fadeOut(1000);
+    $('#sidebarClose').slideUp(600);
+    setTimeout(() => {
+        $('#sidebarWrapper').fadeOut()
+        $('#checkoutSidebar').animate({ width: "0" }, 'slow', 'swing', () => sidebarOpened = false);
+    }, 1000);
+
+    let totalAmount = parseInt(document.getElementById('payableAmount').innerHTML);
+    let seats = document.getElementById('seatsDisplay').innerHTML;
+    let numberOfSeats = parseInt(document.getElementById('totalSeats').innerHTML);
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+            <h6>Processing</h6>
+                <span id="loadingBtn">
+                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
+    });
+
+    $.ajax({
+        url: '/checkoutWithWallet',
+        method: 'post',
+        data: {
+            screenId,
+            showId,
+            numberOfSeats,
+            seats,
+            totalAmount
+        },
+        success: (response) => {
+            vex.closeTop();
+
+            if (response.status) {
+                location.href = response.redirectUrl;
+            } else {
+                vex.dialog.confirm({
+                    message: response.errMessage,
                     callback: function (value) {
                         sidebarOpened = false;
                     }
@@ -649,17 +713,17 @@ const sendTicket = (e, orderId) => {
                 vex.dialog.open({
                     input: [
                         `<div class="text-center">
-                            <h6>Sending ticket to <span class="text-danger">${email}</span></h6>
+                        <h6>Sending ticket to <span class="text-danger">${email}</span></h6>
                             <span id="loadingBtn">
                                 <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                    aria-hidden="true"></span>
+                                aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                aria-hidden="true"></span>
                                 <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
                                     aria-hidden="true"></span>
-                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                    aria-hidden="true"></span>
-                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
-                                    aria-hidden="true"></span>
-                                <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
                                     aria-hidden="true"></span>
                             </span>
                         </div>`
@@ -693,6 +757,190 @@ const sendTicket = (e, orderId) => {
                                 class: 'bg-danger',
                             });
                         }
+                    }
+                });
+            }
+        }
+    });
+}
+
+const addToWalletRazorpay = (e) => {
+    e.preventDefault();
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+                <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+            </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
+    });
+    $.ajax({
+        url: '/addtowallet-razorpay',
+        method: 'post',
+        data: $('#addToWalletForm').serialize(),
+        success: (response) => {
+            vex.closeTop();
+            if (response.error) {
+                vex.dialog.alert('Something went wrong! Please try again.');
+            } else {
+                razorpayAddToWalletPayment(response);
+            }
+        }
+    });
+}
+
+const razorpayAddToWalletPayment = (order) => {
+    var options = {
+        "key": "rzp_test_fsFqCPdvUxG9MI", // Enter the Key ID generated from the Dashboard
+        "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "MovieMaster",
+        "description": "Secure Payments",
+        "image": "/favicon.ico",
+        "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            verifyAddToWalletPayment(response, order);
+        },
+        "prefill": {
+            "name": "Vishnu C Prasad",
+            "email": "vishnucprasad@example.com",
+            "contact": "9999999999"
+        },
+        "notes": {
+            "address": "EasyCart PVT.Ltd"
+        },
+        "theme": {
+            "color": "#007bff"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+
+const verifyAddToWalletPayment = (payment, order) => {
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+            <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                </span>
+                </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
+    });
+    $.ajax({
+        url: '/verify-addtowallet-razorpay-payment',
+        data: {
+            payment,
+            order
+        },
+        method: 'post',
+        success: (response) => {
+            vex.closeTop();
+            if (response.status) {
+                vex.dialog.confirm({
+                    message: `Successfully added Rs.${response.amount} to your Wallet`,
+                    buttons: [$.extend({}, vex.dialog.buttons.YES, { text: 'Ok' })],
+                    callback: function (value) {
+                        location.reload();
+                    }
+                });
+            } else {
+                vex.dialog.alert(response.errMessage);
+            }
+        }
+    });
+}
+
+const addToWalletPaypal = (e) => {
+    e.preventDefault();
+
+    vex.dialog.open({
+        input: [
+            `<div class="text-center">
+            <h6>Processing</h6>
+                <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                        aria-hidden="true"></span>
+                        </span>
+                        </div>`
+        ].join(''),
+        buttons: [],
+        escapeButtonCloses: false,
+        overlayClosesOnClick: false
+    });
+
+    $.ajax({
+        url: '/addtowallet-paypal',
+        method: 'post',
+        data: $('#addToWalletForm').serialize(),
+        success: (response) => {
+            vex.closeTop();
+            vex.dialog.open({
+                input: [
+                    `<div class="text-center">
+                    <h6>Redirecting</h6>
+                    <span id="loadingBtn">
+                    <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                    aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            <span class="spinner-grow spinner-grow-sm text-twitter" role="status"
+                            aria-hidden="true"></span>
+                            </span>
+                            </div>`
+                ].join(''),
+                buttons: [],
+                escapeButtonCloses: false,
+                overlayClosesOnClick: false
+            });
+            console.log(response);
+            if (response.approvalLink) {
+                location.href = response.approvalLink;
+            } else if (response.error) {
+                vex.dialog.confirm({
+                    message: response.error.errMessage,
+                    callback: function (value) {
+                        sidebarOpened = false;
                     }
                 });
             }

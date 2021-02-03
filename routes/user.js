@@ -171,7 +171,7 @@ router.post('/verify-razorpay-payment', (req, res) => {
   });
 });
 
-router.post('/checkoutPaypal', async (req, res) => {
+router.post('/checkoutPaypal', isUser, async (req, res) => {
   const show = await userHelpers.getShow({ showId: req.body.showId, screenId: req.body.screenId });
   userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'PayPal' }).then(async (order) => {
     userHelpers.createPaypal(order).then((approvalLink) => {
@@ -192,6 +192,21 @@ router.get('/success-paypal', (req, res) => {
 
 router.get('/cancel-paypal', (req, res) => {
   res.redirect('/');
+});
+
+router.post('/checkoutWithWallet', isUser, async (req, res) => {
+  const show = await userHelpers.getShow({ showId: req.body.showId, screenId: req.body.screenId });
+  userHelpers.placeOrder(req.body, show, req.user._id, { paymentMethod: 'MovieMaster Wallet' }).then(async (order) => {
+    userHelpers.checkoutWithWallet(order, req.user).then((response) => {
+      userHelpers.confirmOrder(order._id, req.user).then((response) => {
+        res.json({ status: true, redirectUrl: `/view-order?orderId=${order._id}` });
+      });
+    }).catch((error) => {
+      res.json(error);
+    });;
+  }).catch((error) => {
+    res.json(error);
+  });
 });
 
 router.get('/view-order', isUser, (req, res) => {
@@ -298,6 +313,40 @@ router.post('/get-routes', async (req, res) => {
     req.session.userLocation = response.userLocation;
     res.json(response);
   });
+});
+
+router.post('/addtowallet-razorpay', isUser, async (req, res) => {
+  userHelpers.generateRazorpay(req.user._id, parseInt(req.body.amount)).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/verify-addtowallet-razorpay-payment', (req, res) => {
+  userHelpers.verifyRazorpayPayment(req.body).then((response) => {
+    userHelpers.addToWallet(parseInt(req.body['order[amount]']), req.user._id).then((response) => {
+      res.json(response);
+    });
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/addtowallet-paypal', isUser, async (req, res) => {
+  userHelpers.createPaypalForAddToWallet(req.body.amount).then((approvalLink) => {
+    res.json({ approvalLink });
+  });
+});
+
+router.get('/success-Paypal-addtowallet', (req, res) => {
+  userHelpers.addToWallet(parseInt(req.query.amount) * 100, req.user._id).then((response) => {
+    res.redirect('/my-profile');
+  });
+});
+
+router.get('/cancel-Paypal-addtowallet', (req, res) => {
+  res.redirect('/my-profile');
 });
 
 module.exports = router;

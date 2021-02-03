@@ -98,12 +98,20 @@
                                                         <div class="row">
                                                             {{#each this.screens}}
                                                             <div class="col-md-4 col-lg-2">
+                                                                {{#IF this.seats '==' this.totalReservedSeats}}
+                                                                <a type="button" onclick="vex.dialog.alert('Housefull, Please choose another show.')" class="btn btn-primary btn-block m-1">
+                                                                    <span
+                                                                        class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
+                                                                    <br><span class="small bg-danger font-weight-bold py-1 px-2 text-white rounded">Housefull</span>
+                                                                </a>
+                                                                {{else}}
                                                                 <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
                                                                     <span
                                                                         class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
                                                                     <span class="small">{{this.shows.date}} <br>
                                                                         {{this.shows.showTime}}</span>
                                                                 </a>
+                                                                {{/IF}}
                                                             </div>
                                                             {{/each}}
                                                         </div>
