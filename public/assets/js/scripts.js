@@ -78,6 +78,8 @@
 
             jQuery(this).addClass('menu-collapsed');
 
+            localStorage.setItem("sidebarMenuClass","sidebar-menu-collapsed");
+
          } else {
             body.removeClass('sidebar-menu-collapsed chat-view');
             jQuery('.custom-nav li.active ul').css({
@@ -85,6 +87,8 @@
             });
 
             jQuery(this).removeClass('menu-collapsed');
+
+            localStorage.setItem("sidebarMenuClass","");
 
          }
       } else {
