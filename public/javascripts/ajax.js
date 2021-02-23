@@ -106,6 +106,51 @@ const deleteShow = (e, screenId, showId) => {
     });
 }
 
+const getTimeSlots = () => {
+    const selector = document.getElementById('showTime');
+    let availableSlots = [{ time: "09:00" }, { time: "12:00" }, { time: "15:00" }, { time: "18:00" }, { time: "21:00" }];
+
+    selector.innerHTML = null;
+
+    $.ajax({
+        url: "/theatre/get-time-slots",
+        method: 'post',
+        data: {
+            date: $('#showDate').val(),
+            screenId: $('#screenId').val()
+        },
+        success: (slots) => {
+
+            if (slots[0]) {
+                slots.forEach(slot => {
+                    availableSlots = availableSlots.filter((availableSlot) => availableSlot.time !== slot.time);
+                });
+            }
+
+            if (availableSlots[0]) {
+                availableSlots.forEach(slot => {
+                    const option = document.createElement("option");
+                    option.value = slot.time;
+                    option.innerHTML = slot.time;
+                    selector.appendChild(option)
+                });
+            } else {
+                const option = document.createElement("option");
+                option.innerHTML = `All time slots are filled on ${$('#showDate').val()}, Please select another date.`;
+                selector.appendChild(option)
+
+                iziToast.show({
+                    title: `All time slots are filled on ${$('#showDate').val()}, Please select another date.`,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            }
+        }
+    });
+}
+
 const searchProducts = (event, searchQuery) => {
     $.ajax({
         url: '/search',
@@ -114,7 +159,6 @@ const searchProducts = (event, searchQuery) => {
         },
         method: 'post',
         success: (response) => {
-            console.log(response);
             if (searchQuery.length != 0) {
                 let results = `<a href="/search-movie?searchQuery=${searchQuery}" class="results-item text-dark"><div class="row pill_shadow p-3 mx-2 rounded results-pill text-truncate">${searchQuery}</div></a>`
                 if (response[0]) {
@@ -339,7 +383,6 @@ const checkoutRazorpay = (e, screenId, showId) => {
         },
         success: (response) => {
             vex.closeTop();
-            console.log(response);
             if (response.error) {
                 vex.dialog.confirm({
                     message: 'Something went wrong! Please try again.',
@@ -415,7 +458,6 @@ const verifyPayment = (payment, order) => {
         success: (response) => {
             vex.closeTop();
             if (response.status) {
-                console.log(order.receipt);
                 location.href = `/view-order?orderId=${order.receipt}`
             } else {
                 vex.dialog.confirm({
@@ -500,7 +542,6 @@ const checkoutPaypal = (e, screenId, showId) => {
                 escapeButtonCloses: false,
                 overlayClosesOnClick: false
             });
-            console.log(response);
             if (response.approvalLink) {
                 location.href = response.approvalLink;
             } else if (response.error) {
@@ -933,7 +974,6 @@ const addToWalletPaypal = (e) => {
                 escapeButtonCloses: false,
                 overlayClosesOnClick: false
             });
-            console.log(response);
             if (response.approvalLink) {
                 location.href = response.approvalLink;
             } else if (response.error) {

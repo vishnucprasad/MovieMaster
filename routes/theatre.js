@@ -373,6 +373,12 @@ router.post('/delete-show', isTheatre, (req, res) => {
   });
 });
 
+router.post('/get-time-slots', (req, res) => {
+ theatreHelpers.getTimeSlots(req.body).then((slots) => {
+  res.json(slots);
+ });
+});
+
 router.get('/users-activity', isTheatre, (req, res) => {
   res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user });
 });

@@ -264,13 +264,9 @@ module.exports = {
             })
         });
     },
-    addShows: (showDetails) => {
-        const screenId = showDetails.screenId;
-        delete showDetails.screenId;
-        showDetails.movie = ObjectID(showDetails.movie);
-        showDetails._id = new ObjectID();
+    getTimeSlots: ({ date, screenId }) => {
         return new Promise(async (resolve, reject) => {
-            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+            const slots = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
                         _id: ObjectID(screenId)
@@ -278,47 +274,37 @@ module.exports = {
                 }, {
                     $unwind: '$shows'
                 }, {
-                    $project: {
-                        _id: '$shows._id',
-                        movie: '$shows.movie',
-                        date: '$shows.date',
-                        showTime: '$shows.showTime',
-                        vip: '$shows.vip',
-                        premium: '$shows.premium',
-                        executive: '$shows.executive',
-                        normal: '$shows.normal'
+                    $match: {
+                        'shows.date': date
                     }
                 }, {
-                    $lookup: {
-                        from: collection.MOVIE_COLLECTION,
-                        localField: 'movie',
-                        foreignField: '_id',
-                        as: 'movieDetails'
+                    $project: {
+                        _id: 0,
+                        time: '$shows.showTime'
                     }
                 }
             ]).toArray();
 
-            const scheduledTime = shows.filter((show) => {
-                if (show.date == showDetails.date && parseInt(show.showTime) > (parseInt(showDetails.showTime) - 3)) {
-                    return show;
+            resolve(slots);
+        });
+    },
+    addShows: (showDetails) => {
+        const screenId = showDetails.screenId;
+        delete showDetails.screenId;
+        showDetails.movie = ObjectID(showDetails.movie);
+        showDetails._id = new ObjectID();
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.SCREEN_COLLECTION).updateOne({
+                _id: ObjectID(screenId)
+            }, {
+                $push: {
+                    shows: showDetails
                 }
+            }).then((response) => {
+                resolve({ response, screenId, alertMessage: 'Show added successfully.' });
+            }).catch((error) => {
+                reject({ error, screenId, errMessage: 'Failed to add show.' });
             });
-
-            if (scheduledTime[0]) {
-                reject({ screenId, errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime) + 3}:00` });
-            } else {
-                db.get().collection(collection.SCREEN_COLLECTION).updateOne({
-                    _id: ObjectID(screenId)
-                }, {
-                    $push: {
-                        shows: showDetails
-                    }
-                }).then((response) => {
-                    resolve({ response, screenId, alertMessage: 'Show added successfully.' });
-                }).catch((error) => {
-                    reject({ error, screenId, errMessage: 'Failed to add show.' });
-                });
-            }
         });
     },
     getAllShows: (screenId) => {
