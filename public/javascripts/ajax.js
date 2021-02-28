@@ -106,11 +106,13 @@ const deleteShow = (e, screenId, showId) => {
     });
 }
 
-const getTimeSlots = () => {
+const getTimeSlots = (currentSlot, currentDate) => {
     const selector = document.getElementById('showTime');
     let availableSlots = [{ time: "09:00" }, { time: "12:00" }, { time: "15:00" }, { time: "18:00" }, { time: "21:00" }];
 
-    selector.innerHTML = null;
+    currentSlot = $('#showDate').val() !== currentDate ? null : currentSlot;
+
+    selector.innerHTML = currentSlot ? `<option value="${currentSlot}">${currentSlot} (current)</option>` : null;
 
     $.ajax({
         url: "/theatre/get-time-slots",
@@ -136,10 +138,12 @@ const getTimeSlots = () => {
                 });
             } else {
                 const option = document.createElement("option");
-                option.innerHTML = `All time slots are filled on ${$('#showDate').val()}, Please select another date.`;
+                option.innerHTML = currentSlot ? `All other time slots are filled on ${$('#showDate').val()}, Please select another date to get new slot.`
+                    : `All time slots are filled on ${$('#showDate').val()}, Please select another date.`;
+                option.value = "";
                 selector.appendChild(option)
 
-                iziToast.show({
+                !currentSlot && iziToast.show({
                     title: `All time slots are filled on ${$('#showDate').val()}, Please select another date.`,
                     titleColor: '#fff',
                     icon: 'fa fa-check',
