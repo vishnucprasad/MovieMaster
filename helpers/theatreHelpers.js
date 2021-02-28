@@ -264,13 +264,9 @@ module.exports = {
             })
         });
     },
-    addShows: (showDetails) => {
-        const screenId = showDetails.screenId;
-        delete showDetails.screenId;
-        showDetails.movie = ObjectID(showDetails.movie);
-        showDetails._id = new ObjectID();
+    getTimeSlots: ({ date, screenId }) => {
         return new Promise(async (resolve, reject) => {
-            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+            const slots = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
                 {
                     $match: {
                         _id: ObjectID(screenId)
@@ -278,47 +274,37 @@ module.exports = {
                 }, {
                     $unwind: '$shows'
                 }, {
-                    $project: {
-                        _id: '$shows._id',
-                        movie: '$shows.movie',
-                        date: '$shows.date',
-                        showTime: '$shows.showTime',
-                        vip: '$shows.vip',
-                        premium: '$shows.premium',
-                        executive: '$shows.executive',
-                        normal: '$shows.normal'
+                    $match: {
+                        'shows.date': date
                     }
                 }, {
-                    $lookup: {
-                        from: collection.MOVIE_COLLECTION,
-                        localField: 'movie',
-                        foreignField: '_id',
-                        as: 'movieDetails'
+                    $project: {
+                        _id: 0,
+                        time: '$shows.showTime'
                     }
                 }
             ]).toArray();
 
-            const scheduledTime = shows.filter((show) => {
-                if (show.date == showDetails.date && parseInt(show.showTime) > (parseInt(showDetails.showTime) - 3)) {
-                    return show;
+            resolve(slots);
+        });
+    },
+    addShows: (showDetails) => {
+        const screenId = showDetails.screenId;
+        delete showDetails.screenId;
+        showDetails.movie = ObjectID(showDetails.movie);
+        showDetails._id = new ObjectID();
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.SCREEN_COLLECTION).updateOne({
+                _id: ObjectID(screenId)
+            }, {
+                $push: {
+                    shows: showDetails
                 }
+            }).then((response) => {
+                resolve({ response, screenId, alertMessage: 'Show added successfully.' });
+            }).catch((error) => {
+                reject({ error, screenId, errMessage: 'Failed to add show.' });
             });
-
-            if (scheduledTime[0]) {
-                reject({ screenId, errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime) + 3}:00` });
-            } else {
-                db.get().collection(collection.SCREEN_COLLECTION).updateOne({
-                    _id: ObjectID(screenId)
-                }, {
-                    $push: {
-                        shows: showDetails
-                    }
-                }).then((response) => {
-                    resolve({ response, screenId, alertMessage: 'Show added successfully.' });
-                }).catch((error) => {
-                    reject({ error, screenId, errMessage: 'Failed to add show.' });
-                });
-            }
         });
     },
     getAllShows: (screenId) => {
@@ -392,63 +378,25 @@ module.exports = {
     },
     editShow: async (showDetails) => {
         return new Promise(async (resolve, reject) => {
-            const shows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
-                {
-                    $match: {
-                        _id: ObjectID(showDetails.screenId)
-                    }
-                }, {
-                    $unwind: '$shows'
-                }, {
-                    $project: {
-                        _id: '$shows._id',
-                        movie: '$shows.movie',
-                        date: '$shows.date',
-                        showTime: '$shows.showTime',
-                        vip: '$shows.vip',
-                        premium: '$shows.premium',
-                        executive: '$shows.executive',
-                        normal: '$shows.normal'
-                    }
-                }, {
-                    $lookup: {
-                        from: collection.MOVIE_COLLECTION,
-                        localField: 'movie',
-                        foreignField: '_id',
-                        as: 'movieDetails'
-                    }
+            db.get().collection(collection.SCREEN_COLLECTION).updateOne({
+                _id: ObjectID(showDetails.screenId),
+                'shows._id': ObjectID(showDetails.showId)
+            }, {
+                $set: {
+                    'shows.$.movie': ObjectID(showDetails.movie),
+                    'shows.$.date': showDetails.date,
+                    'shows.$.showTime': showDetails.showTime,
+                    'shows.$.vip': showDetails.vip,
+                    'shows.$.premium': showDetails.premium,
+                    'shows.$.executive': showDetails.executive,
+                    'shows.$.normal': showDetails.normal,
+                    'shows.$.reservedSeats': []
                 }
-            ]).toArray();
-
-            const scheduledTime = shows.filter((show) => {
-                if (show.date == showDetails.date && parseInt(show.showTime) > (parseInt(showDetails.showTime) - 3)) {
-                    return show;
-                }
+            }).then((response) => {
+                resolve({ response, alertMessage: 'Successfully updated show details.' });
+            }).catch((error) => {
+                reject({ error, errMessage: 'Failed to update show details.' });
             });
-
-            if (scheduledTime[0]) {
-                reject({ errMessage: `This time slot is already taken please choose a time slot after ${parseInt(scheduledTime[0].showTime) + 3}:00` });
-            } else {
-                db.get().collection(collection.SCREEN_COLLECTION).updateOne({
-                    _id: ObjectID(showDetails.screenId),
-                    'shows._id': ObjectID(showDetails.showId)
-                }, {
-                    $set: {
-                        'shows.$.movie': ObjectID(showDetails.movie),
-                        'shows.$.date': showDetails.date,
-                        'shows.$.showTime': showDetails.showTime,
-                        'shows.$.vip': showDetails.vip,
-                        'shows.$.premium': showDetails.premium,
-                        'shows.$.executive': showDetails.executive,
-                        'shows.$.normal': showDetails.normal,
-                        'shows.$.reservedSeats': []
-                    }
-                }).then((response) => {
-                    resolve({ response, alertMessage: 'Successfully updated show details.' });
-                }).catch((error) => {
-                    reject({ error, errMessage: 'Failed to update show details.' });
-                });
-            }
         });
     },
     deleteShow: ({ screenId, showId }) => {
@@ -584,5 +532,31 @@ module.exports = {
                 resolve(0);
             }
         });
-    }
+    },
+    getUsers: () => {
+        return new Promise(async (resolve, reject) => {
+            const users = await db.get().collection(collection.USER_COLLECTION).aggregate([
+                {
+                    $lookup: {
+                        from: collection.ORDER_COLLECTION,
+                        let: { userList: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$userId', '$$userList']
+                                    }
+                                }
+                            }, {
+                                $sort: {  orderDate : -1 }
+                            }
+                        ],
+                        as: 'orderDetails'
+                    }
+                }
+            ]).toArray();
+
+        resolve(users);
+    });
+}
 }

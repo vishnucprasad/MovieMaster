@@ -62,7 +62,7 @@
 <title>{{title}}</title>
 </head>
 
-<body class="sidebar-menu-collapsed">
+<body>
   <div class="se-pre-con"></div>
   {{#if admin}}
   {{>admin-header}}
@@ -102,6 +102,8 @@
   <script>
     $(document).ready(function () {
       $('#data-table').DataTable();
+      
+      jQuery('body').addClass(localStorage.getItem("sidebarMenuClass"));
     });
   </script>
 
@@ -161,7 +163,6 @@
     });
   </script>
 
-  <script src="/javascripts/app.js"></script>
   <script src="/javascripts/script.js"></script>
   <script src="/javascripts/ajax.js"></script>
 </body>

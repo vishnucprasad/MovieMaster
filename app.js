@@ -43,6 +43,12 @@ expressHbs.handlebars.registerHelper('IF', function (v1, operator, v2, options) 
   }
 });
 
+expressHbs.handlebars.registerHelper('parseDate', function (date) {
+  if (date) {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  }
+});
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
