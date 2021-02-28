@@ -48,7 +48,8 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <select class="form-control" id="movie" name="movie" required>
-                                                    <option value="{{show.0.movieDetails.0._id}}">{{show.0.movieDetails.0.movieTitle}}</option>
+                                                    <option value="{{show.0.movieDetails.0._id}}">
+                                                        {{show.0.movieDetails.0.movieTitle}}</option>
                                                     {{#each movies}}
                                                     <option value="{{this._id}}">{{this.movieTitle}}</option>
                                                     {{/each}}
@@ -61,7 +62,8 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <input type="date" name="date" value="{{show.0.date}}"
-                                                    class="form-control" required id="date">
+                                                    class="form-control" required id="showDate" onkeydown="return false"
+                                                    onchange="getTimeSlots('{{show.0.showTime}}', '{{show.0.date}}')">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -69,7 +71,9 @@
                                                 <label for="showTime">Show Time</label>
                                             </div>
                                             <div class="col-md-9">
-                                                <input type="time" name="showTime" value="{{show.0.showTime}}" class="form-control" required id="showTime">
+                                                <select class="form-control" id="showTime" name="showTime" required>
+                                                    <option value="{{show.0.showTime}}">{{show.0.showTime}}</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -84,8 +88,8 @@
                                                 <label for="vip">VIP</label>
                                             </div>
                                             <div class="col-md-9">
-                                                <input type="text" name="vip" value="{{show.0.vip}}" class="form-control"
-                                                    required id="vip">
+                                                <input type="text" name="vip" value="{{show.0.vip}}"
+                                                    class="form-control" required id="vip">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -117,7 +121,7 @@
                                         </div>
                                         <button type="submit"
                                             class="btn btn-success float-right rounded-pill px-5">Submit</button>
-                                        <a href="/theatre/view-schedule" type="submit"
+                                        <a href="/theatre/view-schedule/{{show.0.screen}}" type="submit"
                                             class="btn btn-danger float-right rounded-pill px-5 mr-3">Cancel</a>
                                     </form>
                                 </div>
@@ -133,3 +137,8 @@
     </div>
     <!-- main content end-->
 </section>
+<script>
+    $(document).ready(() => {
+        getTimeSlots('{{show.0.showTime}}', '{{show.0.date}}');
+    });
+</script>

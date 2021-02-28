@@ -380,7 +380,9 @@ router.post('/get-time-slots', (req, res) => {
 });
 
 router.get('/users-activity', isTheatre, (req, res) => {
-  res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user });
+  theatreHelpers.getUsers().then((users) => { 
+    res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user, users });
+  });
 });
 
 module.exports = router;
