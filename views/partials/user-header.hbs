@@ -30,21 +30,31 @@
                     <li class="nav-item">
                         <a href="/" class="nav-link font-weight-bold">Genre</a>
                     </li>
-                    {{#if userLocation}}
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link" data-toggle="dropdown">
                             <span class="nav-link-inner-text font-weight-bold">Location</span>
                             <span class="fa fa-angle-down nav-link-arrow ml-2"></span>
                         </a>
                         <ul class="dropdown-menu shadow-soft">
-                            <h5><a class="text-secondary text-truncate font-weight-bold mx-3"
-                                    href="" id="userLocation">{{userLocation.place_name}}</a></h5>
-                            <li><a class="dropdown-item" type="button" onclick="loadMap()"><i
-                                        class="fa fa-location-arrow text-secondary mr-2"></i> Pick another
-                                    location</a></li>
+                            <h5>
+                                <a class="text-secondary text-truncate font-weight-bold mx-3" href="" id="userLocation">
+                                    {{#if userLocation}}
+                                    {{userLocation.place_name}}
+                                    {{/if}}
+                                </a>
+                            </h5>
+                            <li>
+                                <a class="dropdown-item" type="button" onclick="loadMap()">
+                                    <i class="fa fa-location-arrow text-secondary mr-2"></i> 
+                                    {{#if userLocation}}
+                                    Pick another location
+                                    {{else}}
+                                    Pick your location
+                                    {{/if}}
+                                </a>
+                            </li>
                         </ul>
                     </li>
-                    {{/if}}
                     <li class="nav-item dropdown d-none d-lg-block">
                         <a href="#" class="nav-link" data-toggle="dropdown">
                             <div class="row">
@@ -105,7 +115,8 @@
                                 <div class="popup">
                                     <form class="search-box" id="search-box">
                                         <input type="search" placeholder="Search your Keyword" name="searchQuery"
-                                            id="searchQuery" onkeyup="searchProducts(event,this.value);" required="required" autofocus="" autocomplete="false">
+                                            id="searchQuery" onkeyup="searchProducts(event,this.value);"
+                                            required="required" autofocus="" autocomplete="false">
                                         <button type="submit" class="btn btn-primary mx-2"><span class="fa fa-search"
                                                 aria-hidden="true"></span></button>
                                         <div class="bg-white rounded mt-2 py-2" id="results-container" hidden
