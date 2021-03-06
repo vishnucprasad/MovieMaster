@@ -164,7 +164,9 @@ router.post('/delete-owner', isAdmin, (req, res) => {
 });
 
 router.get('/users-management', isAdmin, (req, res) => {
-  res.render('admin/users-management', { title: 'Admin | Users Management', admin: req.user });
+  adminHelpers.getUserData().then((userData) => {
+    res.render('admin/users-management', { title: 'Admin | Users Management', admin: req.user, userData });
+  });
 });
 
 router.get('/users-activity', isAdmin, (req, res) => {

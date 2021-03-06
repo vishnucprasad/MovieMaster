@@ -16,8 +16,8 @@
                                         <span class="input-group-text"><span
                                                 class="fa fa-user text-twitter"></span></span>
                                     </div>
-                                    <input class="form-control" id="reffererInput" placeholder="Type your refferer" type="text"
-                                        name="refferer" value="{{refferer}}" aria-label="refferer" required>
+                                    <input class="form-control" id="reffererInput" placeholder="Type your refferer"
+                                        type="text" name="refferer" value="{{refferer}}" aria-label="refferer" required>
                                 </div>
                             </div>
                             {{/if}}
@@ -50,8 +50,8 @@
                                         <span class="input-group-text"><span
                                                 class="fa fa-flag text-twitter"></span></span>
                                     </div>
-                                    <select class="custom-select shadow-none my-1 mr-sm-2" name="contryCode" id="contrySelection"
-                                        required>
+                                    <select class="custom-select shadow-none my-1 mr-sm-2" name="contryCode"
+                                        id="contrySelection" required>
                                         <option selected value="">Choose...</option>
                                         <option value="+91">India</option>
                                     </select>
@@ -100,8 +100,8 @@
                                         <span class="input-group-text"><span
                                                 class="fa fa-check text-twitter"></span></span>
                                     </div>
-                                    <input class="form-control" id="otpInput" placeholder="Enter OTP" name="OTP" type="text"
-                                        aria-label="otp" required>
+                                    <input class="form-control" id="otpInput" placeholder="Enter OTP" name="OTP"
+                                        type="text" aria-label="otp" required>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-block btn-primary" id="verificationSubmit">
@@ -124,11 +124,13 @@
                         </div>
                         <div class="btn-wrapper my-4 text-center">
                             <button class="btn btn-primary btn-icon-only text-success mr-2" type="button"
-                                aria-label="google button" title="Signup with Google">
+                                aria-label="google button" title="Signup with Google"
+                                onClick="authPopup(event, '/auth/google')">
                                 <span aria-hidden="true" class="fa fa-google"></span>
                             </button>
                             <button class="btn btn-primary btn-icon-only text-facebook" type="button"
-                                aria-label="facebook button" title="Signup with Facebook">
+                                aria-label="facebook button" title="Signup with Facebook"
+                                onClick="authPopup(event, '/auth/facebook')">
                                 <span aria-hidden="true" class="fa fa-facebook-f"></span>
                             </button>
                         </div>

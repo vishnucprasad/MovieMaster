@@ -23,7 +23,8 @@
                         <table class="table border table-responsive-sm" id="data-table">
                             <thead class="bg-primary text-white">
                                 <tr>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">Sl.No</th>
+                                    <th scope="col">Profile Pic</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Date of join</th>
@@ -31,16 +32,29 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{#each userData}}
                                 <tr>
                                     <th scope="row" class="serialNumber"></th>
-                                    <td>Mark</td>
-                                    <td>mark@markweb.com</td>
-                                    <td>22-November-2020</td>
                                     <td>
-                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">Delete</button>
-                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3">Block</button>
+                                        <div class="accountPic">
+                                            <img src="{{#if this.profilePic}}{{this.profilePic}}{{else}}/images/user/profile.png{{/if}}"
+                                                class="rounded-circle" alt="Image not found"
+                                                onerror=this.src="/images/user/profile.png">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {{this.name}}
+                                    </td>
+                                    <td>{{this.email}}</td>
+                                    <td>{{#parseDate this.joinDate}}{{/parseDate}}</td>
+                                    <td>
+                                        <button
+                                            class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">Delete</button>
+                                        <button
+                                            class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3">Block</button>
                                     </td>
                                 </tr>
+                                {{/each}}
                             </tbody>
                         </table>
                     </div>

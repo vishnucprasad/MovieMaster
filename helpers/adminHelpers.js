@@ -276,5 +276,12 @@ module.exports = {
                 resolve(0);
             }
         });
+    },
+    getUserData: () => {
+        return new Promise(async (resolve, reject) => {
+            const userData = await db.get().collection(collection.USER_COLLECTION).find().toArray();
+            
+            resolve(userData);
+        });
     }
 }

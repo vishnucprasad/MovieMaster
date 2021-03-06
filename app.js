@@ -45,7 +45,11 @@ expressHbs.handlebars.registerHelper('IF', function (v1, operator, v2, options) 
 
 expressHbs.handlebars.registerHelper('parseDate', function (date) {
   if (date) {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+
+    return `${year}-${month}-${day}`;
   }
 });
 
