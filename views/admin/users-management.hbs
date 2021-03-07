@@ -48,11 +48,10 @@
                                     <td>{{this.email}}</td>
                                     <td>{{#parseDate this.joinDate}}{{/parseDate}}</td>
                                     <td>
-                                        <button
-                                            class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
+                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
                                             onclick="deleteUser(event, '{{this._id}}', '{{this.name}}')">Delete</button>
-                                        <button
-                                            class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3">Block</button>
+                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
+                                            onclick="blockUser(event, '{{this._id}}', '{{this.name}}')">Block</button>
                                     </td>
                                 </tr>
                                 {{/each}}

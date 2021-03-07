@@ -280,16 +280,31 @@ module.exports = {
     getUserData: () => {
         return new Promise(async (resolve, reject) => {
             const userData = await db.get().collection(collection.USER_COLLECTION).find().toArray();
-            
+
             resolve(userData);
         });
     },
-    deleteUser: ({userId}) => {
+    deleteUser: ({ userId }) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.USER_COLLECTION).removeOne({_id: ObjectID(userId)}).then((response) => {
-                resolve({status: true, alertMessage: 'Deleted successfully', response});
+            db.get().collection(collection.USER_COLLECTION).removeOne({ _id: ObjectID(userId) }).then((response) => {
+                resolve({ status: true, alertMessage: 'Deleted successfully.', response });
             }).catch((error) => {
-                reject({status: false, errMessage: 'Failed to delete user', error});
+                reject({ status: false, errMessage: 'Failed to delete user.', error });
+            });
+        });
+    },
+    blockUser: ({ userId }) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({
+                _id: ObjectID(userId)
+            }, {
+                $set: {
+                    blocked: true
+                }
+            }).then((response) => {
+                resolve({status: true, alertMessage: 'Blocked successfully.', response});
+            }).catch((error) => {
+                reject({status: false, errMessage: 'Failed to block user.', error});
             });
         });
     }
