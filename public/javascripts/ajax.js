@@ -1046,7 +1046,7 @@ const blockUser = (e, userId, userName) => {
     vex.dialog.confirm({
         message: `Are you sure you want to block ${userName}?.`,
         callback: function (value) {
-            if(value) {
+            if (value) {
                 $.ajax({
                     url: '/admin/block-user',
                     method: 'post',
@@ -1061,6 +1061,61 @@ const blockUser = (e, userId, userName) => {
                                 icon: 'fa fa-check',
                                 iconColor: '#fff',
                                 class: 'bg-slack',
+                                timeout: 1000,
+                                onClosed: function () {
+                                    location.reload();
+                                }
+                            });
+                        } else if (response.errMessage) {
+                            iziToast.show({
+                                title: response.errMessage,
+                                titleColor: '#fff',
+                                icon: 'fa fa-check',
+                                iconColor: '#fff',
+                                class: 'bg-danger',
+                            });
+                        }
+                    },
+                    error: (error) => {
+                        iziToast.show({
+                            title: "Can't connect to the server.",
+                            titleColor: '#fff',
+                            icon: 'fa fa-check',
+                            iconColor: '#fff',
+                            class: 'bg-danger',
+                        });
+                    }
+                });
+            }
+        }
+    });
+}
+
+const unblockUser = (e, userId, userName) => {
+    e.preventDefault();
+
+    vex.dialog.confirm({
+        message: `Are you sure you want to Unblock ${userName}?.`,
+        callback: function (value) {
+            if (value) {
+                $.ajax({
+                    url: '/admin/unblock-user',
+                    method: 'post',
+                    data: {
+                        userId
+                    },
+                    success: (response) => {
+                        if (response.status) {
+                            iziToast.show({
+                                title: response.alertMessage,
+                                titleColor: '#fff',
+                                icon: 'fa fa-check',
+                                iconColor: '#fff',
+                                class: 'bg-slack',
+                                timeout: 1000,
+                                onClosed: function () {
+                                    location.reload();
+                                }
                             });
                         } else if (response.errMessage) {
                             iziToast.show({

@@ -307,5 +307,20 @@ module.exports = {
                 reject({status: false, errMessage: 'Failed to block user.', error});
             });
         });
+    },
+    unblockUser: ({ userId }) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({
+                _id: ObjectID(userId)
+            }, {
+                $unset: {
+                    blocked: true
+                }
+            }).then((response) => {
+                resolve({status: true, alertMessage: 'Unblocked successfully.', response});
+            }).catch((error) => {
+                reject({status: false, errMessage: 'Failed to Unblock user.', error});
+            });
+        });
     }
 }

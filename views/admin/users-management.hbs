@@ -33,8 +33,8 @@
                             </thead>
                             <tbody>
                                 {{#each userData}}
-                                <tr id="{{this._id}}">
-                                    <th scope="row" class="serialNumber"></th>
+                                <tr id="{{this._id}}" class="{{#if this.blocked}}bg-danger{{else}}bg-slack{{/if}}">
+                                    <th scope="row" class="serialNumber text-white"></th>
                                     <td>
                                         <div class="accountPic">
                                             <img src="{{#if this.profilePic}}{{this.profilePic}}{{else}}/images/user/profile.png{{/if}}"
@@ -42,16 +42,21 @@
                                                 onerror=this.src="/images/user/profile.png">
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-white">
                                         {{this.name}}
                                     </td>
-                                    <td>{{this.email}}</td>
-                                    <td>{{#parseDate this.joinDate}}{{/parseDate}}</td>
-                                    <td>
+                                    <td class="text-white">{{this.email}}</td>
+                                    <td class="text-white">{{#parseDate this.joinDate}}{{/parseDate}}</td>
+                                    <td class="bg-info">
                                         <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
                                             onclick="deleteUser(event, '{{this._id}}', '{{this.name}}')">Delete</button>
+                                        {{#if this.blocked}}
+                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
+                                            onclick="unblockUser(event, '{{this._id}}', '{{this.name}}')">Unblock</button>
+                                        {{else}}
                                         <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
                                             onclick="blockUser(event, '{{this._id}}', '{{this.name}}')">Block</button>
+                                        {{/if}}
                                     </td>
                                 </tr>
                                 {{/each}}
