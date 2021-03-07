@@ -169,6 +169,14 @@ router.get('/users-management', isAdmin, (req, res) => {
   });
 });
 
+router.post('/delete-user', (req, res) => {
+  adminHelpers.deleteUser(req.body).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
 router.get('/users-activity', isAdmin, (req, res) => {
   res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.user });
 });

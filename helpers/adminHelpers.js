@@ -283,5 +283,14 @@ module.exports = {
             
             resolve(userData);
         });
+    },
+    deleteUser: ({userId}) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).removeOne({_id: ObjectID(userId)}).then((response) => {
+                resolve({status: true, alertMessage: 'Deleted successfully', response});
+            }).catch((error) => {
+                reject({status: false, errMessage: 'Failed to delete user', error});
+            });
+        });
     }
 }

@@ -33,7 +33,7 @@
                             </thead>
                             <tbody>
                                 {{#each userData}}
-                                <tr>
+                                <tr id="{{this._id}}">
                                     <th scope="row" class="serialNumber"></th>
                                     <td>
                                         <div class="accountPic">
@@ -49,7 +49,8 @@
                                     <td>{{#parseDate this.joinDate}}{{/parseDate}}</td>
                                     <td>
                                         <button
-                                            class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">Delete</button>
+                                            class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
+                                            onclick="deleteUser(event, '{{this._id}}', '{{this.name}}')">Delete</button>
                                         <button
                                             class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3">Block</button>
                                     </td>
