@@ -3,10 +3,17 @@ var router = express.Router();
 const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
 const isUser = require('../middleware/auth').isUser;
+const isBlocked = require('../middleware/account').isBlocked;
 const fs = require('fs');
 const date = require('date-and-time');
 
 /* GET users listing. */
+router.get('/account-blocked', (req, res) => {
+  res.render('user/account-blocked', { title: 'MovieMaster | Account Blocked', user: req.user });
+});
+
+router.use(isBlocked);
+
 router.get('/', async (req, res, next) => {
   const upcomingMovies = await userHelpers.getUpcomingMovies();
   const movies = await userHelpers.getMovies();

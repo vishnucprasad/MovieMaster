@@ -28,12 +28,14 @@ module.exports = {
                         name,
                         email,
                         mobileNumber,
+                        joinDate: new Date(),
                         refferer,
                         wallet: 50
                     } : {
                             name,
                             email,
-                            mobileNumber
+                            mobileNumber,
+                            joinDate: new Date()
                         }
 
                     db.get().collection(collection.USER_COLLECTION).insertOne(userObject).then((response) => {

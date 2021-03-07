@@ -164,7 +164,33 @@ router.post('/delete-owner', isAdmin, (req, res) => {
 });
 
 router.get('/users-management', isAdmin, (req, res) => {
-  res.render('admin/users-management', { title: 'Admin | Users Management', admin: req.user });
+  adminHelpers.getUserData().then((userData) => {
+    res.render('admin/users-management', { title: 'Admin | Users Management', admin: req.user, userData });
+  });
+});
+
+router.post('/delete-user', (req, res) => {
+  adminHelpers.deleteUser(req.body).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/block-user', (req, res) => {
+  adminHelpers.blockUser(req.body).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
+});
+
+router.post('/unblock-user', (req, res) => {
+  adminHelpers.unblockUser(req.body).then((response) => {
+    res.json(response);
+  }).catch((error) => {
+    res.json(error);
+  });
 });
 
 router.get('/users-activity', isAdmin, (req, res) => {

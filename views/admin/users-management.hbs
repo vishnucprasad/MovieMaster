@@ -23,7 +23,8 @@
                         <table class="table border table-responsive-sm" id="data-table">
                             <thead class="bg-primary text-white">
                                 <tr>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">Sl.No</th>
+                                    <th scope="col">Profile Pic</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Date of join</th>
@@ -31,16 +32,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row" class="serialNumber"></th>
-                                    <td>Mark</td>
-                                    <td>mark@markweb.com</td>
-                                    <td>22-November-2020</td>
+                                {{#each userData}}
+                                <tr id="{{this._id}}" class="{{#if this.blocked}}bg-danger{{else}}bg-slack{{/if}}">
+                                    <th scope="row" class="serialNumber text-white"></th>
                                     <td>
-                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">Delete</button>
-                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3">Block</button>
+                                        <div class="accountPic">
+                                            <img src="{{#if this.profilePic}}{{this.profilePic}}{{else}}/images/user/profile.png{{/if}}"
+                                                class="rounded-circle" alt="Image not found"
+                                                onerror=this.src="/images/user/profile.png">
+                                        </div>
+                                    </td>
+                                    <td class="text-white">
+                                        {{this.name}}
+                                    </td>
+                                    <td class="text-white">{{this.email}}</td>
+                                    <td class="text-white">{{#parseDate this.joinDate}}{{/parseDate}}</td>
+                                    <td class="bg-info">
+                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
+                                            onclick="deleteUser(event, '{{this._id}}', '{{this.name}}')">Delete</button>
+                                        {{#if this.blocked}}
+                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
+                                            onclick="unblockUser(event, '{{this._id}}', '{{this.name}}')">Unblock</button>
+                                        {{else}}
+                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
+                                            onclick="blockUser(event, '{{this._id}}', '{{this.name}}')">Block</button>
+                                        {{/if}}
                                     </td>
                                 </tr>
+                                {{/each}}
                             </tbody>
                         </table>
                     </div>

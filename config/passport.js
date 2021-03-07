@@ -91,7 +91,7 @@ function initalize(passport) {
                 profilePic = profile.photos[0].value
             }
 
-            db.get().collection(collection.USER_COLLECTION).insertOne({ facebookId: profile.id, name: profile.displayName, email, profilePic }).then((response) => {
+            db.get().collection(collection.USER_COLLECTION).insertOne({ facebookId: profile.id, name: profile.displayName, email, profilePic, joinDate: new Date() }).then((response) => {
                 const user = response.ops[0];
                 done(null, user);
             }).catch((err) => {
@@ -122,7 +122,7 @@ function initalize(passport) {
                 profilePic = profile.photos[0].value
             }
 
-            db.get().collection(collection.USER_COLLECTION).insertOne({ googleId: profile.id, name: profile.displayName, email, profilePic }).then((response) => {
+            db.get().collection(collection.USER_COLLECTION).insertOne({ googleId: profile.id, name: profile.displayName, email, profilePic, joinDate: new Date() }).then((response) => {
                 const user = response.ops[0];
                 done(null, user);
             }).catch((err) => {
