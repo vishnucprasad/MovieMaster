@@ -533,7 +533,7 @@ module.exports = {
             }
         });
     },
-    getUsers: () => {
+    getUsers: (theatreId) => {
         return new Promise(async (resolve, reject) => {
             const users = await db.get().collection(collection.USER_COLLECTION).aggregate([
                 {
@@ -543,6 +543,7 @@ module.exports = {
                         pipeline: [
                             {
                                 $match: {
+                                    'theatreDetails._id': ObjectID(theatreId),
                                     $expr: {
                                         $eq: ['$userId', '$$userList']
                                     }
