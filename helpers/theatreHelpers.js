@@ -548,7 +548,7 @@ module.exports = {
                                     }
                                 }
                             }, {
-                                $sort: {  orderDate : -1 }
+                                $sort: { orderDate: -1 }
                             }
                         ],
                         as: 'orderDetails'
@@ -556,7 +556,7 @@ module.exports = {
                 }
             ]).toArray();
 
-        resolve(users);
-    });
-}
+            resolve(users);
+        });
+    }
 }

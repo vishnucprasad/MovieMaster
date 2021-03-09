@@ -25,6 +25,7 @@
                                 <tr>
                                     <th scope="col">ID</th>
                                     <th scope="col">Name</th>
+                                    <th scope="col">email</th>
                                     <th scope="col">Join Date</th>
                                     <th scope="col">Last Book</th>
                                     <th scope="col">Status</th>
@@ -32,14 +33,23 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{#each users}}
                                 <tr>
                                     <th scope="row" class="serialNumber"></th>
-                                    <td>Mark</td>
-                                    <td>22-11-2020</td>
-                                    <td>22-11-2020</td>
-                                    <td><span class="border text-success px-3">Paid</span></td>
-                                    <td>$350.00</td>
+                                    <td>{{this.name}}</td>
+                                    <td>{{this.email}}</td>
+                                    <td>{{#parseDate this.joinDate}}{{/parseDate}}</td>
+                                    {{#if this.orderDetails}}
+                                    <td>{{#parseDate this.orderDetails.0.orderDate}}{{/parseDate}}</td>
+                                    <td><span class="border {{#IF this.orderDetails.0.status '==' "booked"}}text-success{{else}}text-danger{{/IF}} text-uppercase px-3">{{this.orderDetails.0.status}}</span></td>
+                                    <td>Rs.{{this.orderDetails.0.totalAmount}}</td>
+                                    {{else}} 
+                                    <td>Nothing yet !</td>
+                                    <td><span class="border text-success text-uppercase px-3">...</span></td>
+                                    <td>...</td>
+                                    {{/if}}
                                 </tr>
+                                {{/each}}
                             </tbody>
                         </table>
                     </div>

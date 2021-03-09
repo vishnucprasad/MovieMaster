@@ -322,5 +322,31 @@ module.exports = {
                 reject({status: false, errMessage: 'Failed to Unblock user.', error});
             });
         });
+    },
+    getUsers: () => {
+        return new Promise(async (resolve, reject) => {
+            const users = await db.get().collection(collection.USER_COLLECTION).aggregate([
+                {
+                    $lookup: {
+                        from: collection.ORDER_COLLECTION,
+                        let: { userList: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$userId', '$$userList']
+                                    }
+                                }
+                            }, {
+                                $sort: { orderDate: -1 }
+                            }
+                        ],
+                        as: 'orderDetails'
+                    }
+                }
+            ]).toArray();
+
+            resolve(users);
+        });
     }
 }
