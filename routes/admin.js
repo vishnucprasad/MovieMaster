@@ -194,7 +194,9 @@ router.post('/unblock-user', (req, res) => {
 });
 
 router.get('/users-activity', isAdmin, (req, res) => {
-  res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.user });
+  adminHelpers.getUsers().then((users) => {
+    res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.user, users });
+  });
 });
 
 module.exports = router;
