@@ -23,10 +23,10 @@
                         <div class="px-2 mb-4">
                             <div class="card card__hover">
                                 <div class="row">
-                                    <div class="col-md-8">
-                                        <img src="/images/desk.jpg" class="img-fluid" alt="">
+                                    <div class="col-md-4">
+                                        <img src="{{#if owner.ownerPic}}/images/theatre/{{owner._id}}.jpg{{else}}/images/theatre/theatre-logo.png{{/if}}" class="img-fluid" alt="">
                                     </div>
-                                    <div class="col-md-4 my-auto">
+                                    <div class="col-md-8 my-auto">
                                         <div class="card-block">
                                             <h4 class="card-title">
                                                 {{owner.theatreName}}
