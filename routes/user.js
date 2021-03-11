@@ -1,20 +1,22 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const userHelpers = require('../helpers/userHelpers');
 const passport = require('passport');
 const isUser = require('../middleware/auth').isUser;
 const isBlocked = require('../middleware/account').isBlocked;
+const unless = require('express-unless');
 const fs = require('fs');
 const date = require('date-and-time');
 
-/* GET users listing. */
+isBlocked.unless = unless;
+
+router.use(isBlocked.unless({ path: ['/logout', '/account-blocked', '/popup'] }));
+
 router.get('/account-blocked', (req, res) => {
   res.render('user/account-blocked', { title: 'MovieMaster | Account Blocked', user: req.user });
 });
 
-router.use(isBlocked);
-
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   const upcomingMovies = await userHelpers.getUpcomingMovies();
   const movies = await userHelpers.getMovies();
   res.render('user/homepage', { title: 'MovieMaster | HOME', user: req.user, userLocation: req.session.userLocation, movies, upcomingMovies });

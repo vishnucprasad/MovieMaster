@@ -82,9 +82,9 @@ db.connect((err) => {
   else console.log('Database Connected to PORT: 27017');
 });
 
-app.use('/', userRouter);
 app.use('/admin', adminRouter);
 app.use('/theatre', theatreRouter);
+app.use('/', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

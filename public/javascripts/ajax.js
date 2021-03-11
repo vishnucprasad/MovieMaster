@@ -10,7 +10,11 @@ const logout = (e, url) => {
                     method: 'get',
                     success: (response) => {
                         if (response.status) {
-                            location.reload();
+                            if (window.location.pathname === '/account-blocked') {
+                                location.href = '/';
+                            } else {
+                                location.reload();
+                            }
                         }
                     }
                 });
