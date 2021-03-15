@@ -277,6 +277,29 @@ module.exports = {
             }
         });
     },
+    getNumberOfOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalOrders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalOrders: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalOrders[0]) {
+                resolve(totalOrders[0].totalOrders);
+            } else {
+                resolve(0);
+            }
+        });
+    },
     getUserData: () => {
         return new Promise(async (resolve, reject) => {
             const userData = await db.get().collection(collection.USER_COLLECTION).find().toArray();

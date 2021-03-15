@@ -43,7 +43,8 @@ router.get('/', isAdmin, async function (req, res, next) {
   const totalTheaters = await adminHelpers.getNumberOfTheaters();
   const totalActiveTheaters = await adminHelpers.getNumberOfActiveTheaters();
   const totalTheatersOnHold = await adminHelpers.getNumberOfTheatersOnHold();
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
+  const totalOrders = await adminHelpers.getNumberOfOrders();
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, totalOrders, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
   req.session.errMessage = false;
   req.session.alertMessage = false;
 });

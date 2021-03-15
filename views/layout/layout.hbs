@@ -16,7 +16,10 @@
 
   <!-- Template CSS -->
   {{#if admin}}
-  <link rel="stylesheet" href="/assets/css/admin.css">
+  <link rel="stylesheet" href="/assets/css/shards-dashboards.1.1.0.min.css">
+  <link rel="stylesheet" href="/assets/css/extras.1.1.0.min.css">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   {{else if adminStyle}}
   <link rel="stylesheet" href="/assets/css/admin.css">
   {{else if theatre}}
@@ -29,8 +32,7 @@
   {{/if}}
 
   <link href="//fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css"
-    href="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="/assets/css/datatables.min.css" />
   <link rel="stylesheet" href="/stylesheets/style.css">
   <link rel="stylesheet" href="/assets/css/vex.css">
   <link rel="stylesheet" href="/assets/css/vex-theme-os.css">
@@ -65,8 +67,7 @@
 <body>
   <div class="se-pre-con"></div>
   {{#if admin}}
-  {{>admin-header}}
-  {{>admin-sidebar}}
+  {{>admin-layout}}
   {{else if theatre}}
   {{>theatre-header}}
   {{>theatre-sidebar}}
@@ -74,6 +75,7 @@
   {{else if adminStyle}}
   {{else}}
   {{>user-header}}
+  {{{body}}}
   {{/if}}
   {{#if errMessage}}
   {{>error-alert}}
@@ -85,7 +87,6 @@
   {{else if messages.info}}
   {{>success-alert}}
   {{/if}}
-  {{{body}}}
 
   {{#if admin}}
   {{else if theatre}}
@@ -98,7 +99,7 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <script type="text/javascript"
-    src="https://cdn.datatables.net/v/bs4/dt-1.10.22/b-1.6.5/kt-2.5.3/r-2.2.6/datatables.min.js"></script>
+    src="/assets/js/datatables.min.js"></script>
   <script>
     $(document).ready(function () {
       $('#data-table').DataTable();
