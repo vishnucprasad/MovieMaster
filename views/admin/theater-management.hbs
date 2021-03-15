@@ -1,86 +1,74 @@
-<section>
-    <!-- main content start -->
-    <div class="main-content">
-
-        <!-- content -->
-        <div class="container-fluid content-top-gap">
-
-            <!-- breadcrumbs -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb my-breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Theatre Management</li>
-                </ol>
-            </nav>
-            <!-- //breadcrumbs -->
-
-            <section class="pricing">
-                <div class="card card_border mb-5">
-                    <div class="cards__heading">
-                        <div class="row mx-1">
-                            <h3>Theatre Owners</h3>
-                            <a href="/admin/add-owners" class="btn btn-primary rounded-pill px-5 ml-auto">Add Owners</a>
-                        </div>
+<div class="main-content-container container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header row no-gutters py-4">
+        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+            <span class="text-uppercase page-subtitle">Overview</span>
+            <h3 class="page-title">Theatre Management</h3>
+        </div>
+    </div>
+    <!-- End Page Header -->
+    <!-- Default Light Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card card-small mb-4 p-3">
+                <div class="card-header border-bottom">
+                    <div class="row">
+                        <h6 class="m-0">Theatre Owners</h6>
+                        <a href="/admin/add-owners" class="btn btn-accent ml-auto">Add Owner</a>
                     </div>
-                    <div class="card-body">
-                        <table class="table border table-responsive-sm" id="data-table">
-                            <thead class="bg-primary text-white">
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Owner Name</th>
-                                    <th scope="col">Theatre Name</th>
-                                    <th scope="col">Theatres</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each owners}}
-                                <tr id="{{this._id}}">
-                                    <th scope="row" class="serialNumber"></th>
-                                    <td>{{this.ownerName}}</td>
-                                    <td>{{this.theatreName}}</td>
-                                    <td>
-                                        <a href="/admin/owner-details/{{this._id}}"
-                                            class="btn btn-danger btn-sm rounded-pill text-uppercase px-3">View</a>
-                                    </td>
-                                    <td>
-                                        <a href="/admin/edit-owner/{{this._id}}"
-                                            class="btn btn-primary btn-sm rounded-pill text-uppercase px-3">Edit</a>
-                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
-                                            data-toggle="modal" data-target="#deleteModal{{this._id}}">Delete</button>
-                                    </td>
-                                </tr>
-                                <!-- Modal -->
-                                <div class="modal fade" id="deleteModal{{this._id}}" tabindex="-1" role="dialog"
-                                    data-backdrop="static" aria-labelledby="deleteModal{{this._id}}Title"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body text-center text-uppercase p-5">
-                                                <h6 class="font-weight-bold">Are you sure you want to delete
-                                                    {{this.ownerName}} ?</h6>
-                                                <div class="row mt-5">
-                                                    <button type="button"
-                                                        class="btn btn-success btn-sm rounded-pill px-5"
-                                                        data-dismiss="modal">CANCEL</button>
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm rounded-pill px-5 ml-auto"
-                                                        onclick="deleteItem(event, '{{this._id}}', '/admin/delete-owner')">DELETE</button>
-                                                </div>
+                </div>
+                <div class="card-body p-0 pb-3 text-center">
+                    <table class="table table-responsive-sm mb-0" id="dataTable">
+                        <thead class="bg-light">
+                            <tr>
+                                <th scope="col" class="border-0">#</th>
+                                <th scope="col" class="border-0">Owner Name</th>
+                                <th scope="col" class="border-0">Theatre Name</th>
+                                <th scope="col" class="border-0">Details</th>
+                                <th scope="col" class="border-0">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each owners}}
+                            <tr id="{{this._id}}">
+                                <td scope="row" class="serialNumber"></td>
+                                <td>{{this.ownerName}}</td>
+                                <td>{{this.theatreName}}</td>
+                                <td><a href="/admin/owner-details/{{this._id}}" class="btn btn-accent">View</a></td>
+                                <td>
+                                    <div class="row justify-content-center">
+                                        <a href="/admin/edit-owner/{{this._id}}" class="btn btn-accent">Edit</a>
+                                        <a href="" class="btn btn-info mx-2 my-2 my-sm-0">Hold</a>
+                                        <button class="btn btn-danger" data-toggle="modal"
+                                            data-target="#deleteModal{{this._id}}">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="deleteModal{{this._id}}" tabindex="-1" role="dialog"
+                                data-backdrop="static" aria-labelledby="deleteModal{{this._id}}Title"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center text-uppercase p-5">
+                                            <h6 class="font-weight-bold">Are you sure you want to delete
+                                                {{this.ownerName}} ?</h6>
+                                            <div class="row mt-5">
+                                                <button type="button" class="btn btn-success btn-sm rounded-pill px-5"
+                                                    data-dismiss="modal">CANCEL</button>
+                                                <button type="button"
+                                                    class="btn btn-danger btn-sm rounded-pill px-5 ml-auto"
+                                                    onclick="deleteItem(event, '{{this._id}}', '/admin/delete-owner')">DELETE</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
+                            </div>
+                            {{/each}}
+                        </tbody>
+                    </table>
                 </div>
-            </section>
-
+            </div>
         </div>
-        <!-- //content -->
-
     </div>
-    <!-- main content end-->
-</section>
+    <!-- End Default Light Table -->
+</div>
