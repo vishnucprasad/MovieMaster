@@ -107,9 +107,7 @@ router.get('/theater-management', isAdmin, (req, res) => {
 });
 
 router.get('/add-owners', isAdmin, (req, res) => {
-  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.user });
 });
 
 router.post('/add-owners', isAdmin, (req, res) => {
@@ -133,9 +131,7 @@ router.get('/owner-details/:id', isAdmin, (req, res) => {
 
 router.get('/edit-owner/:id', isAdmin, (req, res) => {
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.user, owner, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.user, owner });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/admin/theater-management');
@@ -144,10 +140,10 @@ router.get('/edit-owner/:id', isAdmin, (req, res) => {
 
 router.post('/edit-owner', isAdmin, (req, res) => {
   adminHelpers.editOwner(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/admin/theater-management');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect(`/admin/edit-owner/${req.body.ownerId}`)
   });
 });
