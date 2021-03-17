@@ -62,43 +62,39 @@ router.post('/update-profile-picture/:id', isAdmin, (req, res) => {
           console.log(done);
         }
       });
-      req.session.alertMessage = response.alertMessage;
-      res.redirect('/admin');
+      req.flash('info', response.alertMessage);
+      res.redirect('/admin/profile');
     }).catch((error) => {
-      req.session.errMessage = error.errMessage;
-      res.redirect('/admin');
+      req.flash('error', error.errMessage);
+      res.redirect('/admin/profile');
     });
   }
 });
 
 router.get('/remove-profile-picture/:id', isAdmin, (req, res) => {
   adminHelpers.updateProfilePicture(req.params.id, false).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     fs.unlinkSync(`./public/images/admin/${response.admin._id}.jpg`);
-    res.redirect('/admin');
+    res.redirect('/admin/profile');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin');
+    req.flash('error', error.errMessage);
+    res.redirect('/admin/profile');
   });;
 });
 
 router.post('/update-admin-details', isAdmin, (req, res) => {
   adminHelpers.updateAdminDetails(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/admin');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin');
+    res.json(error);
   });
 });
 
 router.post('/change-password', (req, res) => {
   adminHelpers.changePassword(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/admin');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin');
+    res.json(error);
   });
 });
 
@@ -198,6 +194,10 @@ router.get('/users-activity', isAdmin, (req, res) => {
   adminHelpers.getUsers().then((users) => {
     res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.user, users });
   });
+});
+
+router.get('/profile', (req, res) => {
+  res.render('admin/profile', { title: 'Admin | Profile', admin: req.user });
 });
 
 module.exports = router;

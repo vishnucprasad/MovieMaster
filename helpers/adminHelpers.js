@@ -39,21 +39,22 @@ module.exports = {
             });
         });
     },
-    updateAdminDetails: ({ name, email }, adminId) => {
+    updateAdminDetails: ({ name, email, description }, adminId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ADMIN_COLLECTION).updateOne({
                 _id: ObjectID(adminId)
             }, {
                 $set: {
                     name,
-                    email
+                    email,
+                    description
                 }
             }).then(async (response) => {
                 const admin = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ _id: ObjectID(adminId) });
                 delete admin.password;
-                resolve({ admin, alertMessage: 'Updated successfully.' });
+                resolve({ status: true, admin, alertMessage: 'Updated successfully.' });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to update admin details.' });
+                reject({ status: false, error, errMessage: 'Failed to update admin details.' });
             });
         });
     },
@@ -71,13 +72,13 @@ module.exports = {
                                 password: newPassword
                             }
                         }).then((response) => {
-                            resolve({ alertMessage: 'Password changed successfully' });
+                            resolve({ status: true, alertMessage: 'Password changed successfully' });
                         })
                     } else {
-                        reject({ errMessage: "Entered passwords dosen't match" });
+                        reject({ status: false, errMessage: "Entered passwords dosen't match" });
                     }
                 } else {
-                    reject({ errMessage: 'Incorrect password.' });
+                    reject({ status: false, errMessage: 'Incorrect password.' });
                 }
             });
         });

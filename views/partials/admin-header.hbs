@@ -54,7 +54,7 @@
         <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button"
           aria-haspopup="true" aria-expanded="false">
           <img class="user-avatar rounded-circle mr-2" src="{{#if admin.profilePic}}/images/admin/{{admin._id}}.jpg{{else}}/images/admin/admin-logo.png{{/if}}" alt="User Avatar">
-          <span class="d-none d-md-inline-block">{{admin.name}}</span>
+          <span class="d-none d-md-inline-block" id="adminHeaderName">{{admin.name}}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-small">
           <a class="dropdown-item" href="/admin/profile">
