@@ -39,30 +39,10 @@
                                     <div class="row justify-content-center">
                                         <a href="/admin/edit-owner/{{this._id}}" class="btn btn-accent">Edit</a>
                                         <a href="" class="btn btn-info mx-2 my-2 my-sm-0">Hold</a>
-                                        <button class="btn btn-danger" data-toggle="modal"
-                                            data-target="#deleteModal{{this._id}}">Delete</button>
+                                        <button class="btn btn-danger" onclick="vex.dialog.confirm({ message: 'Are you sure you want to delete {{this.ownerName}} ?', callback: (value) => { if (value) deleteItem(event, '{{this._id}}', '/admin/delete-owner'); } });">Delete</button>
                                     </div>
                                 </td>
                             </tr>
-                            <div class="modal fade" id="deleteModal{{this._id}}" tabindex="-1" role="dialog"
-                                data-backdrop="static" aria-labelledby="deleteModal{{this._id}}Title"
-                                aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-body text-center text-uppercase p-5">
-                                            <h6 class="font-weight-bold">Are you sure you want to delete
-                                                {{this.ownerName}} ?</h6>
-                                            <div class="row mt-5">
-                                                <button type="button" class="btn btn-success btn-sm rounded-pill px-5"
-                                                    data-dismiss="modal">CANCEL</button>
-                                                <button type="button"
-                                                    class="btn btn-danger btn-sm rounded-pill px-5 ml-auto"
-                                                    onclick="deleteItem(event, '{{this._id}}', '/admin/delete-owner')">DELETE</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             {{/each}}
                         </tbody>
                     </table>
