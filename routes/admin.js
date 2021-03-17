@@ -114,11 +114,11 @@ router.get('/add-owners', isAdmin, (req, res) => {
 
 router.post('/add-owners', isAdmin, (req, res) => {
   adminHelpers.addOwners(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/admin/add-owners');
+    req.flash('info', response.alertMessage);
+    res.redirect('/admin/theater-management');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin/add-owners');
+    req.flash('error', error.errMessage);
+    res.redirect('/admin/theater-management');
   });
 });
 
