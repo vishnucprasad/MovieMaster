@@ -120,9 +120,14 @@ router.post('/add-owners', isAdmin, (req, res) => {
   });
 });
 
-router.get('/owner-details/:id', isAdmin, (req, res) => {
+router.get('/theatre-overview/:id', isAdmin, async (req, res) => {
+  const totalShows = await adminHelpers.getNumberOfShows(req.params.id);
+  const totalScreens = await adminHelpers.getNumberOfScreens(req.params.id);
+  const totalBookings = await adminHelpers.getNumberOfBookings(req.params.id);
+  const paidBookings = await adminHelpers.getNumberOfPayedBookings(req.params.id);
+  const unpaidBookings = await adminHelpers.getNumberOfUnpayedBookings(req.params.id);
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/owner-details', { title: 'Admin | Theater Details', admin: req.user, owner });
+    res.render('admin/theatre-overview', { title: 'Admin | Theater Details', admin: req.user, owner, totalShows, totalScreens, totalBookings, paidBookings, unpaidBookings });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/admin/theater-management');

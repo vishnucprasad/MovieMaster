@@ -372,5 +372,153 @@ module.exports = {
 
             resolve(users);
         });
+    },
+    getNumberOfShows: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalShows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $project: {
+                        shows: '$shows'
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalShows: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (totalShows[0]) {
+                resolve(totalShows[0].totalShows);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfScreens: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalScreens = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId)
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalScreens: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (totalScreens[0]) {
+                resolve(totalScreens[0].totalScreens);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId)
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (totalBookings[0]) {
+                resolve(totalBookings[0].totalBookings);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfPayedBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const paidBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId),
+                        status: "booked"
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPayedBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfUnpayedBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const paidBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId),
+                        status: "Payment Failed"
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPayedBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
+        });
     }
 }
