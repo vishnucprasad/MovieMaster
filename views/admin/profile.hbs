@@ -22,7 +22,7 @@
                             src="{{#if admin.profilePic}}/images/admin/{{admin._id}}.jpg{{else}}/images/admin/admin-logo.png{{/if}}"
                             alt="User Avatar" width="110">
                     </div>
-                    <h4 class="mb-0">{{admin.name}}</h4>
+                    <h4 class="mb-0" id="adminProfileName">{{admin.name}}</h4>
                     <span class="text-muted d-block mb-2">Admin</span>
                     <button type="button" class="mb-2 btn btn-sm btn-pill btn-outline-primary mr-2" data-toggle="modal"
                         data-target="#updateAdminProfilePic">
@@ -112,7 +112,7 @@
                                         <div class="form-group col-md-12">
                                             <label for="description">Description</label>
                                             <textarea class="form-control" name="description"
-                                                rows="5">{{admin.description}}</textarea>
+                                                rows="5" id="descriptionControl">{{admin.description}}</textarea>
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-accent">Update Account</button>

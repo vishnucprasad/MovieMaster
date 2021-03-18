@@ -41,7 +41,7 @@ $('#updateAdminForm').submit((e) => {
                 data: $('#updateAdminForm').serialize(),
                 success: (response) => {
                     if (response.status) {
-                        if (response.admin.description) {
+                        if (response.admin.description && !document.getElementById('adminDescription').innerHTML) {
                             const descriptionHeader = document.createElement("strong");
                             descriptionHeader.setAttribute('class', 'text-muted d-block mb-2');
                             descriptionHeader.innerHTML = 'Description';
@@ -50,11 +50,12 @@ $('#updateAdminForm').submit((e) => {
                             const description = document.createElement('span');
                             description.innerHTML = response.admin.description;
                             document.getElementById('adminDescription').appendChild(description);
-                        } else {
+                        } else if (document.getElementById('descriptionControl').value === '') {
                             document.getElementById('adminDescription').innerHTML = '';
                         }
 
                         document.getElementById('adminHeaderName').innerText = response.admin.name;
+                        document.getElementById('adminProfileName').innerText = response.admin.name;
 
                         iziToast.show({
                             title: response.alertMessage,
