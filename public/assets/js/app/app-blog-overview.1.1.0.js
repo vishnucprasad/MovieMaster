@@ -183,7 +183,7 @@
                 return tick;
               }
               // Format the amounts using Ks for thousands.
-              return tick > 999 ? (tick/ 1000).toFixed(1) + 'K' : tick;
+              return tick > 999 ? (tick / 1000).toFixed(1) + 'K' : tick;
             }
           }
         }]
@@ -225,8 +225,8 @@
     const totalOrders = parseInt(document.getElementById('totalOrders').innerHTML)
     const totalPaidOrders = parseInt(document.getElementById('totalPaidOrders').innerHTML)
 
-    const paidPercentage = totalPaidOrders / totalOrders * 100;
-    const unpaidPercentage = 100 - paidPercentage;
+    const paidPercentage = totalOrders === 0 ? 0 : totalPaidOrders / totalOrders * 100;
+    const unpaidPercentage = totalOrders === 0 ? 0 : 100 - paidPercentage;
 
     // Data
     var ubdData = {

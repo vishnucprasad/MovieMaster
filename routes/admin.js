@@ -128,8 +128,10 @@ router.get('/theatre-overview/:id', isAdmin, async (req, res) => {
   const totalBookings = await adminHelpers.getNumberOfBookings(req.params.id);
   const paidBookings = await adminHelpers.getNumberOfPayedBookings(req.params.id);
   const unpaidBookings = await adminHelpers.getNumberOfUnpayedBookings(req.params.id);
+  const currentMonthBookings = await adminHelpers.getTheatreBookings(req.params.id, date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
+  const pastMonthBookings = await adminHelpers.getTheatreBookings(req.params.id, date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/theatre-overview', { title: 'Admin | Theater Details', admin: req.user, owner, totalShows, totalScreens, totalBookings, paidBookings, unpaidBookings });
+    res.render('admin/theatre-overview', { title: 'Admin | Theater Details', admin: req.user, owner, totalShows, totalScreens, totalBookings, paidBookings, unpaidBookings, currentMonthBookings, pastMonthBookings });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/admin/theater-management');
