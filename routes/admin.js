@@ -45,9 +45,10 @@ router.get('/', isAdmin, async function (req, res, next) {
   const totalActiveTheaters = await adminHelpers.getNumberOfActiveTheaters();
   const totalTheatersOnHold = await adminHelpers.getNumberOfTheatersOnHold();
   const totalOrders = await adminHelpers.getNumberOfOrders();
+  const totalPaidOrders = await adminHelpers.getNumberOfPaidOrders();
   const currentMonthBookings = await adminHelpers.getBookings(date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
   const pastMonthBookings = await adminHelpers.getBookings(date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, totalOrders, currentMonthBookings, pastMonthBookings });
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, totalOrders, totalPaidOrders, currentMonthBookings, pastMonthBookings });
 });
 
 router.post('/update-profile-picture/:id', isAdmin, (req, res) => {

@@ -222,12 +222,17 @@
     //
     // Users by device pie chart
     //
+    const totalOrders = parseInt(document.getElementById('totalOrders').innerHTML)
+    const totalPaidOrders = parseInt(document.getElementById('totalPaidOrders').innerHTML)
+
+    const paidPercentage = totalPaidOrders / totalOrders * 100;
+    const unpaidPercentage = 100 - paidPercentage;
 
     // Data
     var ubdData = {
       datasets: [{
         hoverBorderColor: '#ffffff',
-        data: [68, 32],
+        data: [paidPercentage, unpaidPercentage],
         backgroundColor: [
           'rgba(0,123,255,0.9)',
           'rgba(0,123,255,0.5)',

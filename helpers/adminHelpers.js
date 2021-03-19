@@ -301,6 +301,34 @@ module.exports = {
             }
         });
     },
+    getNumberOfPaidOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalPaidOrders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        status: 'booked'
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPaidOrders: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalPaidOrders[0]) {
+                resolve(totalPaidOrders[0].totalPaidOrders);
+            } else {
+                resolve(0);
+            }
+        });
+    },
     getUserData: () => {
         return new Promise(async (resolve, reject) => {
             const userData = await db.get().collection(collection.USER_COLLECTION).find().toArray();
