@@ -1,74 +1,67 @@
-<section>
-    <!-- main content start -->
-    <div class="main-content">
-
-        <!-- content -->
-        <div class="container-fluid content-top-gap">
-
-            <!-- breadcrumbs -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb my-breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Users Management</li>
-                </ol>
-            </nav>
-            <!-- //breadcrumbs -->
-
-            <section class="pricing">
-                <div class="card card_border mb-5">
-                    <div class="cards__heading">
-                        <h3>Users List</h3>
-                    </div>
-                    <div class="card-body">
-                        <table class="table border table-responsive-sm" id="data-table">
-                            <thead class="bg-primary text-white">
-                                <tr>
-                                    <th scope="col">Sl.No</th>
-                                    <th scope="col">Profile Pic</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Date of join</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each userData}}
-                                <tr id="{{this._id}}" class="{{#if this.blocked}}bg-danger{{else}}bg-slack{{/if}}">
-                                    <th scope="row" class="serialNumber text-white"></th>
-                                    <td>
-                                        <div class="accountPic">
-                                            <img src="{{#if this.profilePic}}{{this.profilePic}}{{else}}/images/user/profile.png{{/if}}"
-                                                class="rounded-circle" alt="Image not found"
-                                                onerror=this.src="/images/user/profile.png">
-                                        </div>
-                                    </td>
-                                    <td class="text-white">
-                                        {{this.name}}
-                                    </td>
-                                    <td class="text-white">{{this.email}}</td>
-                                    <td class="text-white">{{#parseDate this.joinDate}}{{/parseDate}}</td>
-                                    <td class="bg-info">
-                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
-                                            onclick="deleteUser(event, '{{this._id}}', '{{this.name}}')">Delete</button>
-                                        {{#if this.blocked}}
-                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
-                                            onclick="unblockUser(event, '{{this._id}}', '{{this.name}}')">Unblock</button>
-                                        {{else}}
-                                        <button class="btn btn-secondary btn-sm rounded-pill text-uppercase px-3"
-                                            onclick="blockUser(event, '{{this._id}}', '{{this.name}}')">Block</button>
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
+<script>
+    $(document).ready(() => {
+        setActiveTab('users-management-tab');
+    });
+</script>
+<div class="main-content-container container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header row no-gutters py-4">
+        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+            <span class="text-uppercase page-subtitle">Overview</span>
+            <h3 class="page-title">Users Management</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card card-small mb-4 p-3">
+                <div class="card-header border-bottom">
+                    <div class="row">
+                        <h6 class="m-0">Users</h6>
                     </div>
                 </div>
-            </section>
-
+                <div class="card-body p-0 pb-3 text-center">
+                    <table class="table table-responsive-sm mb-0" id="dataTable">
+                        <thead class="bg-light">
+                            <tr>
+                                <th scope="col" class="border-0">#</th>
+                                <th scope="col" class="border-0">Profile Pic</th>
+                                <th scope="col" class="border-0">Name</th>
+                                <th scope="col" class="border-0">Email</th>
+                                <th scope="col" class="border-0">Date of Join</th>
+                                <th scope="col" class="border-0">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each userData}}
+                            <tr id="{{this._id}}">
+                                <td scope="row" class="serialNumber"></td>
+                                <th>
+                                    <img src="{{#if this.profilePic}}{{this.profilePic}}{{else}}/images/user/profile.png{{/if}}"
+                                        onerror=this.src="/images/user/profile.png" alt=""
+                                        style="height: 3rem !important;">
+                                </th>
+                                <td>{{this.name}}</td>
+                                <td>{{this.email}}</td>
+                                <td>{{#parseDate this.joinDate}}{{/parseDate}}</td>
+                                <td>
+                                    <div class="row justify-content-center">
+                                        <button class="btn btn-danger"
+                                            onclick="deleteUser(event, '{{this._id}}', '{{this.name}}')">Delete</button>
+                                        {{#if this.blocked}}
+                                        <button class="btn btn-warning mx-2 my-2 my-sm-0"
+                                            onclick="unblockUser(event, '{{this._id}}', '{{this.name}}')">Unblock</button>
+                                        {{else}}
+                                        <button class="btn btn-info mx-2 my-2 my-sm-0"
+                                            onclick="blockUser(event, '{{this._id}}', '{{this.name}}')">Block</button>
+                                        {{/if}}
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <!-- //content -->
-
     </div>
-    <!-- main content end-->
-</section>
+</div>

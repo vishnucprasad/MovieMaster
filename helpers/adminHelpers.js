@@ -39,21 +39,22 @@ module.exports = {
             });
         });
     },
-    updateAdminDetails: ({ name, email }, adminId) => {
+    updateAdminDetails: ({ name, email, description }, adminId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ADMIN_COLLECTION).updateOne({
                 _id: ObjectID(adminId)
             }, {
                 $set: {
                     name,
-                    email
+                    email,
+                    description
                 }
             }).then(async (response) => {
                 const admin = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ _id: ObjectID(adminId) });
                 delete admin.password;
-                resolve({ admin, alertMessage: 'Updated successfully.' });
+                resolve({ status: true, admin, alertMessage: 'Updated successfully.' });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to update admin details.' });
+                reject({ status: false, error, errMessage: 'Failed to update admin details.' });
             });
         });
     },
@@ -71,13 +72,13 @@ module.exports = {
                                 password: newPassword
                             }
                         }).then((response) => {
-                            resolve({ alertMessage: 'Password changed successfully' });
+                            resolve({ status: true, alertMessage: 'Password changed successfully' });
                         })
                     } else {
-                        reject({ errMessage: "Entered passwords dosen't match" });
+                        reject({ status: false, errMessage: "Entered passwords dosen't match" });
                     }
                 } else {
-                    reject({ errMessage: 'Incorrect password.' });
+                    reject({ status: false, errMessage: 'Incorrect password.' });
                 }
             });
         });
@@ -277,6 +278,57 @@ module.exports = {
             }
         });
     },
+    getNumberOfOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalOrders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalOrders: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalOrders[0]) {
+                resolve(totalOrders[0].totalOrders);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfPaidOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            const totalPaidOrders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        status: 'booked'
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPaidOrders: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+            if (totalPaidOrders[0]) {
+                resolve(totalPaidOrders[0].totalPaidOrders);
+            } else {
+                resolve(0);
+            }
+        });
+    },
     getUserData: () => {
         return new Promise(async (resolve, reject) => {
             const userData = await db.get().collection(collection.USER_COLLECTION).find().toArray();
@@ -302,9 +354,9 @@ module.exports = {
                     blocked: true
                 }
             }).then((response) => {
-                resolve({status: true, alertMessage: 'Blocked successfully.', response});
+                resolve({ status: true, alertMessage: 'Blocked successfully.', response });
             }).catch((error) => {
-                reject({status: false, errMessage: 'Failed to block user.', error});
+                reject({ status: false, errMessage: 'Failed to block user.', error });
             });
         });
     },
@@ -317,9 +369,9 @@ module.exports = {
                     blocked: true
                 }
             }).then((response) => {
-                resolve({status: true, alertMessage: 'Unblocked successfully.', response});
+                resolve({ status: true, alertMessage: 'Unblocked successfully.', response });
             }).catch((error) => {
-                reject({status: false, errMessage: 'Failed to Unblock user.', error});
+                reject({ status: false, errMessage: 'Failed to Unblock user.', error });
             });
         });
     },
@@ -347,6 +399,227 @@ module.exports = {
             ]).toArray();
 
             resolve(users);
+        });
+    },
+    getNumberOfShows: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalShows = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId)
+                    }
+                }, {
+                    $unwind: '$shows'
+                }, {
+                    $project: {
+                        shows: '$shows'
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalShows: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (totalShows[0]) {
+                resolve(totalShows[0].totalShows);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfScreens: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalScreens = await db.get().collection(collection.SCREEN_COLLECTION).aggregate([
+                {
+                    $match: {
+                        theatre: ObjectID(theatreId)
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalScreens: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (totalScreens[0]) {
+                resolve(totalScreens[0].totalScreens);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const totalBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId)
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (totalBookings[0]) {
+                resolve(totalBookings[0].totalBookings);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfPayedBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const paidBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId),
+                        status: "booked"
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPayedBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getNumberOfUnpayedBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const paidBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId),
+                        status: "Payment Failed"
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPayedBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getBookings: (year, month, day) => {
+        console.log(year, month, day);
+        return new Promise(async (resolve, reject) => {
+            let bookings = [];
+            for (i = 1; i <= parseInt(day); i++) {
+                currentDay = i < 10 ? `0${i}` : i;
+
+                const booking = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                    {
+                        $match: {
+                            orderDate: `${year}/${month}/${currentDay}`
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$_id',
+                            'sum': { $sum: 1 }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalOrders: { '$sum': '$sum' }
+                        }
+                    }
+                ]).toArray();
+                if (booking[0]) {
+                    bookings.push(booking[0].totalOrders);
+                } else {
+                    bookings.push(0);
+                }
+            };
+            console.log(bookings);
+            resolve(bookings);
+        });
+    },
+    getTheatreBookings: (theatreId, year, month, day) => {
+        console.log(year, month, day);
+        return new Promise(async (resolve, reject) => {
+            let bookings = [];
+            for (i = 1; i <= parseInt(day); i++) {
+                currentDay = i < 10 ? `0${i}` : i;
+
+                const booking = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                    {
+                        $match: {
+                            'theatreDetails._id': ObjectID(theatreId),
+                            orderDate: `${year}/${month}/${currentDay}`
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$_id',
+                            'sum': { $sum: 1 }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalOrders: { '$sum': '$sum' }
+                        }
+                    }
+                ]).toArray();
+                if (booking[0]) {
+                    bookings.push(booking[0].totalOrders);
+                } else {
+                    bookings.push(0);
+                }
+            };
+            console.log(bookings);
+            resolve(bookings);
         });
     }
 }

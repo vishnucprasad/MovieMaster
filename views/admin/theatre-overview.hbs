@@ -1,17 +1,38 @@
 <script>
     $(document).ready(() => {
-        setActiveTab('dashboard-tab');
+        setActiveTab('theatre-management-tab');
     });
 </script>
 <div class="main-content-container container-fluid px-4">
     <!-- Page Header -->
     <div class="page-header row no-gutters py-4">
         <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-            <span class="text-uppercase page-subtitle">Dashboard</span>
-            <h3 class="page-title">Overview</h3>
+            <span class="text-uppercase page-subtitle">Overview</span>
+            <h3 class="page-title">Theatre Overview</h3>
         </div>
     </div>
     <!-- End Page Header -->
+    <div class="card card-small mb-4">
+        <div class="card-header border-bottom">
+            <div class="row align-items-center">
+                <div class="col-md-2 p-5 p-md-3">
+                    <img src="{{#if owner.ownerPic}}/images/theatre/{{owner._id}}.jpg{{else}}/images/theatre/theatre-logo.png{{/if}}" class="img-fluid" alt="">
+                </div>
+                <div class="col-md-4">
+                    <h6 class="mb-3 text-secondary">Theatre</h6>
+                    <h4>{{owner.theatreName}}</h4>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3 text-secondary">Owner</h6>
+                    <h4>{{owner.ownerName}}</h4>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3 text-secondary">Date Created</h6>
+                    <h4>{{#parseDate owner.dateCreated}}{{/parseDate}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Small Stats Blocks -->
     <div class="row">
         <div class="col-lg col-md-6 col-sm-6 mb-4">
@@ -19,8 +40,8 @@
                 <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                            <span class="stats-small__label text-uppercase">Active Users</span>
-                            <h6 class="stats-small__value count my-3">{{totalUsers}}</h6>
+                            <span class="stats-small__label text-uppercase">Shows</span>
+                            <h6 class="stats-small__value count my-3">{{totalShows}}</h6>
                         </div>
                     </div>
                     <canvas height="120" class="blog-overview-stats-small-1"></canvas>
@@ -32,8 +53,8 @@
                 <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                            <span class="stats-small__label text-uppercase">Theaters</span>
-                            <h6 class="stats-small__value count my-3">{{totalTheaters}}</h6>
+                            <span class="stats-small__label text-uppercase">Screens</span>
+                            <h6 class="stats-small__value count my-3">{{totalScreens}}</h6>
                         </div>
                     </div>
                     <canvas height="120" class="blog-overview-stats-small-2"></canvas>
@@ -45,8 +66,8 @@
                 <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                            <span class="stats-small__label text-uppercase">Active Theaters</span>
-                            <h6 class="stats-small__value count my-3">{{totalActiveTheaters}}</h6>
+                            <span class="stats-small__label text-uppercase">Bookings</span>
+                            <h6 class="stats-small__value count my-3">{{totalBookings}}</h6>
                         </div>
                     </div>
                     <canvas height="120" class="blog-overview-stats-small-3"></canvas>
@@ -58,8 +79,8 @@
                 <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                            <span class="stats-small__label text-uppercase">On Hold</span>
-                            <h6 class="stats-small__value count my-3">{{totalTheatersOnHold}}</h6>
+                            <span class="stats-small__label text-uppercase">Paid Bookings</span>
+                            <h6 class="stats-small__value count my-3">{{paidBookings}}</h6>
                         </div>
                     </div>
                     <canvas height="120" class="blog-overview-stats-small-4"></canvas>
@@ -71,8 +92,8 @@
                 <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                            <span class="stats-small__label text-uppercase">Total Bookings</span>
-                            <h6 class="stats-small__value count my-3">{{totalOrders}}</h6>
+                            <span class="stats-small__label text-uppercase">Unpaid Bookings</span>
+                            <h6 class="stats-small__value count my-3">{{unpaidBookings}}</h6>
                         </div>
                     </div>
                     <canvas height="120" class="blog-overview-stats-small-5"></canvas>
@@ -106,8 +127,8 @@
             </div>
         </div>
         <!--datas for graph -->
-        <div id="totalOrders" hidden>{{totalOrders}}</div>
-        <div id="totalPaidOrders" hidden>{{totalPaidOrders}}</div>
+        <div id="totalOrders" hidden>{{totalBookings}}</div>
+        <div id="totalPaidOrders" hidden>{{paidBookings}}</div>
         <div id="currentMonthBookings" hidden>{{currentMonthBookings}}</div>
         <div id="pastMonthBookings" hidden>{{pastMonthBookings}}</div>
         <!--Emd datas for graph -->

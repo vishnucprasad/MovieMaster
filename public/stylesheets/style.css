@@ -47,6 +47,10 @@ body {
   border-top: 2px solid var(--danger);
 }
 
+.bg-slack {
+  background-color: #3aaf85 !important;
+}
+
 #profile-pic-wrapper {
   width: 10vw;
   height: 10vw;

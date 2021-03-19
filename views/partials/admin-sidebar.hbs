@@ -1,35 +1,61 @@
-<section>
-    <!-- sidebar menu start -->
-    <div class="sidebar-menu sticky-sidebar-menu">
-
-        <!-- logo start -->
-        <div class="logo">
-            <h1><a href="/admin">ADMIN</a></h1>
-        </div>
-
-        <div class="logo-icon text-center">
-            <a href="/admin" title="logo"><img src="/images/logo.png" alt="logo-icon"> </a>
-        </div>
-        <!-- //logo end -->
-
-        <div class="sidebar-menu-inner">
-
-            <!-- sidebar nav start -->
-            <ul class="nav nav-pills nav-stacked custom-nav">
-                <li class="active"><a href="/admin"><i class="fa fa-tachometer"></i><span> Dashboard</span></a>
-                </li>
-                <li><a href="/admin/theater-management"><i class="fa fa-home"></i> <span>Theater Management</span></a></li>
-                <li><a href="/admin/users-management"><i class="fa fa-user"></i> <span>Users Management</span></a></li>
-                <li><a href="/admin/users-activity"><i class="fa fa-users"></i> <span>Users Activity Track</span></a></li>
-            </ul>
-            <!-- //sidebar nav end -->
-            <!-- toggle button start -->
-            <a class="toggle-btn">
-                <i class="fa fa-angle-double-left menu-collapsed__left"><span>Collapse Sidebar</span></i>
-                <i class="fa fa-angle-double-right menu-collapsed__right"></i>
+<aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0">
+    <div class="main-navbar">
+        <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
+            <a class="navbar-brand w-100 mr-0" href="#" style="line-height: 25px;">
+                <div class="d-table m-auto">
+                    <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;"
+                        src="/favicon.ico" onerror=this.src="/favicon.ico">
+                    <span class="d-none d-md-inline ml-1">MovieMaster | Admin</span>
+                </div>
             </a>
-            <!-- //toggle button end -->
-        </div>
+            <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
+                <i class="material-icons">&#xE5C4;</i>
+            </a>
+        </nav>
     </div>
-    <!-- //sidebar menu end -->
-</section>
+    <form action="#" class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
+        <div class="input-group input-group-seamless ml-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                aria-label="Search">
+        </div>
+    </form>
+    <div class="nav-wrapper">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link " href="/admin" id="dashboard-tab">
+                    <i class="material-icons">vertical_split</i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/theater-management" id="theatre-management-tab">
+                    <i class="material-icons">home</i>
+                    <span>Theatre Management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/users-management" id="users-management-tab">
+                    <i class="material-icons">people</i>
+                    <span>Users Management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/users-activity" id="users-activity-tab">
+                    <i class="material-icons">pie_chart</i>
+                    <span>Users Activity Track</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/admin/profile" id="admin-profile-tab">
+                    <i class="material-icons">person</i>
+                    <span>Admin Profile</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>

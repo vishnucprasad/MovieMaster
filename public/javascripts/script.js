@@ -20,22 +20,14 @@ $('#updateProfilePicForm').submit((e) => {
     $('#profilePicLoadingBtn').removeAttr('hidden');
 });
 
-const editAdminDetails = (e) => {
-    e.preventDefault();
-    document.getElementById('name').removeAttribute('readonly');
-    document.getElementById('email').removeAttribute('readonly');
-    document.getElementById('save').removeAttribute('hidden');
-    document.getElementById('cancel').removeAttribute('hidden');
-    document.getElementById('edit').setAttribute('hidden', 'true');
-}
-
-const cancelEditAdminDetails = (e) => {
-    e.preventDefault();
-    document.getElementById('name').setAttribute('readonly', 'true');
-    document.getElementById('email').setAttribute('readonly', 'true');
-    document.getElementById('save').setAttribute('hidden', 'true');
-    document.getElementById('cancel').setAttribute('hidden', 'true');
-    document.getElementById('edit').removeAttribute('hidden');
+const setActiveTab = (id) => {
+    document.getElementById('dashboard-tab').classList.remove("active");
+    document.getElementById('theatre-management-tab').classList.remove("active");
+    document.getElementById('users-management-tab').classList.remove("active");
+    document.getElementById('users-activity-tab').classList.remove("active");
+    document.getElementById('admin-profile-tab').classList.remove("active");
+    
+    document.getElementById(`${id}`).classList.add("active");
 }
 
 const editTheatreDetails = (e) => {
@@ -74,14 +66,6 @@ $(window).on("scroll", function () {
 window.onscroll = function () {
     scrollFunction()
 };
-
-function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("movetop").style.display = "block";
-    } else {
-        document.getElementById("movetop").style.display = "none";
-    }
-}
 
 // When the user clicks on the button, scroll to the top of the document
 function topFunction() {

@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const fs = require('fs');
 const adminHelpers = require('../helpers/adminHelpers');
 const passport = require('passport');
 const isAdmin = require('../middleware/auth').isAdmin;
+const date = require('date-and-time');
 
 router.get('/login', (req, res) => {
   if (req.isAuthenticated() && req.user.admin) {
@@ -43,9 +44,11 @@ router.get('/', isAdmin, async function (req, res, next) {
   const totalTheaters = await adminHelpers.getNumberOfTheaters();
   const totalActiveTheaters = await adminHelpers.getNumberOfActiveTheaters();
   const totalTheatersOnHold = await adminHelpers.getNumberOfTheatersOnHold();
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  const totalOrders = await adminHelpers.getNumberOfOrders();
+  const totalPaidOrders = await adminHelpers.getNumberOfPaidOrders();
+  const currentMonthBookings = await adminHelpers.getBookings(date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
+  const pastMonthBookings = await adminHelpers.getBookings(date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, totalOrders, totalPaidOrders, currentMonthBookings, pastMonthBookings });
 });
 
 router.post('/update-profile-picture/:id', isAdmin, (req, res) => {
@@ -61,43 +64,39 @@ router.post('/update-profile-picture/:id', isAdmin, (req, res) => {
           console.log(done);
         }
       });
-      req.session.alertMessage = response.alertMessage;
-      res.redirect('/admin');
+      req.flash('info', response.alertMessage);
+      res.redirect('/admin/profile');
     }).catch((error) => {
-      req.session.errMessage = error.errMessage;
-      res.redirect('/admin');
+      req.flash('error', error.errMessage);
+      res.redirect('/admin/profile');
     });
   }
 });
 
 router.get('/remove-profile-picture/:id', isAdmin, (req, res) => {
   adminHelpers.updateProfilePicture(req.params.id, false).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     fs.unlinkSync(`./public/images/admin/${response.admin._id}.jpg`);
-    res.redirect('/admin');
+    res.redirect('/admin/profile');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin');
+    req.flash('error', error.errMessage);
+    res.redirect('/admin/profile');
   });;
 });
 
 router.post('/update-admin-details', isAdmin, (req, res) => {
   adminHelpers.updateAdminDetails(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/admin');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin');
+    res.json(error);
   });
 });
 
 router.post('/change-password', (req, res) => {
   adminHelpers.changePassword(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/admin');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin');
+    res.json(error);
   });
 });
 
@@ -110,24 +109,29 @@ router.get('/theater-management', isAdmin, (req, res) => {
 });
 
 router.get('/add-owners', isAdmin, (req, res) => {
-  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('admin/add-owners', { title: 'Admin | Add Owners', admin: req.user });
 });
 
 router.post('/add-owners', isAdmin, (req, res) => {
   adminHelpers.addOwners(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/admin/add-owners');
+    req.flash('info', response.alertMessage);
+    res.redirect('/admin/theater-management');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/admin/add-owners');
+    req.flash('error', error.errMessage);
+    res.redirect('/admin/theater-management');
   });
 });
 
-router.get('/owner-details/:id', isAdmin, (req, res) => {
+router.get('/theatre-overview/:id', isAdmin, async (req, res) => {
+  const totalShows = await adminHelpers.getNumberOfShows(req.params.id);
+  const totalScreens = await adminHelpers.getNumberOfScreens(req.params.id);
+  const totalBookings = await adminHelpers.getNumberOfBookings(req.params.id);
+  const paidBookings = await adminHelpers.getNumberOfPayedBookings(req.params.id);
+  const unpaidBookings = await adminHelpers.getNumberOfUnpayedBookings(req.params.id);
+  const currentMonthBookings = await adminHelpers.getTheatreBookings(req.params.id, date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
+  const pastMonthBookings = await adminHelpers.getTheatreBookings(req.params.id, date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/owner-details', { title: 'Admin | Theater Details', admin: req.user, owner });
+    res.render('admin/theatre-overview', { title: 'Admin | Theater Details', admin: req.user, owner, totalShows, totalScreens, totalBookings, paidBookings, unpaidBookings, currentMonthBookings, pastMonthBookings });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/admin/theater-management');
@@ -136,9 +140,7 @@ router.get('/owner-details/:id', isAdmin, (req, res) => {
 
 router.get('/edit-owner/:id', isAdmin, (req, res) => {
   adminHelpers.getOwner(req.params.id).then((owner) => {
-    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.user, owner, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('admin/edit-owner', { title: 'Admin | Edit Theater Owner Details', admin: req.user, owner });
   }).catch((error) => {
     req.session.errMessage = error.errMessage;
     res.redirect('/admin/theater-management');
@@ -147,10 +149,10 @@ router.get('/edit-owner/:id', isAdmin, (req, res) => {
 
 router.post('/edit-owner', isAdmin, (req, res) => {
   adminHelpers.editOwner(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/admin/theater-management');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect(`/admin/edit-owner/${req.body.ownerId}`)
   });
 });
@@ -197,6 +199,10 @@ router.get('/users-activity', isAdmin, (req, res) => {
   adminHelpers.getUsers().then((users) => {
     res.render('admin/users-activity', { title: 'Admin | Users Activity Track', admin: req.user, users });
   });
+});
+
+router.get('/profile', (req, res) => {
+  res.render('admin/profile', { title: 'Admin | Profile', admin: req.user });
 });
 
 module.exports = router;
