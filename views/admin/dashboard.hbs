@@ -142,6 +142,14 @@
                 </div>
             </div>
         </div>
+        <div id="currentMonthBookings" hidden>{{currentMonthBookings}}</div>
+        <div id="pastMonthBookings" hidden>{{pastMonthBookings}}</div>
         <!-- End Users By Device Stats -->
     </div>
 </div>
+<script>
+    const currentMonthBookings = document.getElementById('currentMonthBookings').innerHTML.split(',');
+    const pastMonthBookings = document.getElementById('pastMonthBookings').innerHTML.split(',');
+    bouData.datasets[0].data = currentMonthBookings;
+    bouData.datasets[1].data = pastMonthBookings;
+</script>

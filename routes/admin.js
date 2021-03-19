@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const fs = require('fs');
 const adminHelpers = require('../helpers/adminHelpers');
 const passport = require('passport');
 const isAdmin = require('../middleware/auth').isAdmin;
+const date = require('date-and-time');
 
 router.get('/login', (req, res) => {
   if (req.isAuthenticated() && req.user.admin) {
@@ -44,9 +45,9 @@ router.get('/', isAdmin, async function (req, res, next) {
   const totalActiveTheaters = await adminHelpers.getNumberOfActiveTheaters();
   const totalTheatersOnHold = await adminHelpers.getNumberOfTheatersOnHold();
   const totalOrders = await adminHelpers.getNumberOfOrders();
-  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, totalOrders, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  const currentMonthBookings = await adminHelpers.getBookings(date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
+  const pastMonthBookings = await adminHelpers.getBookings(date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
+  res.render('admin/dashboard', { title: 'Admin | Dashboard', admin: req.user, totalUsers, totalTheaters, totalActiveTheaters, totalTheatersOnHold, totalOrders, currentMonthBookings, pastMonthBookings });
 });
 
 router.post('/update-profile-picture/:id', isAdmin, (req, res) => {

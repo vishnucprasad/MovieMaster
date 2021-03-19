@@ -1,6 +1,7 @@
 const db = require('../config/connection');
 const collection = require('../config/collection');
 const { ObjectID } = require('mongodb');
+const date = require('date-and-time');
 const axios = require('axios');
 const mailer = require('../utils/mailer')
 const { sendVerificationToken, checkVerificationToken } = require('../utils/verify');
@@ -319,7 +320,7 @@ module.exports = {
                 seats: seats.split(','),
                 totalAmount: parseInt(totalAmount),
                 paymentMethod,
-                orderDate: new Date(),
+                orderDate: date.format(new Date(), 'YYYY/MM/DD'),
                 status: 'Payment Failed'
             }
 
@@ -466,7 +467,6 @@ module.exports = {
                 }
             }).then(async (response) => {
                 const order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ _id: ObjectID(orderId) });
-                order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`;
                 db.get().collection(collection.SCREEN_COLLECTION).updateOne({
                     _id: ObjectID(order.screenId),
                     'shows._id': ObjectID(order.showDetails._id)
@@ -519,13 +519,6 @@ module.exports = {
     getAllOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
             const orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: ObjectID(userId) }).sort({ orderDate: -1 }).toArray();
-            orders.forEach(order => {
-                const year = order.orderDate.getFullYear();
-                const month = order.orderDate.getMonth() + 1 < 10 ? `0${order.orderDate.getMonth() + 1}` : order.orderDate.getMonth() + 1;
-                const day = order.orderDate.getDate() < 10 ? `0${order.orderDate.getDate()}` : order.orderDate.getDate();
-
-                order.orderDate = `${year}-${month}-${day}`;
-            });
             resolve(orders);
         });
     },
@@ -626,6 +619,7 @@ module.exports = {
     getRoutes: (coordinates, features) => {
         return new Promise((resolve, reject) => {
             let routes = [];
+            features = features.filter((feature) => !!feature.location);
 
             features.forEach(feature => {
                 const url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + coordinates[0] + ',' + coordinates[1] + ';' + feature.location.longitude + ',' + feature.location.latitude + '?steps=true&geometries=geojson&access_token=' + process.env.MAPBOX_GL_ACCESS_TOKEN;

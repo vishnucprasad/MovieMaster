@@ -220,7 +220,6 @@ router.post('/checkoutWithWallet', isUser, async (req, res) => {
 
 router.get('/view-order', isUser, (req, res) => {
   userHelpers.getOrder(req.query.orderId, req.user._id).then((order) => {
-    order.orderDate = `${order.orderDate.getFullYear()}-${order.orderDate.getMonth() + 1}-${order.orderDate.getDate()}`;
     res.render('user/view-order', { title: 'MovieMaster | View Order', user: req.user, userLocation: req.session.userLocation, order });
   }).catch((error) => {
     req.flash('error', error.errMessage);

@@ -121,12 +121,12 @@
     var bouData = {
       // Generate the days labels on the X axis.
       labels: Array.from(new Array(30), function (_, i) {
-        return i === 0 ? 1 : i;
+        return i;
       }),
       datasets: [{
         label: 'Current Month',
         fill: 'start',
-        data: [500, 800, 320, 180, 240, 320, 230, 650, 590, 1200, 750, 940, 1420, 1200, 960, 1450, 1820, 2800, 2102, 1920, 3920, 3202, 3140, 2800, 3200, 3200, 3400, 2910, 3100, 4250],
+        data: [...[0], ...document.getElementById('currentMonthBookings').innerHTML.split(',')],
         backgroundColor: 'rgba(0,123,255,0.1)',
         borderColor: 'rgba(0,123,255,1)',
         pointBackgroundColor: '#ffffff',
@@ -137,7 +137,7 @@
       }, {
         label: 'Past Month',
         fill: 'start',
-        data: [380, 430, 120, 230, 410, 740, 472, 219, 391, 229, 400, 203, 301, 380, 291, 620, 700, 300, 630, 402, 320, 380, 289, 410, 300, 530, 630, 720, 780, 1200],
+        data: [...[0], ...document.getElementById('pastMonthBookings').innerHTML.split(',')],
         backgroundColor: 'rgba(255,65,105,0.1)',
         borderColor: 'rgba(255,65,105,1)',
         pointBackgroundColor: '#ffffff',
