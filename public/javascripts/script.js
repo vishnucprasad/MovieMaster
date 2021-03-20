@@ -26,7 +26,7 @@ const setActiveTab = (id) => {
     document.getElementById('users-management-tab').classList.remove("active");
     document.getElementById('users-activity-tab').classList.remove("active");
     document.getElementById('admin-profile-tab').classList.remove("active");
-    
+
     document.getElementById(`${id}`).classList.add("active");
 }
 
@@ -75,7 +75,7 @@ function topFunction() {
 
 window.addEventListener('message', function (e) {
     if (e.data !== 'popup-done') { return; }
-    window.location.reload();
+    window.history.go(-1);
 });
 
 const authPopup = (e, url) => {
