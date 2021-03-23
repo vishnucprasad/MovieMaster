@@ -1,116 +1,111 @@
-<section>
-    <!-- main content start -->
-    <div class="main-content">
-
-        <!-- content -->
-        <div class="container-fluid content-top-gap">
-
-            <!-- breadcrumbs -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb my-breadcrumb">
-                    <li class="breadcrumb-item"><a href="/theatre">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit Screen Details</li>
-                </ol>
-            </nav>
-            <!-- //breadcrumbs -->
-
-            <section class="pricing">
-                <div class="card card_border mb-5">
-                    <div class="cards__heading">
-                        <h3>Edit Screen Details</h3>
+<div class="main-content-container container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header row no-gutters py-4">
+        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+            <span class="text-uppercase page-subtitle">Action</span>
+            <h3 class="page-title">Edit Screen</h3>
+        </div>
+    </div>
+    <!-- End Page Header -->
+    <!-- Default Light Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card card-small mb-4 p-3">
+                <div class="card-header border-bottom">
+                    <div class="row">
+                        <h5 class="text-accent">Enter Screen Details</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="px-2 mb-4">
-                            <div class="row justify-content-center">
-                                <div class="col-md-8">
-                                    <form action="/theatre/edit-screen" method="POST">
-                                        <div class="form-group row" hidden>
-                                            <div class="col-md-3 text-md-right">
-                                                <label for="screenId">Screen ID</label>
-                                            </div>
-                                            <div class="col-md-9">
-                                                <input type="text" name="screenId" value="{{screen._id}}"
-                                                    class="form-control" required id="screenId">
-                                            </div>
+                </div>
+                <div class="card-body">
+                    <div class="px-2 my-4">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <form action="/theatre/edit-screen" method="POST">
+                                    <div class="form-group row" hidden>
+                                        <div class="col-md-3 text-md-right">
+                                            <label for="screenId">Screen ID</label>
                                         </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-3 text-md-right">
-                                                <label for="screenName">Screen Name</label>
-                                            </div>
-                                            <div class="col-md-9">
-                                                <input type="text" name="screenName" value="{{screen.screenName}}"
-                                                    class="form-control" required id="screenName">
-                                            </div>
+                                        <div class="col-md-9">
+                                            <input type="text" name="screenId" value="{{screen._id}}"
+                                                class="form-control" required id="screenId">
                                         </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-3 text-md-right">
-                                                <label for="seats">Seats</label>
-                                            </div>
-                                            <div class="col-md-9">
-                                                <input type="number" name="seats" value="{{screen.seats}}"
-                                                    class="form-control" required id="seats">
-                                            </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3 text-md-right">
+                                            <label for="screenName">Screen Name</label>
                                         </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-3 text-md-right">
-                                                <label for="seatColumn">Number of seats in a row</label>
-                                            </div>
-                                            <div class="col-md-9">
-                                                <input type="number" name="seatColumn" value="{{screen.seatColumn}}" class="form-control" required
-                                                    id="seatColumn">
-                                            </div>
+                                        <div class="col-md-9">
+                                            <input type="text" name="screenName" value="{{screen.screenName}}"
+                                                class="form-control" required id="screenName">
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-3"></div>
-                                            <div class="col-md-9 my-4 text-center">
-                                                <h5 class="text-secondary text-uppercase font-weight-bold">Number of
-                                                    rows for each section
-                                                </h5>
-                                            </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3 text-md-right">
+                                            <label for="seats">Seats</label>
                                         </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-3 text-md-right">
-                                            </div>
-                                            <div class="col-md-9">
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <label for="vipRows">VIP</label>
-                                                        <input type="number" name="vipRows" value="{{screen.vipRows}}" class="form-control"
-                                                            required id="vipRows">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="premiumRows">PREMIUM</label>
-                                                        <input type="number" name="premiumRows" value="{{screen.premiumRows}}" class="form-control"
-                                                            required id="premiumRows">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="exicutiveRows">EXECUTIVE</label>
-                                                        <input type="number" name="exicutiveRows" value="{{screen.exicutiveRows}}" class="form-control"
-                                                            required id="exicutiveRows">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="normalRows">NORMAL</label>
-                                                        <input type="number" name="normalRows" value="{{screen.normalRows}}" class="form-control"
-                                                            required id="normalRows">
-                                                    </div>
+                                        <div class="col-md-9">
+                                            <input type="number" name="seats" value="{{screen.seats}}"
+                                                class="form-control" required id="seats">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3 text-md-right">
+                                            <label for="seatColumn">Number of seats in a row</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="number" name="seatColumn" value="{{screen.seatColumn}}"
+                                                class="form-control" required id="seatColumn">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-9 my-4 text-center">
+                                            <h5 class="text-accent text-uppercase font-weight-bold">Number of
+                                                rows for each section
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-3 text-md-right">
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="vipRows">VIP</label>
+                                                    <input type="number" name="vipRows" value="{{screen.vipRows}}"
+                                                        class="form-control" required id="vipRows">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="premiumRows">PREMIUM</label>
+                                                    <input type="number" name="premiumRows"
+                                                        value="{{screen.premiumRows}}" class="form-control" required
+                                                        id="premiumRows">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="exicutiveRows">EXECUTIVE</label>
+                                                    <input type="number" name="exicutiveRows"
+                                                        value="{{screen.exicutiveRows}}" class="form-control" required
+                                                        id="exicutiveRows">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="normalRows">NORMAL</label>
+                                                    <input type="number" name="normalRows" value="{{screen.normalRows}}"
+                                                        class="form-control" required id="normalRows">
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="submit"
-                                            class="btn btn-success float-right rounded-pill px-5">Submit</button>
-                                        <a href="/theatre/screens" type="submit"
-                                            class="btn btn-danger float-right rounded-pill px-5 mr-3">Cancel</a>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <a href="/theatre/screens" class="btn btn-danger w-25">Cancel</a>
+                                        <button type="submit" class="btn btn-accent w-25">Save</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-
+            </div>
         </div>
-        <!-- //content -->
-
     </div>
-    <!-- main content end-->
-</section>
+    <!-- End Default Light Table -->
+</div>

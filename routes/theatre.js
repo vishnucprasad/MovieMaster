@@ -136,21 +136,19 @@ router.post('/add-screens', isTheatre, (req, res) => {
 
 router.get('/edit-screen/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then((screen) => {
-    res.render('theatre/edit-screen', { title: 'Admin | Edit Screen', theatre: req.user, screen, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/edit-screen', { title: 'Admin | Edit Screen', theatre: req.user, screen });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/screens');
   });
 });
 
 router.post('/edit-screen', isTheatre, (req, res) => {
   theatreHelpers.editScreen(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/theatre/screens');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/screens');
   });
 });
