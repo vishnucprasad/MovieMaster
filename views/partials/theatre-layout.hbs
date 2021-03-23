@@ -1,0 +1,19 @@
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Sidebar -->
+        {{>theatre-sidebar}}
+        <!-- End Main Sidebar -->
+        <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3">
+            {{>theatre-header}}
+            {{{body}}}
+            <!-- / .main-navbar -->
+            {{>theatre-footer}}
+        </main>
+    </div>
+</div>
+{{>developer}}
+<script src="/assets/js/Chart.min.js"></script>
+<script src="/assets/js/jquery.sharrre.min.js"></script>
+<script src="/assets/js/extras.1.1.0.min.js"></script>
+<script src="/assets/js/shards.min.js"></script>
+<script src="/assets/js/shards-dashboards.1.1.0.min.js"></script>

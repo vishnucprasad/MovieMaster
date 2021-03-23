@@ -23,7 +23,10 @@
   {{else if adminStyle}}
   <link rel="stylesheet" href="/assets/css/login.css">
   {{else if theatre}}
-  <link rel="stylesheet" href="/assets/css/theatre.css">
+  <link rel="stylesheet" href="/assets/css/shards-dashboards.1.1.0.min.css">
+  <link rel="stylesheet" href="/assets/css/extras.1.1.0.min.css">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   {{else if theatreStyle}}
   <link rel="stylesheet" href="/assets/css/login.css">
   {{else}}
@@ -69,9 +72,7 @@
   {{#if admin}}
   {{>admin-layout}}
   {{else if theatre}}
-  {{>theatre-header}}
-  {{>theatre-sidebar}}
-  {{{body}}}
+  {{>theatre-layout}}
   {{else if theatreStyle}}
   {{{body}}}
   {{else if adminStyle}}
