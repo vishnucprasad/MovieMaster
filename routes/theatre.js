@@ -362,7 +362,7 @@ router.get('/users-activity', isTheatre, (req, res) => {
   });
 });
 
-router.get('/profile', (req, res) => {
+router.get('/profile', isTheatre, (req, res) => {
   res.render('theatre/profile', { title: 'Theatre | Profile', theatre: req.user });
 });
 

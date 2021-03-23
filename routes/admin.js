@@ -201,7 +201,7 @@ router.get('/users-activity', isAdmin, (req, res) => {
   });
 });
 
-router.get('/profile', (req, res) => {
+router.get('/profile', isAdmin, (req, res) => {
   res.render('admin/profile', { title: 'Admin | Profile', admin: req.user });
 });
 
