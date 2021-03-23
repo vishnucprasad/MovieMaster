@@ -338,21 +338,19 @@ router.post('/add-shows', isTheatre, (req, res) => {
 router.get('/edit-show', isTheatre, (req, res) => {
   theatreHelpers.getAllMovies().then(async (movies) => {
     const show = await theatreHelpers.getShow(req.query);
-    res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.user, show, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.user, show, movies });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect(`/theatre/view-schedule/${req.query.screenId}`);
   });
 });
 
 router.post('/edit-show', isTheatre, (req, res) => {
   theatreHelpers.editShow(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect(`/theatre/view-schedule/${req.body.screenId}`)
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect(`/theatre/view-schedule/${req.body.screenId}`)
   });
 });
