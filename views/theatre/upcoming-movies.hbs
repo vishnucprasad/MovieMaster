@@ -1,83 +1,57 @@
-<section>
-    <!-- main content start -->
-    <div class="main-content">
-
-        <!-- content -->
-        <div class="container-fluid content-top-gap">
-
-            <!-- breadcrumbs -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb my-breadcrumb">
-                    <li class="breadcrumb-item"><a href="/theatre">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Upcoming Movies</li>
-                </ol>
-            </nav>
-            <!-- //breadcrumbs -->
-
-            <section class="pricing">
-                <div class="card card_border mb-5">
-                    <div class="cards__heading">
-                        <div class="row mx-1">
-                            <h3>Upcoming Movies</h3>
-                            <a href="/theatre/add-upcoming-movies" class="btn btn-success rounded-pill px-5 ml-auto">Add Movies</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table class="table border table-responsive-sm" id="data-table">
-                            <thead class="bg-success text-white">
-                                <tr>
-                                    <th scope="col">Sr.No</th>
-                                    <th scope="col">Movie Name</th>
-                                    <th scope="col">Release Date</th>
-                                    <th scope="col">Run Time</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each movies}}
-                                <tr id="{{this._id}}">
-                                    <th scope="row" class="serialNumber"></th>
-                                    <td>{{this.movieTitle}}</td>
-                                    <td>{{this.releaseDate}}</td>
-                                    <td>{{this.runTime}}</td>
-                                    <td>
-                                        <a href="/theatre/edit-upcoming-movie/{{this._id}}"
-                                            class="btn btn-primary btn-sm rounded-pill text-uppercase px-3">Edit</a>
-                                        <button class="btn btn-danger btn-sm rounded-pill text-uppercase px-3"
-                                            data-toggle="modal" data-target="#deleteModal{{this._id}}">Delete</button>
-                                    </td>
-                                </tr>
-                                <!-- Modal -->
-                                <div class="modal fade" id="deleteModal{{this._id}}" tabindex="-1" role="dialog"
-                                    data-backdrop="static" aria-labelledby="deleteModal{{this._id}}Title"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body text-center text-uppercase p-5">
-                                                <h6 class="font-weight-bold">Are you sure you want to delete
-                                                    {{this.movieTitle}} ?</h6>
-                                                <div class="row mt-5">
-                                                    <button type="button"
-                                                        class="btn btn-success btn-sm rounded-pill px-5"
-                                                        data-dismiss="modal">CANCEL</button>
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm rounded-pill px-5 ml-auto"
-                                                        onclick="deleteItem(event, '{{this._id}}', '/theatre/delete-upcoming-movie')">DELETE</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{/each}}
-                            </tbody>
-                        </table>
+<div class="main-content-container container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header row no-gutters py-4">
+        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+            <span class="text-uppercase page-subtitle">Overview</span>
+            <h3 class="page-title">Movies Management</h3>
+        </div>
+    </div>
+    <!-- End Page Header -->
+    <!-- Default Light Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card card-small mb-4 p-3">
+                <div class="card-header border-bottom">
+                    <div class="row">
+                        <h6 class="m-0">Upcoming Movies</h6>
+                        <a href="/theatre/movie-management" class="btn btn-link ml-auto font-weight-bold">Now Showing
+                            Movies</a>
+                        <a href="/theatre/add-upcoming-movies" class="btn btn-accent">Add Movie</a>
                     </div>
                 </div>
-            </section>
-
+                <div class="card-body p-0 pb-3 text-center">
+                    <table class="table table-responsive-sm mb-0" id="dataTable">
+                        <thead class="bg-light">
+                            <tr>
+                                <th scope="col" class="border-0">#</th>
+                                <th scope="col" class="border-0">Movie Name</th>
+                                <th scope="col" class="border-0">Release Date</th>
+                                <th scope="col" class="border-0">Run Time</th>
+                                <th scope="col" class="border-0">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each movies}}
+                            <tr id="{{this._id}}">
+                                <td scope="row" class="serialNumber"></td>
+                                <td>{{this.movieTitle}}</td>
+                                <td>{{this.releaseDate}}</td>
+                                <td>{{this.runTime}}</td>
+                                <td>
+                                    <div class="row justify-content-center">
+                                        <a href="/theatre/edit-upcoming-movie/{{this._id}}"
+                                            class="btn btn-accent">Edit</a>
+                                        <button type="button" class="btn btn-danger mx-2 my-2 my-sm-0"
+                                            onclick="vex.dialog.confirm({ message: 'Are you sure you want to delete {{this.movieTitle}} ?', callback: (value) => { if (value) deleteItem(event, '{{this._id}}', '/theatre/delete-upcoming-movie'); } });">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <!-- //content -->
-
     </div>
-    <!-- main content end-->
-</section>
+    <!-- End Default Light Table -->
+</div>
