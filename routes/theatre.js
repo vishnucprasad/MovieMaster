@@ -312,30 +312,26 @@ router.post('/delete-upcoming-movie', isTheatre, (req, res) => {
 router.get('/view-schedule/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then(async (screen) => {
     const shows = await theatreHelpers.getAllShows(req.params.id);
-    res.render('theatre/view-schedule', { title: 'Theatre | View Schedule', theatre: req.user, screen, shows, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/view-schedule', { title: 'Theatre | View Schedule', theatre: req.user, screen, shows });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/screens');
   });
 });
 
 router.get('/add-shows/:id', isTheatre, (req, res) => {
   theatreHelpers.getAllMovies().then((movies) => {
-    res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.user, screenId: req.params.id, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.user, screenId: req.params.id, movies });
   });
 });
 
 router.post('/add-shows', isTheatre, (req, res) => {
   theatreHelpers.addShows(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect(`/theatre/add-shows/${response.screenId}`);
+    req.flash('info', response.alertMessage);
+    res.redirect(`/theatre/view-schedule/${response.screenId}`);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect(`/theatre/add-shows/${error.screenId}`);
+    req.flash('error', error.errMessage);
+    res.redirect(`/theatre/view-schedule/${error.screenId}`);
   });
 });
 
