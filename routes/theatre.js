@@ -170,9 +170,7 @@ router.get('/movie-management', isTheatre, (req, res) => {
 });
 
 router.get('/add-movies', isTheatre, (req, res) => {
-  res.render('theatre/add-movies', { title: 'Theatre | Add Movies', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('theatre/add-movies', { title: 'Theatre | Add Movies', theatre: req.user });
 });
 
 router.post('/add-movies', isTheatre, (req, res) => {
@@ -187,11 +185,11 @@ router.post('/add-movies', isTheatre, (req, res) => {
       }
     });
 
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre/add-movies');
+    req.flash('info', response.alertMessage);
+    res.redirect('/theatre/movie-management');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/add-movies');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/movie-management');
   });
 });
 
