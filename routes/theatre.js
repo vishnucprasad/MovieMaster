@@ -267,14 +267,14 @@ router.get('/edit-upcoming-movie/:id', isTheatre, (req, res) => {
   theatreHelpers.getUpcomingMovie(req.params.id).then((movie) => {
     res.render('theatre/edit-upcoming-movie', { title: 'Theatre | Edit Upcoming Movie', theatre: req.user, movie });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/movie-management');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/upcoming-movies');
   });
 });
 
 router.post('/edit-upcoming-movie', isTheatre, (req, res) => {
   theatreHelpers.editUpcomingMovie(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/theatre/upcoming-movies');
 
     if (req.files.moviePoster) {
@@ -289,7 +289,7 @@ router.post('/edit-upcoming-movie', isTheatre, (req, res) => {
       });
     }
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/upcoming-movies');
   });
 });
