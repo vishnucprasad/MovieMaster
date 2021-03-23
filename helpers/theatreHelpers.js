@@ -38,7 +38,7 @@ module.exports = {
             });
         });
     },
-    updateTheatreDetails: ({ ownerName, theatreName, email, phoneNumber }, theatreId) => {
+    updateTheatreDetails: ({ ownerName, theatreName, email, phoneNumber, description }, theatreId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.THEATRE_COLLECTION).updateOne({
                 _id: ObjectID(theatreId)
@@ -47,14 +47,15 @@ module.exports = {
                     ownerName,
                     theatreName,
                     email,
-                    phoneNumber
+                    phoneNumber,
+                    description
                 }
             }).then(async (response) => {
                 const theatre = await db.get().collection(collection.THEATRE_COLLECTION).findOne({ _id: ObjectID(theatreId) });
                 delete theatre.password;
-                resolve({ theatre, alertMessage: 'Updated successfully.' });
+                resolve({ status: true, theatre, alertMessage: 'Updated successfully.' });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to update theatre details.' });
+                reject({ status: false, error, errMessage: 'Failed to update theatre details.' });
             });
         });
     },
@@ -73,9 +74,9 @@ module.exports = {
                     location
                 }
             }).then((response) => {
-                resolve({ response, alertMessage: 'Updated successfully.' })
+                resolve({ status: true, response, alertMessage: 'Updated successfully.' })
             }).catch((error) => {
-                reject({ response, alertMessage: 'Failed to update location.' })
+                reject({ status: false, response, alertMessage: 'Failed to update location.' })
             });
         });
     },
@@ -93,13 +94,13 @@ module.exports = {
                                 password: newPassword
                             }
                         }).then((response) => {
-                            resolve({ alertMessage: 'Password changed successfully' });
+                            resolve({ status: true, alertMessage: 'Password changed successfully' });
                         })
                     } else {
-                        reject({ errMessage: "Entered passwords dosen't match" });
+                        reject({ status: false, errMessage: "Entered passwords dosen't match" });
                     }
                 } else {
-                    reject({ errMessage: 'Incorrect password.' });
+                    reject({ status: false, errMessage: 'Incorrect password.' });
                 }
             });
         });
@@ -217,12 +218,18 @@ module.exports = {
     },
     addUpcomingMovies: (movieDetails, theatreId) => {
         movieDetails.theatre = ObjectID(theatreId);
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
-                resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
-            }).catch((error) => {
-                reject({ error, errMessage: 'Failed to add movie.' });
-            });
+        return new Promise(async (resolve, reject) => {
+            const existingMovie = await db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).find({ movieTitle: movieDetails.movieTitle }).toArray();
+
+            if (!existingMovie[0]) {
+                db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
+                    resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
+                }).catch((error) => {
+                    reject({ error, errMessage: 'Failed to add movie.' });
+                });
+            } else {
+                reject({ errMessage: 'This movie already exists.' });
+            }
         });
     },
     getAllUpcomingMovies: (theatreId) => {
@@ -531,6 +538,72 @@ module.exports = {
             } else {
                 resolve(0);
             }
+        });
+    },
+    getNumberOfUnpayedBookings: (theatreId) => {
+        return new Promise(async (resolve, reject) => {
+            const paidBookings = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        'theatreDetails._id': ObjectID(theatreId),
+                        status: "Payment Failed"
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        'sum': { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalPayedBookings: { '$sum': '$sum' }
+                    }
+                }
+            ]).toArray();
+
+            if (paidBookings[0]) {
+                resolve(paidBookings[0].totalPayedBookings);
+            } else {
+                resolve(0);
+            }
+        });
+    },
+    getTheatreBookings: (theatreId, year, month, day) => {
+        console.log(year, month, day);
+        return new Promise(async (resolve, reject) => {
+            let bookings = [];
+            for (i = 1; i <= parseInt(day); i++) {
+                currentDay = i < 10 ? `0${i}` : i;
+
+                const booking = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                    {
+                        $match: {
+                            'theatreDetails._id': ObjectID(theatreId),
+                            orderDate: `${year}/${month}/${currentDay}`
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$_id',
+                            'sum': { $sum: 1 }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalOrders: { '$sum': '$sum' }
+                        }
+                    }
+                ]).toArray();
+                if (booking[0]) {
+                    bookings.push(booking[0].totalOrders);
+                } else {
+                    bookings.push(0);
+                }
+            };
+            console.log(bookings);
+            resolve(bookings);
         });
     },
     getUsers: (theatreId) => {

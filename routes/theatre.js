@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const fs = require('fs');
 const theatreHelpers = require('../helpers/theatreHelpers');
 const passport = require('passport');
+const date = require('date-and-time');
 const isTheatre = require('../middleware/auth').isTheatre;
 
 router.get('/login', (req, res) => {
@@ -43,9 +44,10 @@ router.get('/', isTheatre, async function (req, res, next) {
   const totalScreens = await theatreHelpers.getNumberOfScreens(req.user._id);
   const totalBookings = await theatreHelpers.getNumberOfBookings(req.user._id);
   const paidBookings = await theatreHelpers.getNumberOfPayedBookings(req.user._id);
-  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, totalShows, totalScreens, totalBookings, paidBookings, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  const unpaidBookings = await theatreHelpers.getNumberOfUnpayedBookings(req.user._id);
+  const currentMonthBookings = await theatreHelpers.getTheatreBookings(req.user._id, date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
+  const pastMonthBookings = await theatreHelpers.getTheatreBookings(req.user._id, date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
+  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, totalShows, totalScreens, totalBookings, paidBookings, unpaidBookings, currentMonthBookings, pastMonthBookings });
 });
 
 router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
@@ -61,10 +63,10 @@ router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
           console.log(done);
         }
       });
-      req.session.alertMessage = response.alertMessage;
+      req.flash('info', response.alertMessage);
       res.redirect('/theatre');
     }).catch((error) => {
-      req.session.errMessage = error.errMessage;
+      req.flash('error', error.errMessage);
       res.redirect('/theatre');
     });
   }
@@ -72,87 +74,74 @@ router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
 
 router.get('/remove-owner-picture/:id', isTheatre, (req, res) => {
   theatreHelpers.updateOwnerPicture(req.params.id, false).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     fs.unlinkSync(`./public/images/theatre/${response.theatre._id}.jpg`);
     res.redirect('/theatre');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre');
   });;
 });
 
 router.post('/update-theatre-details', isTheatre, (req, res) => {
-  console.log(req.body);
   theatreHelpers.updateTheatreDetails(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre');
+    res.redirect(error);
   });
 });
 
 router.post('/update-location', (req, res) => {
   theatreHelpers.updateLocation(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre');
+    res.json(error);
   });
 });
 
 router.post('/change-password', isTheatre, (req, res) => {
   theatreHelpers.changePassword(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre');
+    res.json(error);
   });
 });
 
 router.get('/screens', isTheatre, (req, res) => {
   theatreHelpers.getAllScreens(req.user._id).then((screens) => {
-    res.render('theatre/screens', { title: 'Theatre | Screens', theatre: req.user, screens, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/screens', { title: 'Theatre | Screens', theatre: req.user, screens });
   });
 });
 
 router.get('/add-screens', isTheatre, (req, res) => {
-  res.render('theatre/add-screens', { title: 'Admin | Add Screens', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('theatre/add-screens', { title: 'Admin | Add Screens', theatre: req.user });
 });
 
 router.post('/add-screens', isTheatre, (req, res) => {
   theatreHelpers.addScreens(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre/add-screens');
+    req.flash('info', response.alertMessage);
+    res.redirect('/theatre/screens');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/add-screens');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/screens');
   });
 });
 
 router.get('/edit-screen/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then((screen) => {
-    res.render('theatre/edit-screen', { title: 'Admin | Edit Screen', theatre: req.user, screen, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/edit-screen', { title: 'Admin | Edit Screen', theatre: req.user, screen });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/screens');
   });
 });
 
 router.post('/edit-screen', isTheatre, (req, res) => {
   theatreHelpers.editScreen(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/theatre/screens');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/screens');
   });
 });
@@ -174,9 +163,7 @@ router.get('/movie-management', isTheatre, (req, res) => {
 });
 
 router.get('/add-movies', isTheatre, (req, res) => {
-  res.render('theatre/add-movies', { title: 'Theatre | Add Movies', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('theatre/add-movies', { title: 'Theatre | Add Movies', theatre: req.user });
 });
 
 router.post('/add-movies', isTheatre, (req, res) => {
@@ -191,11 +178,11 @@ router.post('/add-movies', isTheatre, (req, res) => {
       }
     });
 
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre/add-movies');
+    req.flash('info', response.alertMessage);
+    res.redirect('/theatre/movie-management');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/add-movies');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/movie-management');
   });
 });
 
@@ -203,14 +190,14 @@ router.get('/edit-movie/:id', isTheatre, (req, res) => {
   theatreHelpers.getMovie(req.params.id).then((movie) => {
     res.render('theatre/edit-movie', { title: 'Theatre | Edit Movie', theatre: req.user, movie });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/movie-management');
   });
 });
 
 router.post('/edit-movie', isTheatre, (req, res) => {
   theatreHelpers.editMovie(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/theatre/movie-management');
 
     if (req.files.moviePoster) {
@@ -225,7 +212,7 @@ router.post('/edit-movie', isTheatre, (req, res) => {
       });
     }
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/movie-management');
   });
 });
@@ -241,16 +228,12 @@ router.post('/delete-movie', isTheatre, (req, res) => {
 
 router.get('/upcoming-movies', isTheatre, (req, res) => {
   theatreHelpers.getAllUpcomingMovies(req.user._id).then((movies) => {
-    res.render('theatre/upcoming-movies', { title: 'Theatre | Upcoming Movies', theatre: req.user, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/upcoming-movies', { title: 'Theatre | Upcoming Movies', theatre: req.user, movies });
   });
 });
 
 router.get('/add-upcoming-movies', isTheatre, (req, res) => {
-  res.render('theatre/add-upcoming-movies', { title: 'Theatre | Add Movies', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('theatre/add-upcoming-movies', { title: 'Theatre | Add Movies', theatre: req.user });
 });
 
 router.post('/add-upcoming-movies', isTheatre, (req, res) => {
@@ -265,11 +248,11 @@ router.post('/add-upcoming-movies', isTheatre, (req, res) => {
       }
     });
 
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre/add-upcoming-movies');
+    req.flash('info', response.alertMessage);
+    res.redirect('/theatre/upcoming-movies');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/add-upcoming-movies');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/upcoming-movies');
   });
 });
 
@@ -277,14 +260,14 @@ router.get('/edit-upcoming-movie/:id', isTheatre, (req, res) => {
   theatreHelpers.getUpcomingMovie(req.params.id).then((movie) => {
     res.render('theatre/edit-upcoming-movie', { title: 'Theatre | Edit Upcoming Movie', theatre: req.user, movie });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/movie-management');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/upcoming-movies');
   });
 });
 
 router.post('/edit-upcoming-movie', isTheatre, (req, res) => {
   theatreHelpers.editUpcomingMovie(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect('/theatre/upcoming-movies');
 
     if (req.files.moviePoster) {
@@ -299,7 +282,7 @@ router.post('/edit-upcoming-movie', isTheatre, (req, res) => {
       });
     }
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/upcoming-movies');
   });
 });
@@ -316,51 +299,45 @@ router.post('/delete-upcoming-movie', isTheatre, (req, res) => {
 router.get('/view-schedule/:id', isTheatre, (req, res) => {
   theatreHelpers.getScreen(req.params.id).then(async (screen) => {
     const shows = await theatreHelpers.getAllShows(req.params.id);
-    res.render('theatre/view-schedule', { title: 'Theatre | View Schedule', theatre: req.user, screen, shows, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/view-schedule', { title: 'Theatre | View Schedule', theatre: req.user, screen, shows });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre/screens');
   });
 });
 
 router.get('/add-shows/:id', isTheatre, (req, res) => {
   theatreHelpers.getAllMovies().then((movies) => {
-    res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.user, screenId: req.params.id, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/add-shows', { title: 'Theatre | Add Shows', theatre: req.user, screenId: req.params.id, movies });
   });
 });
 
 router.post('/add-shows', isTheatre, (req, res) => {
   theatreHelpers.addShows(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect(`/theatre/add-shows/${response.screenId}`);
+    req.flash('info', response.alertMessage);
+    res.redirect(`/theatre/view-schedule/${response.screenId}`);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect(`/theatre/add-shows/${error.screenId}`);
+    req.flash('error', error.errMessage);
+    res.redirect(`/theatre/view-schedule/${error.screenId}`);
   });
 });
 
 router.get('/edit-show', isTheatre, (req, res) => {
   theatreHelpers.getAllMovies().then(async (movies) => {
     const show = await theatreHelpers.getShow(req.query);
-    res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.user, show, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/edit-show', { title: 'Theatre | Edit Show', theatre: req.user, show, movies });
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect(`/theatre/view-schedule/${req.query.screenId}`);
   });
 });
 
 router.post('/edit-show', isTheatre, (req, res) => {
   theatreHelpers.editShow(req.body).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     res.redirect(`/theatre/view-schedule/${req.body.screenId}`)
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect(`/theatre/view-schedule/${req.body.screenId}`)
   });
 });
@@ -374,15 +351,19 @@ router.post('/delete-show', isTheatre, (req, res) => {
 });
 
 router.post('/get-time-slots', (req, res) => {
- theatreHelpers.getTimeSlots(req.body).then((slots) => {
-  res.json(slots);
- });
+  theatreHelpers.getTimeSlots(req.body).then((slots) => {
+    res.json(slots);
+  });
 });
 
 router.get('/users-activity', isTheatre, (req, res) => {
-  theatreHelpers.getUsers(req.user._id).then((users) => { 
+  theatreHelpers.getUsers(req.user._id).then((users) => {
     res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user, users });
   });
+});
+
+router.get('/profile', isTheatre, (req, res) => {
+  res.render('theatre/profile', { title: 'Theatre | Profile', theatre: req.user });
 });
 
 module.exports = router;
