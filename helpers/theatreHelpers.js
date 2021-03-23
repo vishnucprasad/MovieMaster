@@ -217,12 +217,18 @@ module.exports = {
     },
     addUpcomingMovies: (movieDetails, theatreId) => {
         movieDetails.theatre = ObjectID(theatreId);
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
-                resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
-            }).catch((error) => {
-                reject({ error, errMessage: 'Failed to add movie.' });
-            });
+        return new Promise(async (resolve, reject) => {
+            const existingMovie = await db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).find({ movieTitle: movieDetails.movieTitle }).toArray();
+
+            if (!existingMovie[0]) {
+                db.get().collection(collection.UPCOMINGMOVIE_COLLECTION).insertOne(movieDetails).then((response) => {
+                    resolve({ data: response.ops[0], alertMessage: 'Movie added successfully.' });
+                }).catch((error) => {
+                    reject({ error, errMessage: 'Failed to add movie.' });
+                });
+            } else {
+                reject({ errMessage: 'This movie already exists.' });
+            }
         });
     },
     getAllUpcomingMovies: (theatreId) => {

@@ -235,16 +235,12 @@ router.post('/delete-movie', isTheatre, (req, res) => {
 
 router.get('/upcoming-movies', isTheatre, (req, res) => {
   theatreHelpers.getAllUpcomingMovies(req.user._id).then((movies) => {
-    res.render('theatre/upcoming-movies', { title: 'Theatre | Upcoming Movies', theatre: req.user, movies, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/upcoming-movies', { title: 'Theatre | Upcoming Movies', theatre: req.user, movies });
   });
 });
 
 router.get('/add-upcoming-movies', isTheatre, (req, res) => {
-  res.render('theatre/add-upcoming-movies', { title: 'Theatre | Add Movies', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('theatre/add-upcoming-movies', { title: 'Theatre | Add Movies', theatre: req.user });
 });
 
 router.post('/add-upcoming-movies', isTheatre, (req, res) => {
@@ -259,11 +255,11 @@ router.post('/add-upcoming-movies', isTheatre, (req, res) => {
       }
     });
 
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre/add-upcoming-movies');
+    req.flash('info', response.alertMessage);
+    res.redirect('/theatre/upcoming-movies');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/add-upcoming-movies');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/upcoming-movies');
   });
 });
 
@@ -362,13 +358,13 @@ router.post('/delete-show', isTheatre, (req, res) => {
 });
 
 router.post('/get-time-slots', (req, res) => {
- theatreHelpers.getTimeSlots(req.body).then((slots) => {
-  res.json(slots);
- });
+  theatreHelpers.getTimeSlots(req.body).then((slots) => {
+    res.json(slots);
+  });
 });
 
 router.get('/users-activity', isTheatre, (req, res) => {
-  theatreHelpers.getUsers(req.user._id).then((users) => { 
+  theatreHelpers.getUsers(req.user._id).then((users) => {
     res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user, users });
   });
 });
