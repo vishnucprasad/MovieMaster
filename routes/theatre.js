@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const fs = require('fs');
 const theatreHelpers = require('../helpers/theatreHelpers');
 const passport = require('passport');
+const date = require('date-and-time');
 const isTheatre = require('../middleware/auth').isTheatre;
 
 router.get('/login', (req, res) => {
@@ -43,9 +44,10 @@ router.get('/', isTheatre, async function (req, res, next) {
   const totalScreens = await theatreHelpers.getNumberOfScreens(req.user._id);
   const totalBookings = await theatreHelpers.getNumberOfBookings(req.user._id);
   const paidBookings = await theatreHelpers.getNumberOfPayedBookings(req.user._id);
-  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, totalShows, totalScreens, totalBookings, paidBookings, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  const unpaidBookings = await theatreHelpers.getNumberOfUnpayedBookings(req.user._id);
+  const currentMonthBookings = await theatreHelpers.getTheatreBookings(req.user._id, date.format(new Date(), 'YYYY'), date.format(new Date(), 'MM'), date.format(new Date(), 'DD'));
+  const pastMonthBookings = await theatreHelpers.getTheatreBookings(req.user._id, date.format(new Date(), 'YYYY'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'MM'), date.format(new Date(new Date().getFullYear(), new Date().getMonth(), 0), 'DD'));
+  res.render('theatre/dashboard', { title: 'Theatre | Dashboard', theatre: req.user, totalShows, totalScreens, totalBookings, paidBookings, unpaidBookings, currentMonthBookings, pastMonthBookings });
 });
 
 router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
