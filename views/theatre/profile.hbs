@@ -1,0 +1,267 @@
+<div class="main-content-container container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header row no-gutters py-4">
+        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+            <span class="text-uppercase page-subtitle">Overview</span>
+            <h3 class="page-title">Theatre Profile</h3>
+        </div>
+    </div>
+    <!-- End Page Header -->
+    <!-- Default Light Table -->
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card card-small mb-4 pt-3">
+                <div class="card-header border-bottom text-center">
+                    <div class="mb-3 mx-auto">
+                        <img class="rounded-circle"
+                            src="{{#if theatre.ownerPic}}/images/theatre/{{theatre._id}}.jpg{{else}}/images/theatre/theatre-logo.png{{/if}}"
+                            alt="User Avatar" width="110">
+                    </div>
+                    <h4 class="mb-0" id="theatreProfileName">{{theatre.ownerName}}</h4>
+                    <span class="text-muted d-block mb-2">{{theatre.theatreName}}</span>
+                    <button type="button" class="mb-2 btn btn-sm btn-pill btn-outline-primary mr-2" data-toggle="modal"
+                        data-target="#updateAdminProfilePic">
+                        <i class="material-icons mr-1">edit</i>Change Profile Pic
+                    </button>
+                    <div class="modal fade" id="updateAdminProfilePic" tabindex="-1" role="dialog"
+                        data-backdrop="static" aria-labelledby="updateAdminProfilePicTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="pr-3 pt-3">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-center text-uppercase p-5">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img src="{{#if theatre.ownerPic}}/images/theatre/{{theatre._id}}.jpg{{else}}/images/theatre/theatre-logo.png{{/if}}"
+                                                alt="" id="viewImage" class="img-fluid">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <form class="mt-3" action="/theatre/update-owner-picture/{{theatre._id}}"
+                                                method="POST" enctype="multipart/form-data">
+                                                <div class="form-group text-center">
+                                                    <label for="">Upload new image</label>
+                                                    <br>
+                                                    <label class="btn btn-accent border border-secondary w-100"
+                                                        for="my-file-selector">
+                                                        <input id="my-file-selector" required type="file"
+                                                            name="profilePicture" style="display:none"
+                                                            onchange="loadImage(event);">
+                                                        Choose Image
+                                                    </label>
+                                                </div>
+                                                {{#if theatre.ownerPic}}
+                                                <button type="button"
+                                                    class="btn btn-danger border border-secondary w-100"
+                                                    data-dismiss="modal"
+                                                    onclick="removeTheatreProfilePic(event, '{{theatre._id}}')">Remove</button>
+                                                <button type="submit"
+                                                    class="btn btn-success border border-secondary w-100">Update</button>
+                                                {{else}}
+                                                <button type="submit"
+                                                    class="btn btn-success border border-secondary w-100">Update</button>
+                                                {{/if}}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-4" id="theatreDescription">
+                        {{#if theatre.description}}
+                        <strong class="text-muted d-block mb-2">Description</strong>
+                        <span>{{theatre.description}}</span>
+                        {{/if}}
+                    </li>
+                </ul>
+            </div>
+            <div class="card card-small mb-4">
+                <div class="card-header border-bottom">
+                    <h6 class="m-0">Change Password</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <form id="changeTheatrePasswordForm">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label for="fePassword">Current Password</label>
+                                            <input type="password" class="form-control" id="fePassword"
+                                                placeholder="Password" name="password">
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label for="feNewPassword">New Password</label>
+                                            <input type="password" class="form-control" id="feNewPassword"
+                                                placeholder="Password" name="newPassword">
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label for="feConfirmPassword">Confirm Password</label>
+                                            <input type="password" class="form-control" id="feConfirmPassword"
+                                                placeholder="Password" name="confirmPassword">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-accent">Change Password</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card card-small mb-4">
+                <div class="card-header border-bottom">
+                    <h6 class="m-0">Account Details</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <form id="updateTheatreForm">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="ownerName">Owner Name</label>
+                                            <input type="text" class="form-control" id="ownerName"
+                                                placeholder="Owner Name" name="ownerName" value="{{theatre.ownerName}}">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="theatreName">Theatre Name</label>
+                                            <input type="text" class="form-control" id="theatreName"
+                                                placeholder="Theatre Name" name="theatreName"
+                                                value="{{theatre.theatreName}}">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="email">Email</label>
+                                            <input type="text" class="form-control" id="email" placeholder="Email"
+                                                name="email" value="{{theatre.email}}">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="phoneNumber">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phoneNumber"
+                                                placeholder="Phone Number" name="phoneNumber"
+                                                value="{{theatre.phoneNumber}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label for="description">Description</label>
+                                            <textarea class="form-control" name="description" rows="5"
+                                                id="descriptionControl">{{theatre.description}}</textarea>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-accent">Update Account</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card card-small mb-4">
+                <div class="card-header border-bottom">
+                    <h6 class="m-0">Theatre Location</h6>
+                </div>
+                <div class="card-body row justify-content-center">
+                    <div class="col md-6">
+                        <div id="locationPicker" class="card_shadow" style="width: 400px; height: 300px;"></div>
+                    </div>
+                    <div class="col md-6">
+                        <form class="mt-3" id="locationPickerForm">
+                            <div class="form-group">
+                                <label for="longitude">Longitude</label>
+                                <input type="text" name="longitude" value="{{theatre.location.longitude}}"
+                                    class="form-control bg-white" id="longitude" readonly required>
+                            </div>
+                            <div class="form-group">
+                                <label for="latitude">Latitude</label>
+                                <input type="text" name="latitude" value="{{theatre.location.latitude}}"
+                                    class="form-control bg-white" id="latitude" readonly required>
+                            </div>
+                            <div class="form-group">
+                                <label for="place">Place</label>
+                                <input type="text" name="place_name" value="{{theatre.location.place_name}}"
+                                    class="form-control bg-white" id="place" readonly required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-accent">Set Location</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Default Light Table -->
+</div>
+<script>
+    const showTheatreLocation = () => {
+        mapboxgl.accessToken = 'pk.eyJ1IjoidmlzaG51Y3ByYXNhZCIsImEiOiJja2V3NzAxYnIyNWtrMnhtcmN2dG43Ynd3In0.PjtuWzKhZ2IOs-2rjNCcXQ';
+        const map = new mapboxgl.Map({
+            container: 'locationPicker',
+            style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+            center: [76.78, 9.54], // starting position [lng, lat]
+            zoom: 6 // starting zoom
+        });
+        const lng = document.getElementById('longitude').value
+        const lat = document.getElementById('latitude').value
+        if (lng && lat) {
+            const marker = new mapboxgl.Marker()
+                .setLngLat([lng, lat])
+                .addTo(map);
+        }
+        map.on('load', function () {
+            map.resize();
+        });
+        map.addControl(
+            new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+            })
+        );
+        map.on('click', function (e) {
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.wrap().lng},${e.lngLat.wrap().lat}.json?access_token=${mapboxgl.accessToken}`
+            $.ajax({
+                url,
+                method: 'get',
+                success: (response) => {
+                    if (map.getLayer('start')) {
+                        map.getSource('start').setData(start);
+                    } else {
+                        map.addLayer({
+                            id: 'start',
+                            type: 'circle',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        properties: {},
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: [e.lngLat.wrap().lng, e.lngLat.wrap().lat]
+                                        }
+                                    }]
+                                }
+                            },
+                            paint: {
+                                'circle-radius': 10,
+                                'circle-color': '#f30'
+                            }
+                        });
+                    }
+                    document.getElementById('place').value = response.features[1].place_name;
+                    document.getElementById('longitude').value = e.lngLat.wrap().lng;
+                    document.getElementById('latitude').value = e.lngLat.wrap().lat;
+                }
+            });
+        })
+    }
+    
+    showTheatreLocation();
+</script>

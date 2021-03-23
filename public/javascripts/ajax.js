@@ -32,6 +32,15 @@ const removeAdminProfilePic = (e, adminId) => {
     });
 }
 
+const removeTheatreProfilePic = (e, theatreId) => {
+    vex.dialog.confirm({
+        message: 'Are you sure you want to remove this profile picture?',
+        callback: (value) => {
+            if (value) location.href = `/theatre/remove-owner-picture/${theatreId}`
+        }
+    });
+}
+
 $('#updateAdminForm').submit((e) => {
     e.preventDefault();
 
@@ -86,6 +95,60 @@ $('#updateAdminForm').submit((e) => {
     });
 });
 
+$('#updateTheatreForm').submit((e) => {
+    e.preventDefault();
+
+    $.ajax({
+        url: '/theatre/update-theatre-details',
+        method: 'post',
+        data: $('#updateTheatreForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                if (response.theatre.description && !document.getElementById('theatreDescription').innerHTML) {
+                    const descriptionHeader = document.createElement("strong");
+                    descriptionHeader.setAttribute('class', 'text-muted d-block mb-2');
+                    descriptionHeader.innerHTML = 'Description';
+                    document.getElementById('theatreDescription').appendChild(descriptionHeader);
+
+                    const description = document.createElement('span');
+                    description.innerHTML = response.theatre.description;
+                    document.getElementById('theatreDescription').appendChild(description);
+                } else if (document.getElementById('descriptionControl').value === '') {
+                    document.getElementById('theatreDescription').innerHTML = '';
+                }
+
+                document.getElementById('theatreHeaderName').innerText = response.theatre.ownerName;
+                document.getElementById('theatreProfileName').innerText = response.theatre.ownerName;
+
+                iziToast.show({
+                    title: response.alertMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: response.errMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+        }
+    });
+});
+
 $('#changeAdminPasswordForm').submit((e) => {
     e.preventDefault();
 
@@ -95,6 +158,83 @@ $('#changeAdminPasswordForm').submit((e) => {
         data: $('#changeAdminPasswordForm').serialize(),
         success: (response) => {
             if (response.status) {
+                iziToast.show({
+                    title: response.alertMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: response.errMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+        }
+    });
+});
+
+$('#changeTheatrePasswordForm').submit((e) => {
+    e.preventDefault();
+
+    $.ajax({
+        url: '/theatre/change-password',
+        method: 'post',
+        data: $('#changeTheatrePasswordForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                iziToast.show({
+                    title: response.alertMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-slack',
+                });
+            } else {
+                iziToast.show({
+                    title: response.errMessage,
+                    titleColor: '#fff',
+                    icon: 'fa fa-check',
+                    iconColor: '#fff',
+                    class: 'bg-danger',
+                });
+            }
+        },
+        error: (err) => {
+            iziToast.show({
+                title: "Can't connect to the server.",
+                titleColor: '#fff',
+                icon: 'fa fa-check',
+                iconColor: '#fff',
+                class: 'bg-danger',
+            });
+        }
+    });
+});
+
+$('#locationPickerForm').submit((e) => {
+    e.preventDefault();
+
+    $.ajax({
+        url: '/theatre/update-location',
+        method: 'post',
+        data: $('#locationPickerForm').serialize(),
+        success: (response) => {
+            if (response.status) {
+                showTheatreLocation();
                 iziToast.show({
                     title: response.alertMessage,
                     titleColor: '#fff',

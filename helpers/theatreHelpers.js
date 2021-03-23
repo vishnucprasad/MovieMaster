@@ -38,7 +38,7 @@ module.exports = {
             });
         });
     },
-    updateTheatreDetails: ({ ownerName, theatreName, email, phoneNumber }, theatreId) => {
+    updateTheatreDetails: ({ ownerName, theatreName, email, phoneNumber, description }, theatreId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.THEATRE_COLLECTION).updateOne({
                 _id: ObjectID(theatreId)
@@ -47,14 +47,15 @@ module.exports = {
                     ownerName,
                     theatreName,
                     email,
-                    phoneNumber
+                    phoneNumber,
+                    description
                 }
             }).then(async (response) => {
                 const theatre = await db.get().collection(collection.THEATRE_COLLECTION).findOne({ _id: ObjectID(theatreId) });
                 delete theatre.password;
-                resolve({ theatre, alertMessage: 'Updated successfully.' });
+                resolve({ status: true, theatre, alertMessage: 'Updated successfully.' });
             }).catch((error) => {
-                reject({ error, errMessage: 'Failed to update theatre details.' });
+                reject({ status: false, error, errMessage: 'Failed to update theatre details.' });
             });
         });
     },
@@ -73,9 +74,9 @@ module.exports = {
                     location
                 }
             }).then((response) => {
-                resolve({ response, alertMessage: 'Updated successfully.' })
+                resolve({ status: true, response, alertMessage: 'Updated successfully.' })
             }).catch((error) => {
-                reject({ response, alertMessage: 'Failed to update location.' })
+                reject({ status: false, response, alertMessage: 'Failed to update location.' })
             });
         });
     },
@@ -93,13 +94,13 @@ module.exports = {
                                 password: newPassword
                             }
                         }).then((response) => {
-                            resolve({ alertMessage: 'Password changed successfully' });
+                            resolve({ status: true, alertMessage: 'Password changed successfully' });
                         })
                     } else {
-                        reject({ errMessage: "Entered passwords dosen't match" });
+                        reject({ status: false, errMessage: "Entered passwords dosen't match" });
                     }
                 } else {
-                    reject({ errMessage: 'Incorrect password.' });
+                    reject({ status: false, errMessage: 'Incorrect password.' });
                 }
             });
         });

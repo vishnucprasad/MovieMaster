@@ -63,10 +63,10 @@ router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
           console.log(done);
         }
       });
-      req.session.alertMessage = response.alertMessage;
+      req.flash('info', response.alertMessage);
       res.redirect('/theatre');
     }).catch((error) => {
-      req.session.errMessage = error.errMessage;
+      req.flash('error', error.errMessage);
       res.redirect('/theatre');
     });
   }
@@ -74,43 +74,36 @@ router.post('/update-owner-picture/:id', isTheatre, (req, res) => {
 
 router.get('/remove-owner-picture/:id', isTheatre, (req, res) => {
   theatreHelpers.updateOwnerPicture(req.params.id, false).then((response) => {
-    req.session.alertMessage = response.alertMessage;
+    req.flash('info', response.alertMessage);
     fs.unlinkSync(`./public/images/theatre/${response.theatre._id}.jpg`);
     res.redirect('/theatre');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
+    req.flash('error', error.errMessage);
     res.redirect('/theatre');
   });;
 });
 
 router.post('/update-theatre-details', isTheatre, (req, res) => {
-  console.log(req.body);
   theatreHelpers.updateTheatreDetails(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre');
+    res.redirect(error);
   });
 });
 
 router.post('/update-location', (req, res) => {
   theatreHelpers.updateLocation(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre');
+    res.json(error);
   });
 });
 
 router.post('/change-password', isTheatre, (req, res) => {
   theatreHelpers.changePassword(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre');
+    res.json(response);
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre');
+    res.json(error);
   });
 });
 
@@ -367,6 +360,10 @@ router.get('/users-activity', isTheatre, (req, res) => {
   theatreHelpers.getUsers(req.user._id).then((users) => {
     res.render('theatre/users-activity', { title: 'Theatre | Users Activity', theatre: req.user, users });
   });
+});
+
+router.get('/profile', (req, res) => {
+  res.render('theatre/profile', { title: 'Theatre | Profile', theatre: req.user });
 });
 
 module.exports = router;
