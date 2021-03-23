@@ -116,25 +116,21 @@ router.post('/change-password', isTheatre, (req, res) => {
 
 router.get('/screens', isTheatre, (req, res) => {
   theatreHelpers.getAllScreens(req.user._id).then((screens) => {
-    res.render('theatre/screens', { title: 'Theatre | Screens', theatre: req.user, screens, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-    req.session.errMessage = false;
-    req.session.alertMessage = false;
+    res.render('theatre/screens', { title: 'Theatre | Screens', theatre: req.user, screens });
   });
 });
 
 router.get('/add-screens', isTheatre, (req, res) => {
-  res.render('theatre/add-screens', { title: 'Admin | Add Screens', theatre: req.user, errMessage: req.session.errMessage, alertMessage: req.session.alertMessage });
-  req.session.errMessage = false;
-  req.session.alertMessage = false;
+  res.render('theatre/add-screens', { title: 'Admin | Add Screens', theatre: req.user });
 });
 
 router.post('/add-screens', isTheatre, (req, res) => {
   theatreHelpers.addScreens(req.body, req.user._id).then((response) => {
-    req.session.alertMessage = response.alertMessage;
-    res.redirect('/theatre/add-screens');
+    req.flash('info', response.alertMessage);
+    res.redirect('/theatre/screens');
   }).catch((error) => {
-    req.session.errMessage = error.errMessage;
-    res.redirect('/theatre/add-screens');
+    req.flash('error', error.errMessage);
+    res.redirect('/theatre/screens');
   });
 });
 
