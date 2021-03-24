@@ -329,3 +329,12 @@ const copyRefferalLink = (e) => {
         class: 'bg-slack',
     });
 }
+
+const resetLocation = (longitude, latitude, placeName) => {
+    console.log(longitude, latitude, placeName);
+    document.getElementById('longitude').value = longitude;
+    document.getElementById('latitude').value = latitude;
+    document.getElementById('place').value = placeName;
+
+    showTheatreLocation();
+}
