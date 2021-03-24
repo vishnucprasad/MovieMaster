@@ -51,16 +51,18 @@
                 <div class="nav-wrapper position-relative mb-4">
                     <ul class="nav nav-pills flex-column flex-sm-row" id="tabs-text" role="tablist">
                         <li class="nav-item mr-sm-3 mr-md-0">
-                            <a class="nav-link mb-sm-3 mb-md-0 active font-weight-bold text-center" id="today-tab" data-toggle="tab" href="#today"
-                                role="tab" aria-controls="today" aria-selected="true">...</a>
+                            <a class="nav-link mb-sm-3 mb-md-0 active font-weight-bold text-center" id="today-tab"
+                                data-toggle="tab" href="#today" role="tab" aria-controls="today"
+                                aria-selected="true">...</a>
                         </li>
                         <li class="nav-item mr-sm-3 mr-md-0">
-                            <a class="nav-link mb-sm-3 mb-md-0 font-weight-bold text-center" id="tomorrow-tab" data-toggle="tab" href="#tomorrow"
-                                role="tab" aria-controls="tomorrow" aria-selected="false">...</a>
+                            <a class="nav-link mb-sm-3 mb-md-0 font-weight-bold text-center" id="tomorrow-tab"
+                                data-toggle="tab" href="#tomorrow" role="tab" aria-controls="tomorrow"
+                                aria-selected="false">...</a>
                         </li>
                         <li class="nav-item mr-sm-3 mr-md-0">
-                            <a class="nav-link mb-sm-3 mb-md-0 font-weight-bold text-center" id="dayAfterTomorrow-tab" data-toggle="tab"
-                                href="#dayAfterTomorrow" role="tab" aria-controls="dayAfterTomorrow"
+                            <a class="nav-link mb-sm-3 mb-md-0 font-weight-bold text-center" id="dayAfterTomorrow-tab"
+                                data-toggle="tab" href="#dayAfterTomorrow" role="tab" aria-controls="dayAfterTomorrow"
                                 aria-selected="false">...</a>
                         </li>
                     </ul>
@@ -76,7 +78,8 @@
                                     {{#if todayShows}}
                                     <div class="row">
                                         {{#each todayShows}}
-                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
+                                        <div
+                                            class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
                                             <a href="#panel-TOD-{{this._id}}" data-target="#panel-TOD-{{this._id}}"
                                                 class="accordion-panel-header" data-toggle="collapse" role="button"
                                                 aria-expanded="false">
@@ -99,13 +102,17 @@
                                                             {{#each this.screens}}
                                                             <div class="col-md-4 col-lg-2">
                                                                 {{#IF this.seats '==' this.totalReservedSeats}}
-                                                                <a type="button" onclick="vex.dialog.alert('Housefull, Please choose another show.')" class="btn btn-primary btn-block m-1">
+                                                                <a type="button"
+                                                                    onclick="vex.dialog.alert('Housefull, Please choose another show.')"
+                                                                    class="btn btn-primary btn-block m-1">
                                                                     <span
                                                                         class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
-                                                                    <br><span class="small bg-danger font-weight-bold py-1 px-2 text-white rounded">Housefull</span>
+                                                                    <br><span
+                                                                        class="small bg-danger font-weight-bold py-1 px-2 text-white rounded">Housefull</span>
                                                                 </a>
                                                                 {{else}}
-                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
+                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}"
+                                                                    class="btn btn-primary btn-block m-1">
                                                                     <span
                                                                         class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
                                                                     <span class="small">{{this.shows.date}} <br>
@@ -131,7 +138,8 @@
                                     {{#if tomorrowShows}}
                                     <div class="row">
                                         {{#each tomorrowShows}}
-                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
+                                        <div
+                                            class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
                                             <a href="#panel-TOM-{{this._id}}" data-target="#panel-TOM-{{this._id}}"
                                                 class="accordion-panel-header" data-toggle="collapse" role="button"
                                                 aria-expanded="false">
@@ -153,12 +161,24 @@
                                                         <div class="row">
                                                             {{#each this.screens}}
                                                             <div class="col-md-4 col-lg-2">
-                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
+                                                                {{#IF this.seats '==' this.totalReservedSeats}}
+                                                                <a type="button"
+                                                                    onclick="vex.dialog.alert('Housefull, Please choose another show.')"
+                                                                    class="btn btn-primary btn-block m-1">
+                                                                    <span
+                                                                        class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
+                                                                    <br><span
+                                                                        class="small bg-danger font-weight-bold py-1 px-2 text-white rounded">Housefull</span>
+                                                                </a>
+                                                                {{else}}
+                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}"
+                                                                    class="btn btn-primary btn-block m-1">
                                                                     <span
                                                                         class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
                                                                     <span class="small">{{this.shows.date}} <br>
                                                                         {{this.shows.showTime}}</span>
                                                                 </a>
+                                                                {{/IF}}
                                                             </div>
                                                             {{/each}}
                                                         </div>
@@ -179,7 +199,8 @@
                                     {{#if dayAfterTomorrowShows}}
                                     <div class="row">
                                         {{#each dayAfterTomorrowShows}}
-                                        <div class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
+                                        <div
+                                            class="card shadow-soft card-sm card-body bg-primary border-light mb-0 mx-3">
                                             <a href="#panel-DAT-{{this._id}}" data-target="#panel-DAT-{{this._id}}"
                                                 class="accordion-panel-header" data-toggle="collapse" role="button"
                                                 aria-expanded="false">
@@ -201,12 +222,24 @@
                                                         <div class="row">
                                                             {{#each this.screens}}
                                                             <div class="col-md-4 col-lg-2">
-                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}" class="btn btn-primary btn-block m-1">
+                                                                {{#IF this.seats '==' this.totalReservedSeats}}
+                                                                <a type="button"
+                                                                    onclick="vex.dialog.alert('Housefull, Please choose another show.')"
+                                                                    class="btn btn-primary btn-block m-1">
+                                                                    <span
+                                                                        class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
+                                                                    <br><span
+                                                                        class="small bg-danger font-weight-bold py-1 px-2 text-white rounded">Housefull</span>
+                                                                </a>
+                                                                {{else}}
+                                                                <a href="/book-seat?showId={{this.shows._id}}&screenId={{this._id}}"
+                                                                    class="btn btn-primary btn-block m-1">
                                                                     <span
                                                                         class="text-twitter font-weight-bold">{{this.screenName}}</span><br>
                                                                     <span class="small">{{this.shows.date}} <br>
                                                                         {{this.shows.showTime}}</span>
                                                                 </a>
+                                                                {{/IF}}
                                                             </div>
                                                             {{/each}}
                                                         </div>
