@@ -193,6 +193,7 @@
                                     class="form-control bg-white" id="place" readonly required>
                             </div>
                             <div class="text-center">
+                                <button type="button" onclick="resetLocation('{{theatre.location.longitude}}', '{{theatre.location.latitude}}', '{{theatre.location.place_name}}')" class="btn btn-danger">Reset</button>
                                 <button type="submit" class="btn btn-accent">Set Location</button>
                             </div>
                         </form>

@@ -4,6 +4,8 @@ if ('serviceWorker' in navigator) {
         .catch(err => console.log('service worker not registered', err));
 }
 
+vex.defaultOptions.className = 'vex-theme-os';
+
 const loadImage = (e) => {
     document.getElementById('viewImage').src = URL.createObjectURL(e.target.files[0]);
 }
@@ -33,42 +35,17 @@ const setActiveTab = (id) => {
     document.getElementById(`${id}`).classList.add("active");
 }
 
-const editTheatreDetails = (e) => {
-    e.preventDefault();
-    document.getElementById('ownerName').removeAttribute('readonly');
-    document.getElementById('theatreName').removeAttribute('readonly');
-    document.getElementById('email').removeAttribute('readonly');
-    document.getElementById('phoneNumber').removeAttribute('readonly');
-    document.getElementById('save').removeAttribute('hidden');
-    document.getElementById('cancel').removeAttribute('hidden');
-    document.getElementById('edit').setAttribute('hidden', 'true');
-}
-
-const cancelEditTheatreDetails = (e) => {
-    e.preventDefault();
-    document.getElementById('ownerName').setAttribute('readonly', 'true');
-    document.getElementById('theatreName').setAttribute('readonly', 'true');
-    document.getElementById('email').setAttribute('readonly', 'true');
-    document.getElementById('phoneNumber').setAttribute('readonly', 'true');
-    document.getElementById('save').setAttribute('hidden', 'true');
-    document.getElementById('cancel').setAttribute('hidden', 'true');
-    document.getElementById('edit').removeAttribute('hidden');
-}
-
 $(window).on("scroll", function () {
     const scroll = $(window).scrollTop();
 
     if (scroll >= 80) {
         $("#navbar-main").addClass("shadow-soft");
+        $("#movetop").fadeIn(250);
     } else {
         $("#navbar-main").removeClass("shadow-soft");
+        $("#movetop").fadeOut(250);
     }
 });
-
-// When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function () {
-    scrollFunction()
-};
 
 // When the user clicks on the button, scroll to the top of the document
 function topFunction() {
@@ -328,4 +305,13 @@ const copyRefferalLink = (e) => {
         iconColor: '#fff',
         class: 'bg-slack',
     });
+}
+
+const resetLocation = (longitude, latitude, placeName) => {
+    console.log(longitude, latitude, placeName);
+    document.getElementById('longitude').value = longitude;
+    document.getElementById('latitude').value = latitude;
+    document.getElementById('place').value = placeName;
+
+    showTheatreLocation();
 }

@@ -1,4 +1,3 @@
-{{#if messages.info}}
 <div id="info" hidden>{{messages.info}}</div>
 <script>
     iziToast.show({
@@ -9,15 +8,3 @@
         class: 'bg-slack',
     });
 </script>
-{{else}}
-<div id="alertMessage" hidden>{{alertMessage}}</div>
-<script>
-    iziToast.show({
-        title: document.getElementById('alertMessage').innerHTML,
-        titleColor: '#fff',
-        icon: 'fa fa-check',
-        iconColor: '#fff',
-        class: 'bg-slack',
-    });
-</script>
-{{/if}}
