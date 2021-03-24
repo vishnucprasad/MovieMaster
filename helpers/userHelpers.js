@@ -33,11 +33,11 @@ module.exports = {
                         refferer,
                         wallet: 50
                     } : {
-                            name,
-                            email,
-                            mobileNumber,
-                            joinDate: new Date()
-                        }
+                        name,
+                        email,
+                        mobileNumber,
+                        joinDate: new Date()
+                    }
 
                     db.get().collection(collection.USER_COLLECTION).insertOne(userObject).then((response) => {
                         resolve({ status: true, user: response.ops[0] });
@@ -177,7 +177,7 @@ module.exports = {
                                     seats: 1,
                                     shows: 1,
                                     totalReservedSeats: {
-                                        $size: '$shows.reservedSeats'
+                                        $size: { $ifNull: ['$shows.reservedSeats', []] }
                                     }
                                 }
                             }
