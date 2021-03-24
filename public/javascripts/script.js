@@ -4,8 +4,6 @@ if ('serviceWorker' in navigator) {
         .catch(err => console.log('service worker not registered', err));
 }
 
-vex.defaultOptions.className = 'vex-theme-os';
-
 const loadImage = (e) => {
     document.getElementById('viewImage').src = URL.createObjectURL(e.target.files[0]);
 }
