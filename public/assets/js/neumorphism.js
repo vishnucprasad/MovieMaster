@@ -69,18 +69,6 @@ $(document).ready(function () {
         $(this).parent('.dropdown-submenu').toggleClass('show');
     });
 
-    // Headroom - show/hide navbar on scroll
-    if ($('.headroom')[0]) {
-        var headroom = new Headroom(document.querySelector("#navbar-main"), {
-            offset: 0,
-            tolerance: {
-                up: 0,
-                down: 0
-            },
-        });
-        headroom.init();
-    }
-
     // Background images for sections
     $('[data-background]').each(function () {
         $(this).css('background-image', 'url(' + $(this).attr('data-background') + ')');
@@ -286,17 +274,6 @@ $(document).ready(function () {
             + '<span>%H</span> hr '
             + '<span>%M</span> min '
             + '<span>%S</span> sec'));
-    });
-
-    //Parallax
-    $('.jarallax').jarallax({
-        speed: 0.2
-    });
-
-    //Smooth scroll
-    var scroll = new SmoothScroll('a[href*="#"]', {
-        speed: 500,
-        speedAsDuration: true
     });
 
     // Equalize height to the max of the elements
