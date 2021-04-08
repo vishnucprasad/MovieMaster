@@ -53,7 +53,11 @@ function topFunction() {
 
 window.addEventListener('message', function (e) {
     if (e.data !== 'popup-done') { return; }
-    window.history.go(-1);
+    if (window.location.pathname !== '/theatre/login' || window.location.pathname !== '/admin/login') {
+        window.history.go(-1);
+    } else {
+        window.location.reload();
+    }
 });
 
 const authPopup = (e, url) => {
