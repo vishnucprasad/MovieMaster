@@ -143,7 +143,7 @@ const loadMap = () => {
 
                     instructions.innerHTML = `Nearest theatre is <span class="text-danger">${features[lowestIndex].theatreName}</span>, <span class="text-danger">${Math.floor(data.distance / 1000)} KM</span> from your location.`
                     document.getElementById('mapConfirmWrapper').removeAttribute('hidden');
-                    document.getElementById('userLocation').innerHTML=response.userLocation.place_name;
+                    document.getElementById('userLocation').innerHTML = response.userLocation.place_name;
                 }
             });
         }

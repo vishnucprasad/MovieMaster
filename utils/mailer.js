@@ -21,14 +21,14 @@ module.exports.sendMail = function (mailOptions) {
             }
         });
 
-        transport.use('compile', handleBars({          
-                viewEngine: {  
+        transport.use('compile', handleBars({
+            viewEngine: {
                 extname: '.hbs',
                 layoutsDir: 'views/templates/',
-                defaultLayout : 'main'           
-                },
-                viewPath: './views',                   
-                extName: '.hbs'
+                defaultLayout: 'main'
+            },
+            viewPath: './views',
+            extName: '.hbs'
         }));
 
         transport.sendMail(mailOptions).then((response) => {

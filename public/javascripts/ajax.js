@@ -648,7 +648,7 @@ const checkoutRazorpay = (e, screenId, showId) => {
 
 const razorpayPayment = (order) => {
     var options = {
-        "key": "rzp_test_fsFqCPdvUxG9MI", // Enter the Key ID generated from the Dashboard
+        "key": "rzp_test_bLqXlcL7WI44SH", // Enter the Key ID generated from the Dashboard
         "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         "currency": "INR",
         "name": "MovieMaster",

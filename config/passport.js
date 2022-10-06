@@ -139,6 +139,7 @@ function initalize(passport) {
     ));
 
     passport.serializeUser(function (user, done) {
+        console.log(user);
         done(null, { userId: user._id, admin: user.admin, theatre: user.theatre });
     });
 
